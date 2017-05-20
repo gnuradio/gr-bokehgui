@@ -680,6 +680,7 @@
 #define INCLUDED_BOKEHGUI_TIME_SINK_F_PROC_H
 
 #include <bokehgui/api.h>
+#include <gnuradio/high_res_timer.h>
 
 namespace gr {
   namespace bokehgui {
@@ -694,6 +695,19 @@ namespace gr {
       time_sink_f_proc(int size, double samp_rate, const std::string &name, int nconnections = 1);
       ~time_sink_f_proc();
     private:
+      int d_size, d_buffer_size;
+      double d_samp_rate;
+      std::string d_name;
+      int d_nconnections;
+
+      int d_index, d_start, d_end;
+      std::vector<float*> d_fbuffers;
+      std::vector<double*> d_buffers;
+
+      gr::high_res_timer_type d_update_time;
+      gr::high_res_timer_type d_last_time;
+
+
     };
 
   } // namespace bokehgui

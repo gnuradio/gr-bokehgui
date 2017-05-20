@@ -677,22 +677,47 @@
 #
 
 import numpy
+
+from bokeh.plotting import figure
+from bokeh.models import ColumnDataSource
+
 from gnuradio import gr
 from bokehgui import time_sink_f_proc
 
-class time_sink_f(gr.sync_block, time_sink_f_proc):
+class time_sink_f(gr.sync_block):
     """
     docstring for block time_sink_f
     """
-    def __init__(self, doc, size, samp_rate, name, nconnections = 1):
+    def __init__(self, doc, size,
+                 samp_rate, name,
+                 nconnections = 1):
         gr.sync_block.__init__(self,
             name="time_sink_f",
-            in_sig=[<+numpy.float+>],
+            in_sig=[numpy.float32]*nconnections,
             out_sig=None)
+        self.process = time_sink_f_proc(size, samp_rate, name, nconnections)
+        self.doc = doc
+        self.size = size
+	self.samp_rate = samp_rate
+        self.name = name
+	self.nconnections = nconnections
+        self.stream = None
+        self.plot = None
+
+        self.initialize()
+
+    def initialize(self):
+        self.plot = figure()
+        data = dict()
+        data['x'] = []
+        for i in range(self.nconnections):
+            data['y'+str(i)] = []
+        self.stream = ColumnDataSource(data)
+        for i in range(self.nconnections):
+            self.plot.line(x='x', y='y'+str(i), source = self.stream, line_color = 'red')
+        self.doc.add_root(self.plot)
 
 
     def work(self, input_items, output_items):
         in0 = input_items[0]
-        # <+signal processing here+>
-        return len(input_items[0])
-
+        return len(input_items)
