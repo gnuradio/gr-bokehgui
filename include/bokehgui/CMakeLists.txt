@@ -22,5 +22,5 @@
 ########################################################################
 install(FILES
     api.h
-    DESTINATION include/bokehgui
+    time_sink_f_proc.h DESTINATION include/bokehgui
 )
