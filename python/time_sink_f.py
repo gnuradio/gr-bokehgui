@@ -695,7 +695,7 @@ class time_sink_f(gr.sync_block):
             name="time_sink_f",
             in_sig=[numpy.float32]*nconnections,
             out_sig=None)
-        self.process = time_sink_f_proc(size, samp_rate, name, nconnections)
+
         self.doc = doc
         self.size = size
 	self.samp_rate = samp_rate
@@ -703,6 +703,11 @@ class time_sink_f(gr.sync_block):
 	self.nconnections = nconnections
         self.stream = None
         self.plot = None
+
+        self.process = time_sink_f_proc(size, samp_rate, name, nconnections)
+
+        self.set_history(2);
+        self.declare_sample_delay(1);
 
         self.initialize()
 
@@ -716,8 +721,14 @@ class time_sink_f(gr.sync_block):
         for i in range(self.nconnections):
             self.plot.line(x='x', y='y'+str(i), source = self.stream, line_color = 'red')
         self.doc.add_root(self.plot)
+        if self.name:
+            self.set_title(self.name)
 
+        self.doc.add_periodic_callback(self.update, 100)
+
+    def update(self):
+        ## Call to receive from buffers!
 
     def work(self, input_items, output_items):
-        in0 = input_items[0]
-        return len(input_items)
+        ## Call to store in buffers
+        return self.process.store_values(len(output_items), input_items, output_items);

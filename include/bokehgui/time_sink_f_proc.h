@@ -694,6 +694,9 @@ namespace gr {
     public:
       time_sink_f_proc(int size, double samp_rate, const std::string &name, int nconnections = 1);
       ~time_sink_f_proc();
+      int store_values(int noutput_items,
+         gr_vector_const_void_star &input_items,
+         gr_vector_void_star &output_items);
     private:
       int d_size, d_buffer_size;
       double d_samp_rate;
@@ -706,7 +709,6 @@ namespace gr {
 
       gr::high_res_timer_type d_update_time;
       gr::high_res_timer_type d_last_time;
-
 
     };
 
