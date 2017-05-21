@@ -677,6 +677,7 @@
 #
 
 import numpy
+import pmt
 
 from bokeh.plotting import figure
 from bokeh.models import ColumnDataSource
@@ -707,7 +708,7 @@ class time_sink_f(gr.sync_block):
         self.process = time_sink_f_proc(size, samp_rate, name, nconnections)
 
         self.set_history(2);
-        self.declare_sample_delay(1);
+        # self.declare_sample_delay(1);
 
         self.initialize()
 
@@ -722,13 +723,20 @@ class time_sink_f(gr.sync_block):
             self.plot.line(x='x', y='y'+str(i), source = self.stream, line_color = 'red')
         self.doc.add_root(self.plot)
         if self.name:
-            self.set_title(self.name)
+            self.title = self.name
 
         self.doc.add_periodic_callback(self.update, 100)
 
     def update(self):
         ## Call to receive from buffers!
+        output_items = self.process.data_to_plot()
+        import ipdb; ipdb.set_trace()
+        return None
 
     def work(self, input_items, output_items):
         ## Call to store in buffers
-        return self.process.store_values(len(output_items), input_items, output_items);
+        max_size = 0
+        for i in range(self.nconnections):
+            if len(input_items[i]) > max_size:
+                max_size = len(input_items[i])
+        return self.process.store_values(input_items, max_size)

@@ -681,6 +681,7 @@
 
 #include <bokehgui/api.h>
 #include <gnuradio/high_res_timer.h>
+#include <gnuradio/sync_block.h>
 
 namespace gr {
   namespace bokehgui {
@@ -689,14 +690,19 @@ namespace gr {
      * \brief <+description+>
      *
      */
-    class BOKEHGUI_API time_sink_f_proc
+    class BOKEHGUI_API time_sink_f_proc : public sync_block
     {
     public:
+      typedef boost::shared_ptr <time_sink_f_proc> sptr;
+      static sptr make(int size, double samp_rate, const std::string &name, int nconnections);
       time_sink_f_proc(int size, double samp_rate, const std::string &name, int nconnections = 1);
       ~time_sink_f_proc();
-      int store_values(int noutput_items,
-         gr_vector_const_void_star &input_items,
-         gr_vector_void_star &output_items);
+      int store_values(gr_vector_const_void_star &input_items, int ninput_items);
+      void initialize();
+      std::vector<double*> data_to_plot();
+      int work (int noutput_items,
+                gr_vector_const_void_star &input_items,
+                gr_vector_void_star &output_items);
     private:
       int d_size, d_buffer_size;
       double d_samp_rate;
