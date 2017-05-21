@@ -683,7 +683,7 @@ from bokeh.plotting import figure
 from bokeh.models import ColumnDataSource
 
 from gnuradio import gr
-from bokehgui import time_sink_f_proc
+from bokehgui_swig import time_sink_f_proc
 
 class time_sink_f(gr.sync_block):
     """
@@ -730,13 +730,16 @@ class time_sink_f(gr.sync_block):
     def update(self):
         ## Call to receive from buffers!
         output_items = self.process.data_to_plot()
-        import ipdb; ipdb.set_trace()
         return None
 
     def work(self, input_items, output_items):
         ## Call to store in buffers
         max_size = 0
+        input_items_temp = []
         for i in range(self.nconnections):
+            input_items_temp.append(input_items[i].tolist())
             if len(input_items[i]) > max_size:
                 max_size = len(input_items[i])
-        return self.process.store_values(input_items, max_size)
+        print input_items
+        print input_items_temp
+        return self.process.store_values(input_items_temp, max_size)

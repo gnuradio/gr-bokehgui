@@ -772,10 +772,10 @@ namespace gr {
       return d_buffers;
     }
 
-    int work (int noutput_items,
+    int time_sink_f_proc::work (int noutput_items,
               gr_vector_const_void_star &input_items,
               gr_vector_void_star &output_items) {
-
+      return noutput_items;
     }
   } /* namespace bokehgui */
 } /* namespace gr */
