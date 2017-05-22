@@ -719,11 +719,14 @@ class time_sink_f(gr.sync_block):
         for i in range(self.nconnections):
             data['y'+str(i)] = []
         self.stream = ColumnDataSource(data)
+        self.lines = []
+        self.lines_markers = []
         for i in range(self.nconnections):
-            self.plot.line(x='x', y='y'+str(i), source = self.stream, line_color = 'red')
+            self.lines.append(self.plot.line(x='x', y='y'+str(i), source = self.stream))
+            self.lines_markers.append((None,'None'))
         self.doc.add_root(self.plot)
         if self.name:
-            self.title = self.name
+            self.set_title(self.name)
 
         self.doc.add_periodic_callback(self.update, 100)
 
@@ -740,6 +743,81 @@ class time_sink_f(gr.sync_block):
             input_items_temp.append(input_items[i].tolist())
             if len(input_items[i]) > max_size:
                 max_size = len(input_items[i])
-        print input_items
-        print input_items_temp
-        return self.process.store_values(input_items_temp, max_size)
+        return self.process.store_values(input_items, max_size)
+
+    def set_title(self, name):
+        self.plot.title.text = self.name
+
+    def set_y_axis(self, lst):
+        assert (lst[0]<lst[1])
+        self.plot.set(y_range=Range1d(lst[0], lst[1]))
+    def set_x_axis(self, lst):
+        assert (lst[0]<lst[1])
+        self.plot.set(x_range=Range1d(lst[0], lst[1]))
+    def set_x_label(self, xlabel):
+        self.plot.set(xlabel = xlabel)
+    def set_y_label(self, ylabel):
+        self.plot.set(ylabel = ylabel)
+    def set_line_label(i, label):
+        self.lines[i].legend = label
+    def get_line_label(i):
+        return self.lines[i].legend
+    def set_line_color(i, color):
+        self.lines[i].line_color = color
+    def get_line_color(i):
+        return self.lines[i].line_color
+    def set_line_width(i, width):
+        self.lines[i].line_width = width
+    def get_line_width(i):
+        return self.lines[i].line_width
+    def set_line_style(i, style):
+        # solid, dashed, dotted, dotdash, dashdot
+        self.lines[i].line_dash = style
+    def get_line_style(i):
+        # solid, dashed, dotted, dotdash, dashdot
+        return self.lines[i].line_dash
+    def set_line_marker(i, marker):
+        if marker == '*':
+            self.lines_markers[i] = (self.plot.asterisk(x='x', y='y'+str(i), source=self.stream), '*')
+        if marker == 'o':
+            self.lines_markers[i] = (self.plot.circle(x='x', y='y'+str(i), source=self.stream), 'o')
+        if marker == 'o+':
+            self.lines_markers[i] = (self.plot.circle_cross(x='x', y='y'+str(i), source=self.stream), 'o+')
+        if marker == '+':
+            self.lines_markers[i] = (self.plot.cross(x='x', y='y'+str(i), source=self.stream), '+')
+        if marker == 'd':
+            self.lines_markers[i] = (self.plot.diamond(x='x', y='y'+str(i), source=self.stream), 'd')
+        if marker == 'd+':
+            self.lines_markers[i] = (self.plot.diamond_cross(x='x', y='y'+str(i), source=self.stream), 'd+')
+        if marker == 'v':
+            self.lines_markers[i] = (self.plot.inverted_triangle(x='x', y='y'+str(i), source=self.stream), 'v')
+        if marker == 's':
+            self.lines_markers[i] = (self.plot.square(x='x', y='y'+str(i), source=self.stream), 's')
+        if marker == 's+':
+            self.lines_markers[i] = (self.plot.square_cross(x='x', y='y'+str(i), source=self.stream), 's+')
+        if marker == 'sx':
+            self.lines_markers[i] = (self.plot.square_x(x='x', y='y'+str(i), source=self.stream), 'sx')
+        if marker == '^':
+            self.lines_markers[i] = (self.plot.triangle(x='x', y='y'+str(i), source=self.stream), '^')
+        if marker == 'x':
+            self.lines_markers[i] = (self.plot.x(x='x', y='y'+str(i), source=self.stream), 'x')
+    def get_line_marker(i):
+        return self.lines_markers[i][1]
+    def set_line_alpha(i, alpha):
+        self.lines[i].line_alpha = alpha
+    def get_line_alpha(i):
+        return self.lines[i].line_alpha
+    def enable_x_grid(en=True):
+        if en:
+            self.plot.xgrid.grid_line_width = 1
+        else:
+            self.plot.xgrid.grid_line_width = 0
+    def enable_y_grid(en=True):
+        if en:
+            self.plot.ygrid.grid_line_width = 1
+        else:
+            self.plot.ygrid.grid_line_width = 0
+    def enable_grid(en = True):
+        self.enable_x_grid(en)
+        self.enable_y_grid(en)
+
