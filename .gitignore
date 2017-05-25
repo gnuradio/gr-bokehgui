@@ -89,3 +89,5 @@ ENV/
 
 # VIM Swap
 *.swp
+
+.unittests/
