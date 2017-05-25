@@ -704,17 +704,12 @@ namespace gr {
                    io_signature::make(0, nconnections, sizeof(float)),
                    io_signature::make(0, 0, 0)),
         d_size(size), d_buffer_size(3*size), d_samp_rate(samp_rate), d_name(name),
-      d_nconnections(nconnections)
+        d_nconnections(nconnections)
     {
       for (int n = 0; n < d_nconnections+1; n++) {
-        d_buffers.push_back((double*)volk_malloc(d_buffer_size*sizeof(double),
-                                                volk_get_alignment()));
-        memset(d_buffers[n], 0, d_buffer_size*sizeof(double));
-        d_fbuffers.push_back((float*)volk_malloc(d_buffer_size*sizeof(float),
-                                                volk_get_alignment()));
+        d_buffers.push_back(std::vector<double> (d_buffer_size));
+        d_fbuffers.push_back(std::vector<float> (d_buffer_size));
       }
-      const int alignment_multiple = volk_get_alignment() / sizeof(float);
-      // set_alignment(std::max(1, alignment_multiple));
 
       initialize();
     }
@@ -725,49 +720,48 @@ namespace gr {
     time_sink_f_proc::~time_sink_f_proc()
     {
       for(int n = 0; n < d_nconnections+1; n++) {
-        volk_free(d_buffers[n]);
-        volk_free(d_fbuffers[n]);
+        d_buffers[n].clear();
+        d_fbuffers[n].clear();
       }
+      d_buffers.clear();
+      d_fbuffers.clear();
     }
     void
     time_sink_f_proc::initialize() {
-      d_start = 0;
-      d_end = d_buffer_size;
-      d_index = 0;
+      return;
     }
 
     int
-    time_sink_f_proc::store_values(gr_vector_const_void_star &input_items, int ninput_items)
+    time_sink_f_proc::store_values(std::vector<std::vector<double> > input_items, int ninput_items)
     {
       int n=0, idx=0;
-      const float *in;
+      const double *in;
       int nfill = d_end - d_index; // Room left in buffers
 
       if (nfill >= ninput_items) { // If enough room left, store the values
         for (n=0; n<d_nconnections; n++) {
-          in = (const float*) input_items[idx];
-          memcpy(&d_fbuffers[n][d_index], &in[1], ninput_items);
+          in = &input_items[idx][0];
+          memcpy(&d_buffers[n][d_index], &in[1], ninput_items);
           idx++;
         }
       }
       else { // If not enough room,
         int overflow = ninput_items - nfill;
         for (n=0; n<d_nconnections; n++) {
-          in = (const float*) input_items[idx];
+          in = &input_items[idx][0];
           // Then shift the buffer by overflow length
-          memmove(&d_fbuffers[n][0], &d_fbuffers[n][overflow], d_index);
+          memmove(&d_buffers[n][0], &d_buffers[n][overflow], d_index);
           // Then copy the buffer in remaining length
-          memcpy(&d_fbuffers[n][d_index-overflow], &in[1], ninput_items);
+          memcpy(&d_buffers[n][d_index-overflow], &in[1], ninput_items);
           idx++;
         }
         d_index -= overflow;
       }
       d_index += ninput_items;
-      volk_32f_convert_64f(d_buffers[n], &d_fbuffers[n][d_start], d_size);
       return ninput_items;
     }
 
-    std::vector<double*>
+    std::vector<std::vector<double> >
     time_sink_f_proc::data_to_plot() {
       return d_buffers;
     }
@@ -775,6 +769,30 @@ namespace gr {
     int time_sink_f_proc::work (int noutput_items,
               gr_vector_const_void_star &input_items,
               gr_vector_void_star &output_items) {
+      int n=0, idx=0;
+      const double *in;
+      int nfill = d_end - d_index; // Room left in buffers
+
+      if (nfill >= noutput_items) { // If enough room left, store the values
+        for (n=0; n<d_nconnections; n++) {
+          in = (const double*) input_items[idx];
+          memcpy(&d_buffers[n][d_index], &in[1], noutput_items);
+          idx++;
+        }
+      }
+      else { // If not enough room,
+        int overflow = noutput_items - nfill;
+        for (n=0; n<d_nconnections; n++) {
+          in = (const double*) input_items[idx];
+          // Then shift the buffer by overflow length
+          memmove(&d_buffers[n][0], &d_fbuffers[n][overflow], d_index);
+          // Then copy the buffer in remaining length
+          memcpy(&d_buffers[n][d_index-overflow], &in[1], noutput_items);
+          idx++;
+        }
+        d_index -= overflow;
+      }
+      d_index += noutput_items;
       return noutput_items;
     }
   } /* namespace bokehgui */

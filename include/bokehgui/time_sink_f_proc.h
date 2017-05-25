@@ -697,9 +697,9 @@ namespace gr {
       static sptr make(int size, double samp_rate, const std::string &name, int nconnections);
       time_sink_f_proc(int size, double samp_rate, const std::string &name, int nconnections = 1);
       ~time_sink_f_proc();
-      int store_values(gr_vector_const_void_star &input_items, int ninput_items);
+      int store_values(std::vector<std::vector<double> > input_items, int ninput_items);
       void initialize();
-      std::vector<double*> data_to_plot();
+      std::vector<std::vector<double> > data_to_plot();
       int work (int noutput_items,
                 gr_vector_const_void_star &input_items,
                 gr_vector_void_star &output_items);
@@ -710,8 +710,8 @@ namespace gr {
       int d_nconnections;
 
       int d_index, d_start, d_end;
-      std::vector<float*> d_fbuffers;
-      std::vector<double*> d_buffers;
+      std::vector<std::vector <float> > d_fbuffers;
+      std::vector<std::vector <double> > d_buffers;
 
       gr::high_res_timer_type d_update_time;
       gr::high_res_timer_type d_last_time;
