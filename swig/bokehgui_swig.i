@@ -2,6 +2,8 @@
 
 #define BOKEHGUI_API
 
+%module bokehgui
+
 %include "gnuradio.i"   // the common stuff
 
 //load generated python docstrings

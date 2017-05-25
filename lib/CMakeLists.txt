@@ -25,7 +25,7 @@ include(GrPlatform) #define LIB_SUFFIX
 include_directories(${Boost_INCLUDE_DIR})
 link_directories(${Boost_LIBRARY_DIRS})
 list(APPEND bokehgui_sources
-    time_sink_f_proc.cc )
+    time_sink_f_proc_impl.cc )
 
 set(bokehgui_sources "${bokehgui_sources}" PARENT_SCOPE)
 if(NOT bokehgui_sources)

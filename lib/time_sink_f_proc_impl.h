@@ -19,35 +19,41 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#ifndef INCLUDED_BOKEHGUI_TIME_SINK_F_PROC_IMPL_H
+#define INCLUDED_BOKEHGUI_TIME_SINK_F_PROC_IMPL_H
 
-#ifndef INCLUDED_BOKEHGUI_TIME_SINK_F_PROC_H
-#define INCLUDED_BOKEHGUI_TIME_SINK_F_PROC_H
-
-#include <bokehgui/api.h>
-#include <gnuradio/high_res_timer.h>
-#include <gnuradio/sync_block.h>
+#include <bokehgui/time_sink_f_proc.h>
 
 namespace gr {
   namespace bokehgui {
 
-    /*!
-     * \brief <+description+>
-     *
-     */
-    class BOKEHGUI_API time_sink_f_proc : virtual public sync_block
+    class time_sink_f_proc_impl : public time_sink_f_proc
     {
-    public:
-      typedef boost::shared_ptr <time_sink_f_proc> sptr;
-      static sptr make(int size, double samp_rate, const std::string &name, int nconnections);
-      virtual std::vector<std::vector<float> > get_plot_data() = 0;
-      virtual int work(int noutput_items,
+     private:
+      int d_size, d_buffer_size;
+      double d_samp_rate;
+      std::string d_name;
+      int d_nconnections;
+
+      int d_index, d_start, d_end;
+      std::vector<std::vector <float> > d_buffers;
+
+      gr::high_res_timer_type d_update_time;
+      gr::high_res_timer_type d_last_time;
+       
+     public:
+      time_sink_f_proc_impl(int size, double samp_rate, const std::string &name, int nconnections);
+      ~time_sink_f_proc_impl();
+
+      std::vector<std::vector<float> > get_plot_data();
+      // Where all the action really happens
+      int work(int noutput_items,
          gr_vector_const_void_star &input_items,
-         gr_vector_void_star &output_items) = 0;
-    
+         gr_vector_void_star &output_items);
     };
 
   } // namespace bokehgui
 } // namespace gr
 
-#endif /* INCLUDED_BOKEHGUI_TIME_SINK_F_PROC_H */
+#endif /* INCLUDED_BOKEHGUI_TIME_SINK_F_PROC_IMPL_H */
 
