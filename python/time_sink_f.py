@@ -722,7 +722,7 @@ class time_sink_f(gr.sync_block):
         self.lines = []
         self.lines_markers = []
         for i in range(self.nconnections):
-            self.lines.append(self.plot.line(x='x', y='y'+str(i), source = self.stream))
+            self.lines.append(self.plot.line(x='x', y='y'+str(i), source = self.stream,line_color = 'red' if i==0 else 'blue'))
             self.lines_markers.append((None,'None'))
         self.doc.add_root(self.plot)
         if self.name:
@@ -733,6 +733,16 @@ class time_sink_f(gr.sync_block):
     def update(self):
         ## Call to receive from buffers!
         output_items = self.process.data_to_plot()
+#        print output_items
+        new_data = dict()
+        j = 0
+        for i in range(len(output_items)):
+            if i == 0:
+              continue
+            new_data['y'+str(j)] = output_items[i]
+            j += 1
+        new_data['x']=range(12288)
+        self.stream.stream(new_data, rollover = 13000)
         return None
 
     def work(self, input_items, output_items):
@@ -743,7 +753,7 @@ class time_sink_f(gr.sync_block):
             input_items_temp.append(input_items[i].tolist())
             if len(input_items[i]) > max_size:
                 max_size = len(input_items[i])
-        return self.process.store_values(input_items, max_size)
+        return self.process.store_values(input_items_temp, max_size)
 
     def set_title(self, name):
         self.plot.title.text = self.name
@@ -758,25 +768,25 @@ class time_sink_f(gr.sync_block):
         self.plot.set(xlabel = xlabel)
     def set_y_label(self, ylabel):
         self.plot.set(ylabel = ylabel)
-    def set_line_label(i, label):
+    def set_line_label(self, i, label):
         self.lines[i].legend = label
-    def get_line_label(i):
+    def get_line_label(self, i):
         return self.lines[i].legend
-    def set_line_color(i, color):
+    def set_line_color(self, i, color):
         self.lines[i].line_color = color
-    def get_line_color(i):
+    def get_line_color(self, i):
         return self.lines[i].line_color
-    def set_line_width(i, width):
+    def set_line_width(self, i, width):
         self.lines[i].line_width = width
-    def get_line_width(i):
+    def get_line_width(self, i):
         return self.lines[i].line_width
-    def set_line_style(i, style):
+    def set_line_style(self, i, style):
         # solid, dashed, dotted, dotdash, dashdot
         self.lines[i].line_dash = style
-    def get_line_style(i):
+    def get_line_style(self, i):
         # solid, dashed, dotted, dotdash, dashdot
         return self.lines[i].line_dash
-    def set_line_marker(i, marker):
+    def set_line_marker(self, i, marker):
         if marker == '*':
             self.lines_markers[i] = (self.plot.asterisk(x='x', y='y'+str(i), source=self.stream), '*')
         if marker == 'o':
@@ -801,11 +811,11 @@ class time_sink_f(gr.sync_block):
             self.lines_markers[i] = (self.plot.triangle(x='x', y='y'+str(i), source=self.stream), '^')
         if marker == 'x':
             self.lines_markers[i] = (self.plot.x(x='x', y='y'+str(i), source=self.stream), 'x')
-    def get_line_marker(i):
+    def get_line_marker(self, i):
         return self.lines_markers[i][1]
-    def set_line_alpha(i, alpha):
+    def set_line_alpha(self, i, alpha):
         self.lines[i].line_alpha = alpha
-    def get_line_alpha(i):
+    def get_line_alpha(self, i):
         return self.lines[i].line_alpha
     def enable_x_grid(en=True):
         if en:

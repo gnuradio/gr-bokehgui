@@ -697,7 +697,7 @@ namespace gr {
       static sptr make(int size, double samp_rate, const std::string &name, int nconnections);
       time_sink_f_proc(int size, double samp_rate, const std::string &name, int nconnections = 1);
       ~time_sink_f_proc();
-      int store_values(std::vector<std::vector<double> > input_items, int ninput_items);
+      int store_values(std::vector< std::vector< double> > input_items, int ninput_items);
       void initialize();
       std::vector<std::vector<double> > data_to_plot();
       int work (int noutput_items,

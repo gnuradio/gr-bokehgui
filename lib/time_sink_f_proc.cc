@@ -728,11 +728,14 @@ namespace gr {
     }
     void
     time_sink_f_proc::initialize() {
+      d_start = 0;
+      d_end = d_buffer_size;
+      d_index = 0;
       return;
     }
 
     int
-    time_sink_f_proc::store_values(std::vector<std::vector<double> > input_items, int ninput_items)
+    time_sink_f_proc::store_values(std::vector< std::vector< double > > input_items, int ninput_items)
     {
       int n=0, idx=0;
       const double *in;
