@@ -23,6 +23,7 @@
 from gnuradio import gr, gr_unittest
 from gnuradio import blocks
 from bokehgui import time_sink_f_proc
+import numpy as np
 
 class qa_time_sink_f (gr_unittest.TestCase):
 
@@ -41,7 +42,7 @@ class qa_time_sink_f (gr_unittest.TestCase):
                     28,29,30,31,32)
         src = blocks.vector_source_f(original, False, 1, [])
 
-        expected_result = (original,)
+        expected_result = (tuple([i/32000.0 for i in range(len(original))]), original)
 
         dst = time_sink_f_proc(6, 32000, 'Test', 1)
         self.tb.connect(src, dst)
@@ -49,7 +50,10 @@ class qa_time_sink_f (gr_unittest.TestCase):
         result_data = dst.get_plot_data()
         result_data1 = dst.get_plot_data()
         result_data2 = dst.get_plot_data()
-        self.assertEqual(expected_result, result_data)
+
+        self.assertEqual(expected_result[1][12:18], result_data[1])
+        self.assertEqual(expected_result[1][18:24], result_data1[1])
+        self.assertEqual(expected_result[1][24:30], result_data2[1])
         self.tb.stop()
         self.tb.wait()
 

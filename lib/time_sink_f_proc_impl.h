@@ -37,6 +37,7 @@ namespace gr {
 
       int d_index, d_start, d_end;
       std::vector<std::vector <float> > d_buffers;
+      std::vector <float> d_xbuffers;
 
       gr::high_res_timer_type d_update_time;
       gr::high_res_timer_type d_last_time;
@@ -45,13 +46,13 @@ namespace gr {
       time_sink_f_proc_impl(int size, double samp_rate, const std::string &name, int nconnections);
       ~time_sink_f_proc_impl();
 
+      // void get_plot_data (float* output_items, int size, int nconnections);
       std::vector<std::vector<float> > get_plot_data();
       // Where all the action really happens
       int work(int noutput_items,
          gr_vector_const_void_star &input_items,
          gr_vector_void_star &output_items);
     };
-
   } // namespace bokehgui
 } // namespace gr
 

@@ -683,7 +683,7 @@ from bokeh.plotting import figure
 from bokeh.models import ColumnDataSource
 
 from gnuradio import gr
-from bokehgui_swig import time_sink_f_proc
+from bokehgui import time_sink_f_proc
 
 class time_sink_f(gr.sync_block):
     """

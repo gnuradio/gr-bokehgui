@@ -39,6 +39,7 @@ namespace gr {
     public:
       typedef boost::shared_ptr <time_sink_f_proc> sptr;
       static sptr make(int size, double samp_rate, const std::string &name, int nconnections);
+      // virtual void get_plot_data (float* output_items, int size, int nconnections) = 0;
       virtual std::vector<std::vector<float> > get_plot_data() = 0;
       virtual int work(int noutput_items,
          gr_vector_const_void_star &input_items,

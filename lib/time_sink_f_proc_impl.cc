@@ -24,6 +24,7 @@
 #endif
 
 #include <gnuradio/io_signature.h>
+#include <volk/volk.h>
 #include "time_sink_f_proc_impl.h"
 
 namespace gr {
@@ -48,7 +49,9 @@ namespace gr {
     {
       for (int n = 0; n < d_nconnections; n++)
         d_buffers.push_back(std::vector<float> (d_buffer_size));
-
+        d_xbuffers = std::vector<float> (d_size);
+      for (int i = 0; i < d_size; i++)
+        d_xbuffers[i] = i/samp_rate;
       set_output_multiple(d_size);
       d_start = 0;
       d_end = d_buffer_size;
@@ -68,11 +71,16 @@ namespace gr {
 
     std::vector<std::vector<float> >
     time_sink_f_proc_impl::get_plot_data() {
+      int o = 0;
       std::vector<std::vector<float> > temp;
+      temp.push_back(std::vector<float> (d_size));
+      for (int i = 0; i < d_size; i++) {
+        temp[0][i] = d_xbuffers[i];
+      }
       for (int n=0; n<d_nconnections; n++) {
         temp.push_back(std::vector<float> (d_size));
         for (int i=0; i < d_size; i++) {
-          temp[n][i] = d_buffers[n][i];
+          temp[n+1][i] = d_buffers[n][i];
         }
         memmove(&d_buffers[n][0], &d_buffers[n][d_size], (d_end - d_size)*sizeof(float));
         d_index -= d_size;
