@@ -52,6 +52,11 @@ namespace gr {
       int work(int noutput_items,
          gr_vector_const_void_star &input_items,
          gr_vector_void_star &output_items);
+      bool check_topology(int ninputs, int noutputs);
+      void set_nsamps(const int newsize);
+      void set_samp_rate(const double samp_rate);
+      int nsamps() const;
+
     };
   } // namespace bokehgui
 } // namespace gr

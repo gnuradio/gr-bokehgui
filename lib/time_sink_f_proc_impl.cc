@@ -49,9 +49,8 @@ namespace gr {
     {
       for (int n = 0; n < d_nconnections; n++)
         d_buffers.push_back(std::vector<float> (d_buffer_size));
-        d_xbuffers = std::vector<float> (d_size);
       for (int i = 0; i < d_size; i++)
-        d_xbuffers[i] = i/samp_rate;
+        d_xbuffers.push_back(i/samp_rate);
       set_output_multiple(d_size);
       d_start = 0;
       d_end = d_buffer_size;
@@ -66,6 +65,7 @@ namespace gr {
       for(int n = 0; n < d_nconnections; n++) {
         d_buffers[n].clear();
       }
+      d_xbuffers.clear();
       d_buffers.clear();
     }
 
@@ -125,5 +125,55 @@ namespace gr {
       d_index += noutput_items;
       return noutput_items;
     }
+
+    bool
+    time_sink_f_proc_impl::check_topology(int ninputs, int noutputs)
+    {
+      return ninputs == d_nconnections;
+    }
+
+    void
+    time_sink_f_proc_impl::set_nsamps(const int newsize)
+    {
+      if(newsize != d_size) {
+        gr::thread::scoped_lock lock(d_setlock);
+        // Set new size and rest buffer indexs.
+        // Throws away current data!
+        d_size = newsize;
+        d_buffer_size = 3*d_size;
+
+        // Reset data
+        for(int n = 0; n < d_nconnections; n++) {
+          d_buffers[n].clear();
+        }
+        d_xbuffers.clear();
+        d_buffers.clear();
+
+        // Resize buffers and relapce data
+        for (int n = 0; n < d_nconnections; n++)
+          d_buffers.push_back(std::vector<float> (d_buffer_size));
+        for (int i = 0; i < d_size; i++)
+          d_xbuffers.push_back(i/d_samp_rate);
+        d_start = 0;
+        d_end = d_buffer_size;
+        d_index = 0;
+      }
+    }
+    void
+    time_sink_f_proc_impl::set_samp_rate(const double samp_rate)
+    {
+      gr::thread::scoped_lock lock(d_setlock);
+      d_samp_rate = samp_rate;
+      d_xbuffers.clear();
+      for (int i = 0; i < d_size; i++)
+        d_xbuffers.push_back(i/d_samp_rate);
+    }
+
+    int
+    time_sink_f_proc_impl::nsamps() const
+    {
+      return d_size;
+    }
+
   } /* namespace bokehgui */
 } /* namespace gr */

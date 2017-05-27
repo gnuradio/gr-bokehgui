@@ -44,11 +44,11 @@ namespace gr {
       virtual int work(int noutput_items,
          gr_vector_const_void_star &input_items,
          gr_vector_void_star &output_items) = 0;
-    
+      virtual void set_nsamps(const int newsize) = 0;
+      virtual void set_samp_rate(const double samp_rate) = 0;
+      virtual int nsamps() const = 0;
     };
-
   } // namespace bokehgui
 } // namespace gr
 
 #endif /* INCLUDED_BOKEHGUI_TIME_SINK_F_PROC_H */
-
