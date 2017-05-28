@@ -41,8 +41,8 @@ class top_block(gr.top_block):
         ##################################################
         # Blocks
         ##################################################
-        self.bokehgui_time_sink_f_proc_0 = bokehgui.time_sink_f_proc(4096, samp_rate, 'TimeSink', 2)
-        self.bokehgui_time_sink_f_0 = bokehgui.time_sink_f(self.doc, self.bokehgui_time_sink_f_proc_0, 4096, samp_rate, 'TImeSink', 2)
+        self.bokehgui_time_sink_f_proc_0 = bokehgui.time_sink_f_proc(500, samp_rate, 'TimeSink', 2)
+        self.bokehgui_time_sink_f_0 = bokehgui.time_sink_f(self.doc, self.bokehgui_time_sink_f_proc_0, 500, samp_rate, 'TImeSink', 2)
         self.blocks_throttle_0 = blocks.throttle(gr.sizeof_float*1, samp_rate,True)
         self.blocks_throttle_1 = blocks.throttle(gr.sizeof_float*1, samp_rate,True)
         self.analog_sig_source_x_0 = analog.sig_source_f(samp_rate, analog.GR_COS_WAVE, 1000, 1, 0)
@@ -75,7 +75,7 @@ def main(top_block_cls=top_block, options=None):
     srv = Server({'/':app},io_loop=loop)
     # Start server process
     srv.start()
-    # Define the document instance
+   # Define the document instance
     doc = curdoc()
     session = push_session(doc, session_id="test", io_loop=loop, url='http://localhost:5006/')
 
@@ -84,7 +84,7 @@ def main(top_block_cls=top_block, options=None):
 
     # Start simulations as soon as the server starts
     loop.add_callback(tb.start)
-#    loop.add_callback(srv.show,'/?bokeh-session-id='+str(session.id))
+    loop.add_callback(srv.show,'/?bokeh-session-id='+str(session.id))
     try:
         loop.start()
     except KeyboardInterrupt:

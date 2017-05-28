@@ -79,7 +79,7 @@ namespace gr {
     void
     time_sink_f_proc_impl::get_plot_data(float** output_items, int* nrows, int* size) {
       gr::thread::scoped_lock lock(d_setlock);
-      *size = d_size;
+      *size = std::min(d_size, d_index);
       *nrows = d_nconnections + 1;
       float* arr = (float*)volk_malloc((*nrows)*(*size)*sizeof(float), volk_get_alignment());
 
@@ -93,9 +93,9 @@ namespace gr {
       }
       *output_items = arr;
       for (int n=0; n < d_nconnections; n++) {
-        memmove(&d_buffers[n][0], &d_buffers[n][d_size], (d_end - d_size)*sizeof(float));
+        memmove(&d_buffers[n][0], &d_buffers[n][*size], (d_end - *size)*sizeof(float));
       }
-      d_index -= d_size;
+      d_index -= *size;
       return;
     }
 
@@ -164,9 +164,7 @@ namespace gr {
                                                     volk_get_alignment());
       	  memset(d_buffers[n], 0, d_buffer_size*sizeof(float));
         }
-        d_start = 0;
-        d_end = d_buffer_size;
-        d_index = 0;
+        _reset();
       }
     }
 

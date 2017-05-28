@@ -31,7 +31,8 @@ endif()
 GR_PYTHON_INSTALL(
     FILES
     __init__.py
-    time_sink_f.py DESTINATION ${GR_PYTHON_DIR}/bokehgui
+    time_sink_f.py
+    bokehgui_plot_tools.py DESTINATION ${GR_PYTHON_DIR}/bokehgui
 )
 
 ########################################################################
