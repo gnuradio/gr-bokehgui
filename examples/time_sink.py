@@ -41,7 +41,8 @@ class top_block(gr.top_block):
         ##################################################
         # Blocks
         ##################################################
-        self.bokehgui_time_sink_f_0 = bokehgui.time_sink_f(self.doc, 4096, samp_rate, 'TImeSink', 2)
+        self.bokehgui_time_sink_f_proc_0 = bokehgui.time_sink_f_proc(4096, samp_rate, 'TimeSink', 2)
+        self.bokehgui_time_sink_f_0 = bokehgui.time_sink_f(self.doc, self.bokehgui_time_sink_f_proc_0, 4096, samp_rate, 'TImeSink', 2)
         self.blocks_throttle_0 = blocks.throttle(gr.sizeof_float*1, samp_rate,True)
         self.blocks_throttle_1 = blocks.throttle(gr.sizeof_float*1, samp_rate,True)
         self.analog_sig_source_x_0 = analog.sig_source_f(samp_rate, analog.GR_COS_WAVE, 1000, 1, 0)
@@ -52,8 +53,8 @@ class top_block(gr.top_block):
         ##################################################
         self.connect((self.analog_sig_source_x_0, 0), (self.blocks_throttle_0, 0))
         self.connect((self.analog_sig_source_x_1, 0), (self.blocks_throttle_1, 0))
-        self.connect((self.blocks_throttle_0, 0), (self.bokehgui_time_sink_f_0, 0))
-        self.connect((self.blocks_throttle_1, 0), (self.bokehgui_time_sink_f_0, 1))
+        self.connect((self.blocks_throttle_0, 0), (self.bokehgui_time_sink_f_proc_0, 0))
+        self.connect((self.blocks_throttle_1, 0), (self.bokehgui_time_sink_f_proc_0, 1))
 
     def get_samp_rate(self):
         return self.samp_rate
@@ -62,6 +63,7 @@ class top_block(gr.top_block):
         self.samp_rate = samp_rate
         self.blocks_throttle_0.set_sample_rate(self.samp_rate)
         self.analog_sig_source_x_0.set_sampling_freq(self.samp_rate)
+        self.bokehgui_time_sink_f_0.set_sample_rate(self.samp_rate)
 
 def main(top_block_cls=top_block, options=None):
     # Define tornado loop
@@ -82,7 +84,7 @@ def main(top_block_cls=top_block, options=None):
 
     # Start simulations as soon as the server starts
     loop.add_callback(tb.start)
-    loop.add_callback(srv.show,'/?bokeh-session-id='+str(session.id))
+#    loop.add_callback(srv.show,'/?bokeh-session-id='+str(session.id))
     try:
         loop.start()
     except KeyboardInterrupt:

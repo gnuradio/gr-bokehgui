@@ -21,6 +21,7 @@
 
 
 #ifndef INCLUDED_BOKEHGUI_TIME_SINK_F_PROC_H
+
 #define INCLUDED_BOKEHGUI_TIME_SINK_F_PROC_H
 
 #include <bokehgui/api.h>
@@ -39,14 +40,14 @@ namespace gr {
     public:
       typedef boost::shared_ptr <time_sink_f_proc> sptr;
       static sptr make(int size, double samp_rate, const std::string &name, int nconnections);
-      // virtual void get_plot_data (float* output_items, int size, int nconnections) = 0;
-      virtual std::vector<std::vector<float> > get_plot_data() = 0;
+      virtual void get_plot_data (float** output_items, int* nrows, int* size) = 0;
       virtual int work(int noutput_items,
          gr_vector_const_void_star &input_items,
          gr_vector_void_star &output_items) = 0;
       virtual void set_nsamps(const int newsize) = 0;
       virtual void set_samp_rate(const double samp_rate) = 0;
       virtual int nsamps() const = 0;
+      virtual void _reset() = 0;
     };
   } // namespace bokehgui
 } // namespace gr

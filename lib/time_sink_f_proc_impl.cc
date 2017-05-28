@@ -47,11 +47,19 @@ namespace gr {
         d_size(size), d_buffer_size(3*size), d_samp_rate(samp_rate), d_name(name),
         d_nconnections(nconnections)
     {
-      for (int n = 0; n < d_nconnections; n++)
-        d_buffers.push_back(std::vector<float> (d_buffer_size));
-      for (int i = 0; i < d_size; i++)
-        d_xbuffers.push_back(i/samp_rate);
+      for (int n = 0; n < d_nconnections; n++) {
+        d_buffers.push_back((float*)volk_malloc(d_buffer_size*sizeof(float), volk_get_alignment()));
+        memset(d_buffers[n], 0, d_buffer_size*sizeof(float));
+      }
+      d_xbuffers = (float*)volk_malloc(d_size*sizeof(float), volk_get_alignment());
+      for (int i = 0; i < d_size; i++) {
+        d_xbuffers[i] = i/samp_rate;
+      }
+      const int alignment_multiple = volk_get_alignment() / sizeof(float);
+      set_alignment(std::max(1, alignment_multiple));
+
       set_output_multiple(d_size);
+
       d_start = 0;
       d_end = d_buffer_size;
       d_index = 0;
@@ -63,29 +71,32 @@ namespace gr {
     time_sink_f_proc_impl::~time_sink_f_proc_impl()
     {
       for(int n = 0; n < d_nconnections; n++) {
-        d_buffers[n].clear();
+        volk_free(d_buffers[n]);
       }
-      d_xbuffers.clear();
-      d_buffers.clear();
+      volk_free(d_xbuffers);
     }
 
-    std::vector<std::vector<float> >
-    time_sink_f_proc_impl::get_plot_data() {
-      int o = 0;
-      std::vector<std::vector<float> > temp;
-      temp.push_back(std::vector<float> (d_size));
-      for (int i = 0; i < d_size; i++) {
-        temp[0][i] = d_xbuffers[i];
-      }
-      for (int n=0; n<d_nconnections; n++) {
-        temp.push_back(std::vector<float> (d_size));
-        for (int i=0; i < d_size; i++) {
-          temp[n+1][i] = d_buffers[n][i];
+    void
+    time_sink_f_proc_impl::get_plot_data(float** output_items, int* nrows, int* size) {
+      gr::thread::scoped_lock lock(d_setlock);
+      *size = d_size;
+      *nrows = d_nconnections + 1;
+      float* arr = (float*)volk_malloc((*nrows)*(*size)*sizeof(float), volk_get_alignment());
+
+      for (int n=0; n < *nrows; n++) {
+        for (int i = 0; i < *size; i++) {
+          if (n == 0)
+            arr[n*(*size)+i] = d_xbuffers[i];
+          else
+            arr[n*(*size)+i] = d_buffers[n-1][i];
         }
-        memmove(&d_buffers[n][0], &d_buffers[n][d_size], (d_end - d_size)*sizeof(float));
-        d_index -= d_size;
       }
-      return temp;
+      *output_items = arr;
+      for (int n=0; n < d_nconnections; n++) {
+        memmove(&d_buffers[n][0], &d_buffers[n][d_size], (d_end - d_size)*sizeof(float));
+      }
+      d_index -= d_size;
+      return;
     }
 
     int time_sink_f_proc_impl::work (int noutput_items,
@@ -108,7 +119,7 @@ namespace gr {
       if (nfill >= noutput_items) { // If enough room left, store the values
         for (n=0; n<d_nconnections; n++) {
           in = (const float*) input_items[n];
-          memmove(&d_buffers[n][d_index], in, noutput_items*sizeof(float));
+          memmove(&d_buffers[n][d_index], &in[n], noutput_items*sizeof(float));
         }
       }
       else { // If not enough room,
@@ -117,10 +128,10 @@ namespace gr {
           in = (const float*) input_items[n];
           // Then shift the buffer by overflow length
           memmove(&d_buffers[n][0], &d_buffers[n][overflow], d_index*sizeof(float));
+          d_index -= overflow;
           // Then copy the buffer in remaining length
-          memcpy(&d_buffers[n][d_index-overflow], &in, noutput_items*sizeof(float));
+          memcpy(&d_buffers[n][d_index], &in[n], noutput_items*sizeof(float));
         }
-        d_index -= overflow;
       }
       d_index += noutput_items;
       return noutput_items;
@@ -142,31 +153,30 @@ namespace gr {
         d_size = newsize;
         d_buffer_size = 3*d_size;
 
-        // Reset data
-        for(int n = 0; n < d_nconnections; n++) {
-          d_buffers[n].clear();
-        }
-        d_xbuffers.clear();
-        d_buffers.clear();
-
         // Resize buffers and relapce data
-        for (int n = 0; n < d_nconnections; n++)
-          d_buffers.push_back(std::vector<float> (d_buffer_size));
+        volk_free(d_xbuffers);
+        d_xbuffers = (float*)volk_malloc(d_buffer_size*sizeof(float), volk_get_alignment());
         for (int i = 0; i < d_size; i++)
-          d_xbuffers.push_back(i/d_samp_rate);
+          d_xbuffers[i] = i/d_samp_rate;
+        for (int n = 0; n < d_nconnections; n++) {
+      	  volk_free(d_buffers[n]);
+      	  d_buffers[n] = (float*)volk_malloc(d_buffer_size*sizeof(float),
+                                                    volk_get_alignment());
+      	  memset(d_buffers[n], 0, d_buffer_size*sizeof(float));
+        }
         d_start = 0;
         d_end = d_buffer_size;
         d_index = 0;
       }
     }
+
     void
     time_sink_f_proc_impl::set_samp_rate(const double samp_rate)
     {
       gr::thread::scoped_lock lock(d_setlock);
       d_samp_rate = samp_rate;
-      d_xbuffers.clear();
       for (int i = 0; i < d_size; i++)
-        d_xbuffers.push_back(i/d_samp_rate);
+        d_xbuffers[i] = i/d_samp_rate;
     }
 
     int
@@ -175,5 +185,18 @@ namespace gr {
       return d_size;
     }
 
+    void
+    time_sink_f_proc_impl::_reset()
+    {
+      gr::thread::scoped_lock lock(d_setlock);
+      for (int i = 0; i < d_size; i++)
+        d_xbuffers[i] = i/d_samp_rate;
+      for (int n = 0; n < d_nconnections; n++) {
+      	memset(d_buffers[n], 0, d_buffer_size*sizeof(float));
+      }
+      d_start = 0;
+      d_end = d_buffer_size;
+      d_index = 0;
+    }
   } /* namespace bokehgui */
 } /* namespace gr */

@@ -685,18 +685,13 @@ from bokeh.models import ColumnDataSource
 from gnuradio import gr
 from bokehgui import time_sink_f_proc
 
-class time_sink_f(gr.sync_block):
+class time_sink_f():
     """
     docstring for block time_sink_f
     """
-    def __init__(self, doc, size,
+    def __init__(self, doc, proc, size,
                  samp_rate, name,
                  nconnections = 1):
-        gr.sync_block.__init__(self,
-            name="time_sink_f",
-            in_sig=[numpy.float32]*nconnections,
-            out_sig=None)
-
         self.doc = doc
         self.size = size
 	self.samp_rate = samp_rate
@@ -704,10 +699,8 @@ class time_sink_f(gr.sync_block):
 	self.nconnections = nconnections
         self.stream = None
         self.plot = None
-
-        self.process = time_sink_f_proc(size, samp_rate, name, nconnections)
-
-        self.set_history(2);
+        self.process = proc
+        # self.set_history(2);
         # self.declare_sample_delay(1);
 
         self.initialize()
@@ -732,32 +725,17 @@ class time_sink_f(gr.sync_block):
 
     def update(self):
         ## Call to receive from buffers!
-        output_items = self.process.data_to_plot()
-#        print output_items
+        output_items = self.process.get_plot_data()
         new_data = dict()
-        j = 0
         for i in range(len(output_items)):
             if i == 0:
-              continue
-            new_data['y'+str(j)] = output_items[i]
-            j += 1
-        new_data['x']=range(12288)
-        self.stream.stream(new_data, rollover = 13000)
-        return None
-
-    def work(self, input_items, output_items):
-        ## Call to store in buffers
-        max_size = 0
-        input_items_temp = []
-        for i in range(self.nconnections):
-            input_items_temp.append(input_items[i].tolist())
-            if len(input_items[i]) > max_size:
-                max_size = len(input_items[i])
-        return self.process.store_values(input_items_temp, max_size)
+                new_data['x'] = output_items[i]
+                continue
+            new_data['y'+str(i-1)] = output_items[i]
+        self.stream.stream(new_data)
 
     def set_title(self, name):
         self.plot.title.text = self.name
-
     def set_y_axis(self, lst):
         assert (lst[0]<lst[1])
         self.plot.set(y_range=Range1d(lst[0], lst[1]))
@@ -830,4 +808,8 @@ class time_sink_f(gr.sync_block):
     def enable_grid(en = True):
         self.enable_x_grid(en)
         self.enable_y_grid(en)
+
+    def set_samp_rate(self, samp_rate):
+        self.process.set_samp_rate(samp_rate);
+        self.samp_rate = samp_rate
 

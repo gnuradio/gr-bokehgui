@@ -51,9 +51,9 @@ class qa_time_sink_f (gr_unittest.TestCase):
         result_data1 = dst.get_plot_data()
         result_data2 = dst.get_plot_data()
 
-        self.assertEqual(expected_result[1][12:18], result_data[1])
-        self.assertEqual(expected_result[1][18:24], result_data1[1])
-        self.assertEqual(expected_result[1][24:30], result_data2[1])
+        self.assertEqual(expected_result[1][12:18], tuple(result_data[1]))
+        self.assertEqual(expected_result[1][18:24], tuple(result_data1[1]))
+        self.assertEqual(expected_result[1][24:30], tuple(result_data2[1]))
         self.tb.stop()
         self.tb.wait()
 
