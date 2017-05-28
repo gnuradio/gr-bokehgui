@@ -47,6 +47,9 @@ namespace gr {
       virtual void set_nsamps(const int newsize) = 0;
       virtual void set_samp_rate(const double samp_rate) = 0;
       virtual int nsamps() const = 0;
+      virtual void reset() = 0;
+      virtual void _adjust_tags(int adj) = 0;
+      virtual std::vector<std::vector<gr::tag_t> > get_tags() = 0;
       virtual void _reset() = 0;
     };
   } // namespace bokehgui

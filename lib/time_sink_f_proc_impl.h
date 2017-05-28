@@ -38,6 +38,7 @@ namespace gr {
       int d_index, d_start, d_end;
       std::vector<float*> d_buffers;
       float* d_xbuffers;
+      std::vector< std::vector<gr::tag_t> > d_tags;
 
       gr::high_res_timer_type d_update_time;
       gr::high_res_timer_type d_last_time;
@@ -55,7 +56,10 @@ namespace gr {
       void set_nsamps(const int newsize);
       void set_samp_rate(const double samp_rate);
       int nsamps() const;
+      void reset();
       void _reset();
+      void _adjust_tags(int adj);
+      std::vector<std::vector<gr::tag_t> > get_tags();
 
     };
   } // namespace bokehgui

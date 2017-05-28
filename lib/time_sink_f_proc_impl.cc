@@ -58,6 +58,8 @@ namespace gr {
       const int alignment_multiple = volk_get_alignment() / sizeof(float);
       set_alignment(std::max(1, alignment_multiple));
 
+      d_tags = std::vector< std::vector<gr::tag_t> >(d_nconnections);
+
       set_output_multiple(d_size);
 
       d_start = 0;
@@ -99,6 +101,11 @@ namespace gr {
       return;
     }
 
+    std::vector<std::vector<gr::tag_t> >
+    time_sink_f_proc_impl::get_tags(void) {
+      return d_tags;
+    }
+
     int time_sink_f_proc_impl::work (int noutput_items,
               gr_vector_const_void_star &input_items,
               gr_vector_void_star &output_items) {
@@ -106,35 +113,21 @@ namespace gr {
       int n=0;
       const float *in;
 
-      if (noutput_items > d_buffer_size) {
-        int dropped = noutput_items - d_buffer_size;
-        for (n=0; n<d_nconnections; n++) {
-          in = (const float*) input_items[n];
-          memcpy(&d_buffers[n][0], &in[dropped], d_buffer_size*sizeof(float));
-        }
-        d_index = d_end;
-        return noutput_items;
-      }
       int nfill = d_end - d_index; // Room left in buffers
-      if (nfill >= noutput_items) { // If enough room left, store the values
-        for (n=0; n<d_nconnections; n++) {
-          in = (const float*) input_items[n];
-          memmove(&d_buffers[n][d_index], &in[n], noutput_items*sizeof(float));
+      int nitems = std::min(nfill, noutput_items);
+      for (int n=0; n<d_nconnections; n++) {
+        in = (const float*) input_items[n];
+        memmove(&d_buffers[n][d_index], &in[n], nitems*sizeof(float));
+        uint64_t nr = nitems_read(n);
+        std::vector<gr::tag_t> tags;
+        get_tags_in_range(tags, n, nr, nr + nitems);
+        for(size_t t = 0; t < tags.size(); t++) {
+          tags[t].offset = tags[t].offset - nr + (d_index-d_start-1);
         }
+        d_tags[n].insert(d_tags[n].end(), tags.begin(), tags.end());
       }
-      else { // If not enough room,
-        int overflow = noutput_items - nfill;
-        for (n=0; n<d_nconnections; n++) {
-          in = (const float*) input_items[n];
-          // Then shift the buffer by overflow length
-          memmove(&d_buffers[n][0], &d_buffers[n][overflow], d_index*sizeof(float));
-          d_index -= overflow;
-          // Then copy the buffer in remaining length
-          memcpy(&d_buffers[n][d_index], &in[n], noutput_items*sizeof(float));
-        }
-      }
-      d_index += noutput_items;
-      return noutput_items;
+      d_index += nitems;
+      return nitems;
     }
 
     bool
@@ -184,17 +177,38 @@ namespace gr {
     }
 
     void
-    time_sink_f_proc_impl::_reset()
+    time_sink_f_proc_impl::reset()
     {
       gr::thread::scoped_lock lock(d_setlock);
+      _reset();
+    }
+
+    void
+    time_sink_f_proc_impl::_reset()
+    {
       for (int i = 0; i < d_size; i++)
         d_xbuffers[i] = i/d_samp_rate;
       for (int n = 0; n < d_nconnections; n++) {
       	memset(d_buffers[n], 0, d_buffer_size*sizeof(float));
       }
+      for (int n = 0; n < d_nconnections; n++) {
+        d_tags[n].clear();
+      }
+
       d_start = 0;
       d_end = d_buffer_size;
       d_index = 0;
     }
+
+    void
+    time_sink_f_proc_impl::_adjust_tags(int adj)
+    {
+      for(size_t n = 0; n < d_tags.size(); n++) {
+        for(size_t t = 0; t < d_tags[n].size(); t++) {
+          d_tags[n][t].offset += adj;
+        }
+      }
+    }
+
   } /* namespace bokehgui */
 } /* namespace gr */

@@ -94,6 +94,14 @@ class time_sink_f():
                                                 ])
             self.plot.add_tools(hover)
 
+    def enable_tags(self, which, en):
+        if which == -1:
+            for i in range(self.nconnections):
+                enable_tags(n, en)
+        else:
+            pass
+
+
     def set_title(self, name):
         self.plot.title.text = self.name
     def set_y_axis(self, lst):
