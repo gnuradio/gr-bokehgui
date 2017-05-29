@@ -61,13 +61,7 @@ class time_sink_f():
                                         source = self.stream,
                                         line_color = 'red' if i==0 else 'blue'
                                         ))
-            self.lines_markers.append((self.plot.circle(x='x', y='y'+str(i),
-                                       source=self.stream,
-                                       hover_fill_color="firebrick",
-                                       hover_alpha=0.3,
-                                       hover_line_color=None,
-                                       line_color=None,
-                                       fill_alpha=0),'o'))
+            self.lines_markers.append((None,None))
         self.add_custom_tools()
         self.doc.add_root(self.plot)
 
@@ -80,7 +74,7 @@ class time_sink_f():
         ## Call to receive from buffers!
         output_items = self.process.get_plot_data()
         new_data = dict()
-        for i in range(len(output_items)):
+        for i in range(len(output_items)-1):
             if i == 0:
                 new_data['x'] = output_items[i]
                 continue
@@ -99,13 +93,9 @@ class time_sink_f():
 
     def add_custom_tools(self):
         from bokeh.models import HoverTool
-        for i in range(self.nconnections):
-            hover = HoverTool(renderers=[self.lines[i]],
-                                    tooltips = [
-                                                ("x", "@x"),
-                                                ("y", "@y"+str(i))
-                                                ])
-            self.plot.add_tools(hover)
+        hover = HoverTool(tooltips = [("x", "$x"),
+                                      ("y", "$y")])
+        self.plot.add_tools(hover)
 
     def enable_tags(self, which, en):
         if which == -1:
