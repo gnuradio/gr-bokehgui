@@ -109,7 +109,33 @@ namespace gr {
 
     std::vector<std::vector<gr::tag_t> >
     time_sink_f_proc_impl::get_tags(void) {
-      return d_tags;
+      gr::thread::scoped_lock lock(d_setlock);
+
+      std::vector<std::vector<gr::tag_t> > tags = std::vector<std::vector<gr::tag_t> > (d_nconnections);
+
+      for(int i = 0; i < d_nconnections; i++) {
+        // Not sure if tags are in ascending order
+        // Hence, list of indexes of tags sent to plot
+        std::vector<int> temp_tag_lst = std::vector<int> ();
+        for(int j = 0; j < d_tags[i].size(); j++) {
+          if(d_tags[i][j].offset < d_size) {
+            tags[i].push_back(d_tags[i][j]);
+            temp_tag_lst.push_back(j);
+          }
+          else {
+            d_tags[i][j].offset -= d_size;
+          }
+        }
+
+        // Delete the sent tags from the d_tags
+        for(int j = 0; j < temp_tag_lst.size(); j++) {
+          // -j to consider already deleted elements
+          // in this loop
+          d_tags[i].erase (d_tags[i].begin() + temp_tag_lst[j] - j);
+        }
+        temp_tag_lst.clear();
+      }
+      return tags;
     }
 
     int time_sink_f_proc_impl::work (int noutput_items,

@@ -20,7 +20,7 @@ import numpy
 import pmt
 
 from bokeh.plotting import figure
-from bokeh.models import ColumnDataSource
+from bokeh.models import ColumnDataSource, LabelSet
 
 from gnuradio import gr
 from bokehgui import time_sink_f_proc, utils
@@ -51,10 +51,12 @@ class time_sink_f():
         data['x'] = []
         for i in range(self.nconnections):
             data['y'+str(i)] = []
+            data['tags'+str(i)] = []
         self.stream = ColumnDataSource(data)
 
         self.lines = []
         self.lines_markers = []
+        self.tags = []
         for i in range(self.nconnections):
             self.lines.append(self.plot.line(
                                         x='x', y='y'+str(i),
@@ -62,6 +64,10 @@ class time_sink_f():
                                         line_color = 'red' if i==0 else 'blue'
                                         ))
             self.lines_markers.append((None,None))
+
+            self.tags.append(LabelSet(x='x',y='y'+str(i),text='tags'+str(i), level='glyph', x_offset=5, y_offset=5, source=self.stream, render_mode = 'canvas'))
+            self.plot.add_layout(self.tags[i])
+
         self.add_custom_tools()
         self.doc.add_root(self.plot)
 
@@ -71,13 +77,23 @@ class time_sink_f():
         self.doc.add_periodic_callback(self.update, 200)
 
     def update(self):
-        ## Call to receive from buffers!
+        ## Call to receive from buffers
         output_items = self.process.get_plot_data()
+        tags = self.process.get_tags()
+        stream_tags = []
+        for i in range(self.nconnections):
+            temp_stream_tags = ["" for k in range(len(output_items[i]))]
+            for j in range(len(tags[i])):
+                temp_stream_tags[tags[i][j].offset] = str(tags[i][j].key) + ":" + str(tags[i][j].value)
+
+            stream_tags.append(temp_stream_tags[:])
+
         new_data = dict()
-        for i in range(len(output_items)-1):
+        for i in range(self.nconnections+1):
             if i == 0:
                 new_data['x'] = output_items[i]
                 continue
+            new_data['tags'+str(i-1)] = stream_tags[i-1]
             new_data['y'+str(i-1)] = output_items[i]
         self.stream.stream(new_data, rollover = self.size)
 
@@ -97,12 +113,15 @@ class time_sink_f():
                                       ("y", "$y")])
         self.plot.add_tools(hover)
 
-    def enable_tags(self, which, en):
+    def enable_tags(self, which = -1, en = True):
         if which == -1:
             for i in range(self.nconnections):
-                enable_tags(n, en)
+                enable_tags(i, en)
         else:
-            pass
+            if en:
+                self.tags[which].text_color = 'black'
+            else:
+                self.tags[which].text_color = None
 
 
     def set_title(self, name):
