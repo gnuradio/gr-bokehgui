@@ -60,6 +60,7 @@ namespace gr {
       void _reset();
       void _adjust_tags(int adj);
       std::vector<std::vector<gr::tag_t> > get_tags();
+      void handle_pdus(pmt::pmt_t);
 
     };
   } // namespace bokehgui

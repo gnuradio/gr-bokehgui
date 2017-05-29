@@ -47,7 +47,13 @@ namespace gr {
         d_size(size), d_buffer_size(3*size), d_samp_rate(samp_rate), d_name(name),
         d_nconnections(nconnections)
     {
-      for (int n = 0; n < d_nconnections; n++) {
+      // setup PDU handling input port
+      message_port_register_in(pmt::mp("in"));
+      set_msg_handler(pmt::mp("in"),
+                      boost::bind(&time_sink_f_proc_impl::handle_pdus, this, _1));
+
+      // +1 for the PDU buffer
+      for (int n = 0; n < d_nconnections + 1; n++) {
         d_buffers.push_back((float*)volk_malloc(d_buffer_size*sizeof(float), volk_get_alignment()));
         memset(d_buffers[n], 0, d_buffer_size*sizeof(float));
       }
@@ -82,7 +88,7 @@ namespace gr {
     time_sink_f_proc_impl::get_plot_data(float** output_items, int* nrows, int* size) {
       gr::thread::scoped_lock lock(d_setlock);
       *size = std::min(d_size, d_index);
-      *nrows = d_nconnections + 1;
+      *nrows = d_nconnections + 2;
       float* arr = (float*)volk_malloc((*nrows)*(*size)*sizeof(float), volk_get_alignment());
 
       for (int n=0; n < *nrows; n++) {
@@ -94,7 +100,7 @@ namespace gr {
         }
       }
       *output_items = arr;
-      for (int n=0; n < d_nconnections; n++) {
+      for (int n=0; n < d_nconnections+1; n++) {
         memmove(&d_buffers[n][0], &d_buffers[n][*size], (d_end - *size)*sizeof(float));
       }
       d_index -= *size;
@@ -208,6 +214,46 @@ namespace gr {
           d_tags[n][t].offset += adj;
         }
       }
+    }
+
+    void
+    time_sink_f_proc_impl::handle_pdus(pmt::pmt_t msg)
+    {
+      size_t len;
+      pmt::pmt_t dict, samples;
+
+      // Test to make sure this is either PDU or Uniform vector of
+      // samples. Get the samples PMT and the dictionary if it's a PDU.
+      // If not, we throw and error and exit.
+      if(pmt::is_pair(msg)) {
+        dict = pmt::car(msg);
+        samples = pmt::cdr(msg);
+      }
+      else if(pmt::is_uniform_vector(msg)) {
+        samples = msg;
+      }
+      else {
+        throw std::runtime_error("time_sink_f_proc: message must be either "
+                                 "a PDU or a uniform vector of samples.");
+      }
+
+      len = pmt::length(samples);
+
+      const float *in;
+      if(pmt::is_f32vector(samples)) {
+        in = (const float*)pmt::f32vector_elements(samples, len);
+      }
+      else {
+        throw std::runtime_error("time_sink_f_proc: unknown data type "
+                                 "of samples; must be float.");
+      }
+      // Copy data to buffer
+      set_nsamps(len);
+      memcpy(d_buffers[d_nconnections], in, len);
+      // FIXME:
+      // Call to python to plot
+      // Things to note: No Tags in PDU. So, get_plot_data and
+      // get_tags will have different rows
     }
 
   } /* namespace bokehgui */

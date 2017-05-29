@@ -56,6 +56,7 @@ class qa_time_sink_f (gr_unittest.TestCase):
         self.assertEqual(expected_result[1][12:18], tuple(result_data2[1]))
         self.tb.stop()
         self.tb.wait()
+        self.tearDown()
 
     def test_002_t (self):
         self.setUp()
@@ -79,6 +80,7 @@ class qa_time_sink_f (gr_unittest.TestCase):
         self.assertEqual(str(tag_data[0][0].value), "TEST")
         self.tb.stop()
         self.tb.wait()
+        self.tearDown()
 
 if __name__ == '__main__':
     gr_unittest.run(qa_time_sink_f, "qa_time_sink_f.xml")

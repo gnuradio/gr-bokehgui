@@ -51,6 +51,7 @@ namespace gr {
       virtual void _adjust_tags(int adj) = 0;
       virtual std::vector<std::vector<gr::tag_t> > get_tags() = 0;
       virtual void _reset() = 0;
+      virtual void handle_pdus(pmt::pmt_t) = 0;
     };
   } // namespace bokehgui
 } // namespace gr
