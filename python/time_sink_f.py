@@ -43,6 +43,32 @@ class time_sink_f():
 
         self.initialize()
 
+
+    def set_trigger_mode(self, trigger_mode, trigger_slope,
+                         level, delay, channel, tag_key):
+        if trigger_mode == 'FREE':
+            trigger_mode_val = 0
+        elif trigger_mode == 'AUTO':
+            trigger_mode_val = 1
+        elif trigger_mode == 'NORM':
+            trigger_mode_val = 2
+        elif trigger_mode == 'TAG':
+            trigger_mode_val = 3
+        else:
+            raise Exception
+
+        if trigger_slope == 'POS':
+            trigger_slope_val = 0
+        elif trigger_slope == 'NEG':
+            trigger_slope_val = 1
+        else:
+            raise Exception
+
+        self.process.set_trigger_mode(trigger_mode_val,
+                                      trigger_slope_val,
+                                      level, channel,
+                                      tag_key)
+
     def initialize(self):
         self.plot = figure(tools=utils.default_tools(),
                            active_drag = 'ypan',
@@ -74,28 +100,31 @@ class time_sink_f():
         if self.name:
             self.set_title(self.name)
 
-        self.doc.add_periodic_callback(self.update, 200)
+        self.doc.add_periodic_callback(self.update, 100)
 
     def update(self):
         ## Call to receive from buffers
-        output_items = self.process.get_plot_data()
-        tags = self.process.get_tags()
-        stream_tags = []
-        for i in range(self.nconnections):
-            temp_stream_tags = ["" for k in range(len(output_items[i]))]
-            for j in range(len(tags[i])):
-                temp_stream_tags[tags[i][j].offset] = str(tags[i][j].key) + ":" + str(tags[i][j].value)
+        is_triggered = self.process.is_triggered()
+        if is_triggered:
+            output_items = self.process.get_plot_data()
+            tags = self.process.get_tags()
+            stream_tags = []
+            for i in range(self.nconnections):
+                temp_stream_tags = ["" for k in range(len(output_items[i]))]
+                for j in range(len(tags[i])):
+                    temp_stream_tags[tags[i][j].offset] = str(tags[i][j].key) + ":" + str(tags[i][j].value)
 
-            stream_tags.append(temp_stream_tags[:])
+                stream_tags.append(temp_stream_tags[:])
 
-        new_data = dict()
-        for i in range(self.nconnections+1):
-            if i == 0:
-                new_data['x'] = output_items[i]
-                continue
-            new_data['tags'+str(i-1)] = stream_tags[i-1]
-            new_data['y'+str(i-1)] = output_items[i]
-        self.stream.stream(new_data, rollover = self.size)
+            new_data = dict()
+            for i in range(self.nconnections+1):
+                if i == 0:
+                    new_data['x'] = output_items[i]
+                    continue
+                new_data['tags'+str(i-1)] = stream_tags[i-1]
+                new_data['y'+str(i-1)] = output_items[i]
+            self.stream.stream(new_data, rollover = self.size)
+            return
 
     def set_samp_rate(self, samp_rate):
         self.process.set_samp_rate(samp_rate);

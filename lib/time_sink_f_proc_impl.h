@@ -43,6 +43,17 @@ namespace gr {
       gr::high_res_timer_type d_update_time;
       gr::high_res_timer_type d_last_time;
        
+      // Members used for triggering scope
+      trigger_mode d_trigger_mode;
+      trigger_slope d_trigger_slope;
+      float d_trigger_level;
+      int d_trigger_channel;
+      int d_trigger_delay;
+      pmt::pmt_t d_trigger_tag_key;
+      bool d_triggered;
+      int d_trigger_count;
+      int d_initial_delay; // used for limiting d_trigger_delay
+
      public:
       time_sink_f_proc_impl(int size, double samp_rate, const std::string &name, int nconnections);
       ~time_sink_f_proc_impl();
@@ -62,6 +73,15 @@ namespace gr {
       std::vector<std::vector<gr::tag_t> > get_tags();
       void handle_pdus(pmt::pmt_t);
 
+      void set_trigger_mode(int mode, int slope,
+                            float level,
+                            float delay, int channel,
+                            const std::string &tag_key);
+      bool _test_trigger_slope(const float *input) const;
+      void _test_trigger_norm();
+      void _test_trigger_tags();
+      void discard_buffer(int start);
+      bool is_triggered ();
     };
   } // namespace bokehgui
 } // namespace gr
