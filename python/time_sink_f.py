@@ -91,7 +91,12 @@ class time_sink_f():
                                         ))
             self.lines_markers.append((None,None))
 
-            self.tags.append(LabelSet(x='x',y='y'+str(i),text='tags'+str(i), level='glyph', x_offset=5, y_offset=5, source=self.stream, render_mode = 'canvas'))
+            self.tags.append(LabelSet(x='x',y='y'+str(i),
+                                      text='tags'+str(i),
+                                      level='glyph',
+                                      x_offset=5, y_offset=5,
+                                      source=self.stream,
+                                      render_mode = 'canvas'))
             self.plot.add_layout(self.tags[i])
 
         self.add_custom_tools()
@@ -155,6 +160,8 @@ class time_sink_f():
 
     def set_title(self, name):
         self.plot.title.text = self.name
+    def get_title(self):
+        return self.plot.title.text
     def set_y_axis(self, lst):
         assert (lst[0]<lst[1])
         self.plot.y_range.start = lst[0]
@@ -164,9 +171,9 @@ class time_sink_f():
         self.plot.x_range.start = lst[0]
         self.plot.x_range.end = lst[1]
     def set_x_label(self, xlabel):
-        self.plot.set(xlabel = xlabel)
+        self.plot.xlabel.text = xlabel
     def set_y_label(self, ylabel):
-        self.plot.set(ylabel = ylabel)
+        self.plot.ylabel.text = ylabel
     def set_line_label(self, i, label):
         self.lines[i].legend = label
     def get_line_label(self, i):
@@ -277,4 +284,21 @@ class time_sink_f():
     def enable_grid(en = True):
         self.enable_x_grid(en)
         self.enable_y_grid(en)
+    # def enable_autorange(self, en)
+    # def enable_semilogx(self, en)
+    # def enable_semilogy(self, en)
+    def enable_axis_labels(self, en = True):
+        if en:
+            self.plot.xlabel.text_color = 'black'
+            self.plot.ylabel.text_color = 'black'
+        else:
+            self.plot.xlabel.text_color = None
+            self.plot.ylabel.text_color = None
+#    def disable_legend(self, en=True):
+#        if en:
+#            self.plot.legend = None
+#        else:
+#            self.plot.legend = 'show'
+    # def set_size(self, height, width);
+    # def set_update_time(self, miliseconds);
 
