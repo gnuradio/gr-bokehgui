@@ -171,27 +171,27 @@ class time_sink_f():
         self.plot.x_range.start = lst[0]
         self.plot.x_range.end = lst[1]
     def set_x_label(self, xlabel):
-        self.plot.xlabel.text = xlabel
+        self.plot.xaxis[0].axis_label = xlabel
     def set_y_label(self, ylabel):
-        self.plot.ylabel.text = ylabel
+        self.plot.yaxis[0].axis_label = ylabel
     def set_line_label(self, i, label):
         self.lines[i].legend = label
     def get_line_label(self, i):
         return self.lines[i].legend
     def set_line_color(self, i, color):
-        self.lines[i].line_color = color
+        self.lines[i].glyph.line_color = color
     def get_line_color(self, i):
-        return self.lines[i].line_color
+        return self.lines[i].glyph.line_color
     def set_line_width(self, i, width):
-        self.lines[i].line_width = width
+        self.lines[i].glyph.line_width = width
     def get_line_width(self, i):
-        return self.lines[i].line_width
+        return self.lines[i].glyph.line_width
     def set_line_style(self, i, style):
         # solid, dashed, dotted, dotdash, dashdot
-        self.lines[i].line_dash = style
+        self.lines[i].glyph.line_dash = style
     def get_line_style(self, i):
         # solid, dashed, dotted, dotdash, dashdot
-        return self.lines[i].line_dash
+        return self.lines[i].glyph.line_dash
     def set_line_marker(self, i, marker):
         if marker == '*':
             self.lines_markers[i] = (self.plot.asterisk(
@@ -268,32 +268,32 @@ class time_sink_f():
     def get_line_marker(self, i):
         return self.lines_markers[i][1]
     def set_line_alpha(self, i, alpha):
-        self.lines[i].line_alpha = alpha
+        self.lines[i].glyph.line_alpha = alpha
     def get_line_alpha(self, i):
-        return self.lines[i].line_alpha
-    def enable_x_grid(en=True):
+        return self.lines[i].glyph.line_alpha
+    def enable_x_grid(self, en=True):
         if en:
-            self.plot.xgrid.grid_line_width = 1
+            self.plot.xgrid[0].grid_line_alpha = 1
         else:
-            self.plot.xgrid.grid_line_width = 0
-    def enable_y_grid(en=True):
+            self.plot.xgrid[0].grid_line_alpha = 0
+    def enable_y_grid(self, en=True):
         if en:
-            self.plot.ygrid.grid_line_width = 1
+            self.plot.ygrid.grid_line_alpha = 1
         else:
-            self.plot.ygrid.grid_line_width = 0
-    def enable_grid(en = True):
+            self.plot.ygrid.grid_line_alpha = 0
+    def enable_grid(self, en = True):
         self.enable_x_grid(en)
         self.enable_y_grid(en)
-    # def enable_autorange(self, en)
-    # def enable_semilogx(self, en)
-    # def enable_semilogy(self, en)
     def enable_axis_labels(self, en = True):
         if en:
-            self.plot.xlabel.text_color = 'black'
-            self.plot.ylabel.text_color = 'black'
+            self.plot.xaxis[0].axis_label = '#000000'
+            self.plot.yaxis[0].axis_label_text_color = '#000000'
         else:
-            self.plot.xlabel.text_color = None
-            self.plot.ylabel.text_color = None
+            self.plot.xaxis[0].axis_label_text_color = '#FFFFFF'
+            self.plot.yaxis[0].axis_label_text_color = '#FFFFFF'
+#    def enable_autorange(self, en)
+#    def enable_semilogx(self, en)
+#    def enable_semilogy(self, en)
 #    def disable_legend(self, en=True):
 #        if en:
 #            self.plot.legend = None
