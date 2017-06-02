@@ -41,12 +41,26 @@ class top_block(gr.top_block):
         ##################################################
         # Blocks
         ##################################################
-        self.bokehgui_time_sink_f_proc_0 = bokehgui.time_sink_f_proc(500, samp_rate, 'TimeSink', 2)
-        self.bokehgui_time_sink_f_0 = bokehgui.time_sink_f(self.doc, self.bokehgui_time_sink_f_proc_0, 500, samp_rate, 'TImeSink', 2)
+        self.bokehgui_time_sink_f_proc_0 = bokehgui.time_sink_f_proc(750, samp_rate, 'TimeSink', 2)
+        self.bokehgui_time_sink_f_0 = bokehgui.time_sink_f(self.doc, self.bokehgui_time_sink_f_proc_0, 750, samp_rate, 'TImeSink', 2)
         self.blocks_throttle_0 = blocks.throttle(gr.sizeof_float*1, samp_rate,True)
         self.blocks_throttle_1 = blocks.throttle(gr.sizeof_float*1, samp_rate,True)
-        self.analog_sig_source_x_0 = analog.sig_source_f(samp_rate, analog.GR_COS_WAVE, 1000, 1, 0)
+        self.analog_sig_source_x_0 = analog.sig_source_f(samp_rate, analog.GR_COS_WAVE, 500, 3, 0)
         self.analog_sig_source_x_1 = analog.sig_source_f(samp_rate, analog.GR_COS_WAVE, 100, 1, 0)
+
+
+        ##################################################
+        # Customizing the plot
+        ##################################################
+        self.bokehgui_time_sink_f_0.set_x_label('Time (s)')
+        self.bokehgui_time_sink_f_0.set_y_label('Value')
+        self.bokehgui_time_sink_f_0.set_line_color(0, 'black')
+        self.bokehgui_time_sink_f_0.set_line_color(1, 'red')
+        self.bokehgui_time_sink_f_0.set_line_style(1, 'dashed')
+        self.bokehgui_time_sink_f_0.set_line_marker(0, '^')
+        self.bokehgui_time_sink_f_0.set_line_width(1, 2)
+        # self.bokehgui_time_sink_f_0.enable_grid(False)
+        # self.bokehgui_time_sink_f_0.enable_axis_labels(False)
 
         ##################################################
         # Connections

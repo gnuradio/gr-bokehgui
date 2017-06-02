@@ -43,6 +43,8 @@ class top_block(gr.top_block):
         ##################################################
         self.bokehgui_time_sink_f_proc_0 = bokehgui.time_sink_f_proc(500, samp_rate, 'TimeSink', 2)
         self.bokehgui_time_sink_f_0 = bokehgui.time_sink_f(self.doc, self.bokehgui_time_sink_f_proc_0, 500, samp_rate, 'TImeSink', 2)
+        self.bokehgui_time_sink_f_0.set_trigger_mode("","","","","","")
+
         self.blocks_throttle_0 = blocks.throttle(gr.sizeof_float*1, samp_rate,True)
         self.blocks_throttle_1 = blocks.throttle(gr.sizeof_float*1, samp_rate,True)
         self.tagged_1 = blocks.tags_strobe(gr.sizeof_float*1, pmt.intern("TEST"), 100, pmt.intern("strobe1"))
