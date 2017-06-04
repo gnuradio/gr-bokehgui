@@ -1,7 +1,6 @@
-# Copyright 2011 Free Software Foundation, Inc.
+# Copyright 2008-2012 Free Software Foundation, Inc.
 #
 # This file is part of GNU Radio
-#
 # GNU Radio is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 3, or (at your option)
@@ -16,7 +15,13 @@
 # along with GNU Radio; see the file COPYING.  If not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street,
 # Boston, MA 02110-1301, USA.
-install(FILES
-    bokehgui_time_sink_f_proc.xml
-    bokehgui_time_sink_f.xml DESTINATION share/gnuradio/grc/blocks
-)
+
+
+def default_tools():
+    return [
+         'box_zoom',
+         'ypan',
+         'ywheel_zoom',
+         'save',
+         'reset',
+        ]

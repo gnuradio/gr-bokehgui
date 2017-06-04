@@ -31,5 +31,6 @@ except ImportError:
 	pass
 
 # import any pure python here
+from time_sink_f import time_sink_f
 
 #
