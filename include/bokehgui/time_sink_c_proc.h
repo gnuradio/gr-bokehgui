@@ -25,7 +25,9 @@
 #define INCLUDED_BOKEHGUI_TIME_SINK_C_PROC_H
 
 #include <bokehgui/api.h>
+#include <gnuradio/high_res_timer.h>
 #include <gnuradio/sync_block.h>
+#include <bokehgui/trigger_mode.h>
 
 namespace gr {
   namespace bokehgui {
@@ -49,6 +51,28 @@ namespace gr {
        * creating new instances.
        */
       static sptr make(int size, double sample_rate, const std::string &name, int nconnections);
+
+      virtual void get_plot_data (gr_complex** output_items, int* nrows, int* size) = 0;
+      virtual int work(int noutput_items,
+         gr_vector_const_void_star &input_items,
+         gr_vector_void_star &output_items) = 0;
+      virtual void set_nsamps(const int newsize) = 0;
+      virtual void set_samp_rate(const double samp_rate) = 0;
+      virtual int nsamps() const = 0;
+      virtual void reset() = 0;
+      virtual void _adjust_tags(int adj) = 0;
+      virtual std::vector<std::vector<gr::tag_t> > get_tags() = 0;
+      virtual void _reset() = 0;
+      virtual void handle_pdus(pmt::pmt_t) = 0;
+      virtual void set_trigger_mode(int mode, int slope,
+                                    float level,
+                                    float delay, int channel,
+                                    const std::string &tag_key) = 0;
+      virtual bool _test_trigger_slope(const float *input) const = 0;
+      virtual void _test_trigger_norm() = 0;
+      virtual void _test_trigger_tags() = 0;
+      virtual void discard_buffer(int start) = 0;
+      virtual bool is_triggered () = 0;
     };
 
   } // namespace bokehgui

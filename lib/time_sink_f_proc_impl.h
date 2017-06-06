@@ -40,9 +40,6 @@ namespace gr {
       float* d_xbuffers;
       std::vector< std::vector<gr::tag_t> > d_tags;
 
-      gr::high_res_timer_type d_update_time;
-      gr::high_res_timer_type d_last_time;
-       
       // Members used for triggering scope
       trigger_mode d_trigger_mode;
       trigger_slope d_trigger_slope;

@@ -31,16 +31,56 @@ namespace gr {
     class time_sink_c_proc_impl : public time_sink_c_proc
     {
      private:
-      // Nothing to declare in this block.
+      int d_size, d_buffer_size;
+      double d_samp_rate;
+      std::string d_name;
+      int d_nconnections;
+
+      ind d_index, d_start, d_end;
+      std::vector<gr_complex*> d_buffers;
+      float* d_xbuffers;
+      std::vector<std::vector<gr::tag_t> > d_tags;
+
+      // Members used for triggering scope
+      trigger_mode d_trigger_mode;
+      trigger_slope d_trigger_slope;
+      float d_trigger_level;
+      int d_trigger_channel;
+      int d_trigger_delay;
+      pmt::pmt_t d_trigger_tag_key;
+      bool d_triggered;
+      int d_trigger_count;
+      int d_initial_delay; // used for limiting d_trigger_delay
 
      public:
       time_sink_c_proc_impl(int size, double sample_rate, const std::string &name, int nconnections);
       ~time_sink_c_proc_impl();
 
+      void get_plot_data (gr_complex** output_items, int* nrows, int*size);
+
       // Where all the action really happens
       int work(int noutput_items,
          gr_vector_const_void_star &input_items,
          gr_vector_void_star &output_items);
+      bool check_topology(int ninputs, int noutputs);
+      void set_nsamps(const int newsize);
+      void set_samp_rate(const double samp_rate);
+      int nsamps() const;
+      void reset();
+      void _reset();
+      void _adjust_tags(int adj);
+      std::vector<std::vector<gr::tag_t> > get_tags();
+      void handle_pdus(pmt::pmt_t);
+
+      void set_trigger_mode(int mode, int slope, 
+                            float level,
+                            float delay, int channel,
+                            const std::string &tag_key);
+      bool _test_trigger_slope(const float *input) const;
+      void _test_trigger_norm();
+      void _test_trigger_tags();
+      void discard_buffer(int start);
+      bool is_triggered();
     };
 
   } // namespace bokehgui
