@@ -36,7 +36,7 @@ namespace gr {
       std::string d_name;
       int d_nconnections;
 
-      ind d_index, d_start, d_end;
+      int d_index, d_start, d_end;
       std::vector<float*> d_buffers;
       float* d_xbuffers;
       std::vector<std::vector<gr::tag_t> > d_tags;
@@ -53,36 +53,35 @@ namespace gr {
       int d_initial_delay; // used for limiting d_trigger_delay
 
      public:
-      time_sink_c_proc_impl(int size, double sample_rate, const std::string &name, int nconnections);
+      time_sink_c_proc_impl(int size, double samp_rate, const std::string &name, int nconnections);
       ~time_sink_c_proc_impl();
 
-      void get_plot_data (gr_complex** output_items, int* nrows, int*size);
+      void get_plot_data (float** output_items, int* nrows, int*size);
 
       // Where all the action really happens
       int work(int noutput_items,
          gr_vector_const_void_star &input_items,
          gr_vector_void_star &output_items);
       bool check_topology(int ninputs, int noutputs);
-      void set_nsamps(const int newsize);
-      void set_samp_rate(const double samp_rate);
-      int nsamps() const;
-      void reset();
-      void _reset();
-      void _adjust_tags(int adj);
-      std::vector<std::vector<gr::tag_t> > get_tags();
+//      void set_nsamps(const int newsize);
+//      void set_samp_rate(const double samp_rate);
+//      int nsamps() const;
+//      void reset();
+//      void _reset();
+//      void _adjust_tags(int adj);
+//      std::vector<std::vector<gr::tag_t> > get_tags();
       void handle_pdus(pmt::pmt_t);
 
-      void set_trigger_mode(int mode, int slope, 
-                            float level,
-                            float delay, int channel,
-                            const std::string &tag_key);
-      bool _test_trigger_slope(const gr_complex *input) const;
-      void _test_trigger_norm();
-      void _test_trigger_tags();
-      void discard_buffer(int start);
-      bool is_triggered();
+//      void set_trigger_mode(int mode, int slope, 
+//                            float level,
+//                            float delay, int channel,
+//                            const std::string &tag_key);
+//      bool _test_trigger_slope(const gr_complex *input) const;
+//      void _test_trigger_norm();
+//      void _test_trigger_tags();
+//      void discard_buffer(int start);
+//      bool is_triggered();
     };
-
   } // namespace bokehgui
 } // namespace gr
 

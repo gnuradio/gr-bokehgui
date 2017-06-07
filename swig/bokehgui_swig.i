@@ -25,6 +25,7 @@ if(PyArray_API == NULL)
 
 %{
 #include "bokehgui/time_sink_f_proc.h"
+#include "bokehgui/time_sink_c_proc.h"
 %}
 
 %{
@@ -44,6 +45,8 @@ if(PyArray_API == NULL)
 %apply (float** ARGOUTVIEWM_ARRAY2, int* DIM1, int* DIM2) {(float **output_items, int* nrows, int* size)};
 
 %include "bokehgui/time_sink_f_proc.h"
+%include "bokehgui/time_sink_c_proc.h"
 
 
 GR_SWIG_BLOCK_MAGIC2(bokehgui, time_sink_f_proc);
+GR_SWIG_BLOCK_MAGIC2(bokehgui, time_sink_c_proc);

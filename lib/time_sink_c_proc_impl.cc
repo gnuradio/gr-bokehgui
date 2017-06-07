@@ -25,6 +25,8 @@
 #endif
 
 #include <gnuradio/io_signature.h>
+#include <gnuradio/block_detail.h>
+#include <volk/volk.h>
 #include "time_sink_c_proc_impl.h"
 
 namespace gr {
@@ -37,10 +39,7 @@ namespace gr {
         (new time_sink_c_proc_impl(size, sample_rate, name, nconnections));
     }
 
-    /*
-     * The private constructor
-     */
-    time_sink_c_proc_impl::time_sink_c_proc_impl(int size, double sample_rate, const std::string &name, int nconnections)
+    time_sink_c_proc_impl::time_sink_c_proc_impl(int size, double samp_rate, const std::string &name, int nconnections)
       : gr::sync_block("time_sink_c_proc",
               gr::io_signature::make(0, nconnections, sizeof(gr_complex)),
               gr::io_signature::make(0, 0, 0)),
@@ -79,22 +78,24 @@ namespace gr {
       d_end = d_buffer_size;
       d_index = 0;
 
-      set_trigger_mode(static_cast<int>(TRIG_MODE_FREE), static_cast<int>(TRIG_SLOPE_POS), 0.0, 0.0, 0, "");
+      // set_trigger_mode(static_cast<int>(TRIG_MODE_FREE), static_cast<int>(TRIG_SLOPE_POS), 0.0, 0.0, 0, "");
 
       set_history(2);          // so we can look ahead for the trigger slope
       declare_sample_delay(1); // delay the tags for a history of 2
-      }
     }
 
-    /*
-     * Our virtual destructor.
-     */
     time_sink_c_proc_impl::~time_sink_c_proc_impl()
     {
       for(int n = 0; n < d_nconnections; n++) {
         volk_free(d_buffers[n]);
       }
       volk_free(d_xbuffers);
+    }
+
+    bool
+    time_sink_c_proc_impl::check_topology(int ninputs, int noutputs)
+    {
+      return ninputs == d_nconnections;
     }
 
     void
@@ -144,7 +145,7 @@ namespace gr {
       for(int n = 0; n < d_nconnections; n++) {
         in = (const gr_complex*) input_items[n];
         volk_32fc_deinterleave_32f_x2(d_buffers[2*n+0], d_buffers[2*n+1],
-                                      &in, nitems);
+                                      &in[1], nitems);
 
         uint64_t nr = nitems_read(n);
         std::vector<gr::tag_t> tags;
@@ -156,6 +157,11 @@ namespace gr {
       }
       d_index += nitems;
       return nitems;
+    }
+
+    void
+    time_sink_c_proc_impl::handle_pdus(pmt::pmt_t tags) {
+
     }
 
   } /* namespace bokehgui */

@@ -23,5 +23,6 @@
 install(FILES
     api.h
     trigger_mode.h
+    time_sink_c_proc.h
     time_sink_f_proc.h DESTINATION include/bokehgui
 )

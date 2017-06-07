@@ -25,6 +25,7 @@ include(GrPlatform) #define LIB_SUFFIX
 include_directories(${Boost_INCLUDE_DIR})
 link_directories(${Boost_LIBRARY_DIRS})
 list(APPEND bokehgui_sources
+    time_sink_c_proc_impl.cc
     time_sink_f_proc_impl.cc )
 
 set(bokehgui_sources "${bokehgui_sources}" PARENT_SCOPE)
@@ -57,8 +58,8 @@ include(GrTest)
 include_directories(${CPPUNIT_INCLUDE_DIRS})
 
 list(APPEND test_bokehgui_sources
-    ${CMAKE_CURRENT_SOURCE_DIR}/test_bokehgui.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/qa_bokehgui.cc
+    ${CMAKE_CURRENT_SOURCE_DIR}/test_bokehgui.cc
 )
 
 add_executable(test-bokehgui ${test_bokehgui_sources})
