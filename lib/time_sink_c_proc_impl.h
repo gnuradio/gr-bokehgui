@@ -45,7 +45,10 @@ namespace gr {
       trigger_mode d_trigger_mode;
       trigger_slope d_trigger_slope;
       float d_trigger_level;
+      // 2*i => ith connection's real values
+      // 2*i+1 => ith connection's imag values
       int d_trigger_channel;
+
       int d_trigger_delay;
       pmt::pmt_t d_trigger_tag_key;
       bool d_triggered;
@@ -63,24 +66,24 @@ namespace gr {
          gr_vector_const_void_star &input_items,
          gr_vector_void_star &output_items);
       bool check_topology(int ninputs, int noutputs);
-//      void set_nsamps(const int newsize);
-//      void set_samp_rate(const double samp_rate);
-//      int nsamps() const;
-//      void reset();
-//      void _reset();
-//      void _adjust_tags(int adj);
-//      std::vector<std::vector<gr::tag_t> > get_tags();
+      void set_nsamps(const int newsize);
+      void set_samp_rate(const double samp_rate);
+      int nsamps() const;
+      void reset();
+      void _reset();
+      void _adjust_tags(int adj);
+      std::vector<std::vector<gr::tag_t> > get_tags();
       void handle_pdus(pmt::pmt_t);
 
-//      void set_trigger_mode(int mode, int slope, 
-//                            float level,
-//                            float delay, int channel,
-//                            const std::string &tag_key);
-//      bool _test_trigger_slope(const gr_complex *input) const;
-//      void _test_trigger_norm();
-//      void _test_trigger_tags();
-//      void discard_buffer(int start);
-//      bool is_triggered();
+      void set_trigger_mode(int mode, int slope, 
+                            float level,
+                            float delay, int channel,
+                            const std::string &tag_key);
+      bool _test_trigger_slope(const float*, const float*) const;
+      void _test_trigger_norm();
+      void _test_trigger_tags();
+      void discard_buffer(int start);
+      bool is_triggered();
     };
   } // namespace bokehgui
 } // namespace gr

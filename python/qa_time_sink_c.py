@@ -57,5 +57,30 @@ class qa_time_sink_c (gr_unittest.TestCase):
         self.tb.wait()
         self.tearDown()
 
+    def test_002_t (self):
+        self.setUp()
+        src = blocks.vector_source_c(range(100), False, 1, [])
+
+        throttle = blocks.throttle(gr.sizeof_gr_complex*1, 1, True)
+        tag = blocks.tags_strobe(gr.sizeof_gr_complex*1, pmt.intern("TEST"), 20, pmt.intern("strobe"))
+        add = blocks.add_vcc(1)
+
+        dst = time_sink_c_proc(50, 1, 'Test', 1)
+
+        self.tb.connect((src,0), (add,0))
+        self.tb.connect((tag,0), (add,1))
+        self.tb.connect((add,0), (throttle, 0))
+        self.tb.connect((throttle,0), (dst,0))
+
+        self.tb.run()
+        result_data = dst.get_plot_data()
+        tag_data = dst.get_tags()
+
+        self.assertEqual(str(tag_data[0][0].key), "strobe")
+        self.assertEqual(str(tag_data[0][0].value), "TEST")
+        self.tb.stop()
+        self.tb.wait()
+        self.tearDown()
+
 if __name__ == '__main__':
     gr_unittest.run(qa_time_sink_c, "qa_time_sink_c.xml")
