@@ -68,7 +68,7 @@ namespace gr {
                                     float level,
                                     float delay, int channel,
                                     const std::string &tag_key) = 0;
-      virtual bool _test_trigger_slope(const float *input) const = 0;
+      virtual bool _test_trigger_slope(const gr_complex *input) const = 0;
       virtual void _test_trigger_norm() = 0;
       virtual void _test_trigger_tags() = 0;
       virtual void discard_buffer(int start) = 0;

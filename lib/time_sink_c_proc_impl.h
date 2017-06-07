@@ -37,7 +37,7 @@ namespace gr {
       int d_nconnections;
 
       ind d_index, d_start, d_end;
-      std::vector<gr_complex*> d_buffers;
+      std::vector<float*> d_buffers;
       float* d_xbuffers;
       std::vector<std::vector<gr::tag_t> > d_tags;
 
@@ -76,7 +76,7 @@ namespace gr {
                             float level,
                             float delay, int channel,
                             const std::string &tag_key);
-      bool _test_trigger_slope(const float *input) const;
+      bool _test_trigger_slope(const gr_complex *input) const;
       void _test_trigger_norm();
       void _test_trigger_tags();
       void discard_buffer(int start);
