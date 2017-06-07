@@ -160,7 +160,7 @@ namespace gr {
       int nitems = std::min(nfill, noutput_items);
       for (int n=0; n<d_nconnections; n++) {
         in = (const float*) input_items[n];
-        memmove(&d_buffers[n][d_index], &in[n], nitems*sizeof(float));
+        memcpy(&d_buffers[n][d_index], &in[1], nitems*sizeof(float));
         uint64_t nr = nitems_read(n);
         std::vector<gr::tag_t> tags;
         get_tags_in_range(tags, n, nr, nr + nitems);
