@@ -20,7 +20,7 @@ import numpy
 import pmt
 
 from bokeh.plotting import figure
-from bokeh.models import ColumnDataSource, LabelSet
+from bokeh.models import ColumnDataSource, LabelSet, Legend
 
 from gnuradio import gr
 from bokehgui import time_sink_f_proc, utils
@@ -40,8 +40,6 @@ class time_sink_f():
         self.stream = None
         self.plot = None
         self.process = proc
-
-        self.initialize()
 
 
     def set_trigger_mode(self, trigger_mode, trigger_slope,
@@ -66,13 +64,17 @@ class time_sink_f():
 
         self.process.set_trigger_mode(trigger_mode_val,
                                       trigger_slope_val,
-                                      level, channel,
+                                      level, delay, channel,
                                       tag_key)
 
-    def initialize(self):
+    def initialize(self, log_x = False, log_y = False, legend_list = [], update_time = 100):
+        y_axis_type = 'log' if log_y else 'linear'
+        x_axis_type = 'log' if log_x else 'linear'
         self.plot = figure(tools=utils.default_tools(),
                            active_drag = 'ypan',
-                           active_scroll = 'ywheel_zoom')
+                           active_scroll = 'ywheel_zoom',
+                           y_axis_type = y_axis_type,
+                           x_axis_type = x_axis_type)
         data = dict()
         data['x'] = []
 
@@ -84,12 +86,14 @@ class time_sink_f():
 
         self.lines = []
         self.lines_markers = []
+        self.legend_list = legend_list[:]
         self.tags = []
         for i in range(self.nconnections):
             self.lines.append(self.plot.line(
                                         x='x', y='y'+str(i),
                                         source = self.stream,
-                                        line_color = 'red' if i==0 else 'blue'
+                                        line_color = 'blue',
+                                        legend = self.legend_list[i]
                                         ))
             self.lines_markers.append((None,None))
 
@@ -107,7 +111,7 @@ class time_sink_f():
         if self.name:
             self.set_title(self.name)
 
-        self.doc.add_periodic_callback(self.update, 100)
+        self.set_update_time(update_time)
 
     def update(self):
         ## Call to receive from buffers
@@ -178,9 +182,9 @@ class time_sink_f():
     def set_y_label(self, ylabel):
         self.plot.yaxis[0].axis_label = ylabel
     def set_line_label(self, i, label):
-        self.lines[i].legend = label
+        self.legend_list[i] = label
     def get_line_label(self, i):
-        return self.lines[i].legend
+        return self.legend_list[i]
     def set_line_color(self, i, color):
         self.lines[i].glyph.line_color = color
     def get_line_color(self, i):
@@ -200,74 +204,74 @@ class time_sink_f():
             self.lines_markers[i] = (self.plot.asterisk(
                                             x='x', y='y'+str(i),
                                             source=self.stream,
-                                            hover_fill_color="firebrick",
-                                            hover_alpha=0.3), '*')
+                                            legend = self.legend_list[i],
+                                            ), '*')
         if marker == 'o':
             self.lines_markers[i] = (self.plot.circle(
                                             x='x', y='y'+str(i),
                                             source=self.stream,
-                                            hover_fill_color="firebrick",
-                                            hover_alpha=0.3), 'o')
+                                            legend = self.legend_list[i],
+                                            ), 'o')
         if marker == 'o+':
             self.lines_markers[i] = (self.plot.circle_cross(
                                             x='x', y='y'+str(i),
                                             source=self.stream,
-                                            hover_fill_color="firebrick",
-                                            hover_alpha=0.3), 'o+')
+                                            legend = self.legend_list[i],
+                                            ), 'o+')
         if marker == '+':
             self.lines_markers[i] = (self.plot.cross(
                                             x='x', y='y'+str(i),
                                             source=self.stream,
-                                            hover_fill_color="firebrick",
-                                            hover_alpha=0.3), '+')
+                                            legend = self.legend_list[i],
+                                            ), '+')
         if marker == 'd':
             self.lines_markers[i] = (self.plot.diamond(
                                             x='x', y='y'+str(i),
                                             source=self.stream,
-                                            hover_fill_color="firebrick",
-                                            hover_alpha=0.3), 'd')
+                                            legend = self.legend_list[i],
+                                            ), 'd')
         if marker == 'd+':
             self.lines_markers[i] = (self.plot.diamond_cross(
                                             x='x', y='y'+str(i),
                                             source=self.stream,
-                                            hover_fill_color="firebrick",
-                                            hover_alpha=0.3), 'd+')
+                                            legend = self.legend_list[i],
+                                            ), 'd+')
         if marker == 'v':
             self.lines_markers[i] = (self.plot.inverted_triangle(
                                             x='x', y='y'+str(i),
                                             source=self.stream,
-                                            hover_fill_color="firebrick",
-                                            hover_alpha=0.3), 'v')
+                                            legend = self.legend_list[i],
+                                            ), 'v')
         if marker == 's':
             self.lines_markers[i] = (self.plot.square(
                                             x='x', y='y'+str(i),
                                             source=self.stream,
-                                            hover_fill_color="firebrick",
-                                            hover_alpha=0.3), 's')
+                                            legend = self.legend_list[i],
+                                            ), 's')
         if marker == 's+':
             self.lines_markers[i] = (self.plot.square_cross(
                                             x='x', y='y'+str(i),
                                             source=self.stream,
-                                            hover_fill_color="firebrick",
-                                            hover_alpha=0.3), 's+')
+                                            legend = self.legend_list[i],
+                                            ), 's+')
         if marker == 'sx':
             self.lines_markers[i] = (self.plot.square_x(
                                             x='x', y='y'+str(i),
                                             source=self.stream,
-                                            hover_fill_color="firebrick",
-                                            hover_alpha=0.3), 'sx')
+                                            legend = self.legend_list[i],
+                                            ), 'sx')
         if marker == '^':
             self.lines_markers[i] = (self.plot.triangle(
                                             x='x', y='y'+str(i),
                                             source=self.stream,
-                                            hover_fill_color="firebrick",
-                                            hover_alpha=0.3), '^')
+                                            legend = self.legend_list[i],
+                                            ), '^')
         if marker == 'x':
             self.lines_markers[i] = (self.plot.x(
                                             x='x', y='y'+str(i),
                                             source=self.stream,
-                                            hover_fill_color="firebrick",
-                                            hover_alpha=0.3), 'x')
+                                            legend = self.legend_list[i],
+                                            ), 'x')
     def get_line_marker(self, i):
         return self.lines_markers[i][1]
     def set_line_alpha(self, i, alpha):
@@ -294,14 +298,14 @@ class time_sink_f():
         else:
             self.plot.xaxis[0].axis_label_text_color = '#FFFFFF'
             self.plot.yaxis[0].axis_label_text_color = '#FFFFFF'
-#    def enable_autorange(self, en)
-#    def enable_semilogx(self, en)
-#    def enable_semilogy(self, en)
-#    def disable_legend(self, en=True):
-#        if en:
-#            self.plot.legend = None
-#        else:
-#            self.plot.legend = 'show'
+    def disable_legend(self, en = True):
+        if en:
+            self.plot.legend[0].visible = False
+        else:
+            self.plot.legend[0].visible = True
     # def set_size(self, height, width);
-    # def set_update_time(self, miliseconds);
+
+    def set_update_time(self, miliseconds):
+        self.doc.add_periodic_callback(self.update, miliseconds)
+
 
