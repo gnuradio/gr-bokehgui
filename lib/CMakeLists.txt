@@ -57,22 +57,22 @@ include(GrTest)
 
 include_directories(${CPPUNIT_INCLUDE_DIRS})
 
-list(APPEND test_bokehgui_sources
-    ${CMAKE_CURRENT_SOURCE_DIR}/qa_bokehgui.cc
-    ${CMAKE_CURRENT_SOURCE_DIR}/test_bokehgui.cc
-)
-
-add_executable(test-bokehgui ${test_bokehgui_sources})
-
-target_link_libraries(
-  test-bokehgui
-  ${GNURADIO_RUNTIME_LIBRARIES}
-  ${Boost_LIBRARIES}
-  ${CPPUNIT_LIBRARIES}
-  gnuradio-bokehgui
-)
-
-GR_ADD_TEST(test_bokehgui test-bokehgui)
+#list(APPEND test_bokehgui_sources
+#    ${CMAKE_CURRENT_SOURCE_DIR}/test_bokehgui.cc
+#    ${CMAKE_CURRENT_SOURCE_DIR}/qa_bokehgui.cc
+#)
+#
+#add_executable(test-bokehgui ${test_bokehgui_sources})
+#
+#target_link_libraries(
+#  test-bokehgui
+#  ${GNURADIO_RUNTIME_LIBRARIES}
+#  ${Boost_LIBRARIES}
+#  ${CPPUNIT_LIBRARIES}
+#  gnuradio-bokehgui
+#)
+#
+#GR_ADD_TEST(test_bokehgui test-bokehgui)
 
 ########################################################################
 # Print summary
