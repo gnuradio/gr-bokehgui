@@ -89,7 +89,7 @@ class time_sink_f():
             self.lines.append(self.plot.line(
                                         x='x', y='y'+str(i),
                                         source = self.stream,
-                                        line_color = 'red' if i==0 else 'blue'
+                                        line_color = 'blue'
                                         ))
             self.lines_markers.append((None,None))
 
@@ -200,74 +200,62 @@ class time_sink_f():
             self.lines_markers[i] = (self.plot.asterisk(
                                             x='x', y='y'+str(i),
                                             source=self.stream,
-                                            hover_fill_color="firebrick",
-                                            hover_alpha=0.3), '*')
+                                            ), '*')
         if marker == 'o':
             self.lines_markers[i] = (self.plot.circle(
                                             x='x', y='y'+str(i),
                                             source=self.stream,
-                                            hover_fill_color="firebrick",
-                                            hover_alpha=0.3), 'o')
+                                            ), 'o')
         if marker == 'o+':
             self.lines_markers[i] = (self.plot.circle_cross(
                                             x='x', y='y'+str(i),
                                             source=self.stream,
-                                            hover_fill_color="firebrick",
-                                            hover_alpha=0.3), 'o+')
+                                            ), 'o+')
         if marker == '+':
             self.lines_markers[i] = (self.plot.cross(
                                             x='x', y='y'+str(i),
                                             source=self.stream,
-                                            hover_fill_color="firebrick",
-                                            hover_alpha=0.3), '+')
+                                            ), '+')
         if marker == 'd':
             self.lines_markers[i] = (self.plot.diamond(
                                             x='x', y='y'+str(i),
                                             source=self.stream,
-                                            hover_fill_color="firebrick",
-                                            hover_alpha=0.3), 'd')
+                                            ), 'd')
         if marker == 'd+':
             self.lines_markers[i] = (self.plot.diamond_cross(
                                             x='x', y='y'+str(i),
                                             source=self.stream,
-                                            hover_fill_color="firebrick",
-                                            hover_alpha=0.3), 'd+')
+                                            ), 'd+')
         if marker == 'v':
             self.lines_markers[i] = (self.plot.inverted_triangle(
                                             x='x', y='y'+str(i),
                                             source=self.stream,
-                                            hover_fill_color="firebrick",
-                                            hover_alpha=0.3), 'v')
+                                            ), 'v')
         if marker == 's':
             self.lines_markers[i] = (self.plot.square(
                                             x='x', y='y'+str(i),
                                             source=self.stream,
-                                            hover_fill_color="firebrick",
-                                            hover_alpha=0.3), 's')
+                                            ), 's')
         if marker == 's+':
             self.lines_markers[i] = (self.plot.square_cross(
                                             x='x', y='y'+str(i),
                                             source=self.stream,
-                                            hover_fill_color="firebrick",
-                                            hover_alpha=0.3), 's+')
+                                            ), 's+')
         if marker == 'sx':
             self.lines_markers[i] = (self.plot.square_x(
                                             x='x', y='y'+str(i),
                                             source=self.stream,
-                                            hover_fill_color="firebrick",
-                                            hover_alpha=0.3), 'sx')
+                                            ), 'sx')
         if marker == '^':
             self.lines_markers[i] = (self.plot.triangle(
                                             x='x', y='y'+str(i),
                                             source=self.stream,
-                                            hover_fill_color="firebrick",
-                                            hover_alpha=0.3), '^')
+                                            ), '^')
         if marker == 'x':
             self.lines_markers[i] = (self.plot.x(
                                             x='x', y='y'+str(i),
                                             source=self.stream,
-                                            hover_fill_color="firebrick",
-                                            hover_alpha=0.3), 'x')
+                                            ), 'x')
     def get_line_marker(self, i):
         return self.lines_markers[i][1]
     def set_line_alpha(self, i, alpha):
