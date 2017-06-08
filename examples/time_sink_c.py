@@ -52,6 +52,13 @@ class top_block(gr.top_block):
         ##################################################
         # Customizing the plot
         ##################################################
+        self.bokehgui_time_sink_c_0.initialize(log_x = True,
+                                               legend_list = ['Re{data0}',
+                                                              'Im{data0}',
+                                                              'Re{data1}',
+                                                              'Im{data1}'],
+                                               update_time = 100
+                                               )
         self.bokehgui_time_sink_c_0.set_x_label('Time (s)')
         self.bokehgui_time_sink_c_0.set_y_label('Value')
         self.bokehgui_time_sink_c_0.set_line_color(0, 'black')
@@ -62,8 +69,6 @@ class top_block(gr.top_block):
         self.bokehgui_time_sink_c_0.set_line_marker(0, '^')
         self.bokehgui_time_sink_c_0.set_line_marker(3, 'v')
         self.bokehgui_time_sink_c_0.set_line_width(1, 2)
-        # self.bokehgui_time_sink_c_0.enable_grid(False)
-        # self.bokehgui_time_sink_c_0.enable_axis_labels(False)
 
         ##################################################
         # Connections
