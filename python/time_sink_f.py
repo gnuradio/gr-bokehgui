@@ -75,6 +75,8 @@ class time_sink_f():
                            active_scroll = 'ywheel_zoom')
         data = dict()
         data['x'] = []
+
+        # TODO: PDU not plotted
         for i in range(self.nconnections):
             data['y'+str(i)] = []
             data['tags'+str(i)] = []
@@ -121,6 +123,7 @@ class time_sink_f():
 
                 stream_tags.append(temp_stream_tags[:])
 
+            # TODO: PDU not plotted
             new_data = dict()
             for i in range(self.nconnections+1):
                 if i == 0:
