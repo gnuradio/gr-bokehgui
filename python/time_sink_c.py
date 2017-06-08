@@ -23,11 +23,11 @@ from bokeh.plotting import figure
 from bokeh.models import ColumnDataSource, LabelSet
 
 from gnuradio import gr
-from bokehgui import time_sink_f_proc, utils
+from bokehgui import time_sink_c_proc, utils
 
-class time_sink_f():
+class time_sink_c():
     """
-    docstring for block time_sink_f
+    docstring for block time_sink_c
     """
     def __init__(self, doc, proc, size,
                  samp_rate, name,
@@ -75,24 +75,26 @@ class time_sink_f():
                            active_scroll = 'ywheel_zoom')
         data = dict()
         data['x'] = []
-        for i in range(self.nconnections):
+        # TODO: PDU not plotted
+        for i in range(2*self.nconnections):
             data['y'+str(i)] = []
+        for i in range(self.nconnections):
             data['tags'+str(i)] = []
         self.stream = ColumnDataSource(data)
 
         self.lines = []
         self.lines_markers = []
         self.tags = []
-        for i in range(self.nconnections):
+        for i in range(2*self.nconnections):
             self.lines.append(self.plot.line(
                                         x='x', y='y'+str(i),
                                         source = self.stream,
-                                        line_color = 'red' if i==0 else 'blue'
+                                        line_color = 'blue',
                                         ))
             self.lines_markers.append((None,None))
 
             self.tags.append(LabelSet(x='x',y='y'+str(i),
-                                      text='tags'+str(i),
+                                      text='tags'+str(i/2),
                                       level='glyph',
                                       x_offset=5, y_offset=5,
                                       source=self.stream,
@@ -115,18 +117,20 @@ class time_sink_f():
             tags = self.process.get_tags()
             stream_tags = []
             for i in range(self.nconnections):
-                temp_stream_tags = ["" for k in range(len(output_items[i]))]
+                temp_stream_tags = ["" for k in range(len(output_items[2*i]))]
                 for j in range(len(tags[i])):
                     temp_stream_tags[tags[i][j].offset] = str(tags[i][j].key) + ":" + str(tags[i][j].value)
 
                 stream_tags.append(temp_stream_tags[:])
 
+            # TODO: PDU not plotted
             new_data = dict()
-            for i in range(self.nconnections+1):
+            for i in range(2*self.nconnections+1):
                 if i == 0:
                     new_data['x'] = output_items[i]
                     continue
-                new_data['tags'+str(i-1)] = stream_tags[i-1]
+                if (i-1) % 2 == 0:
+                    new_data['tags'+str((i-1)/2)] = stream_tags[(i-1)/2]
                 new_data['y'+str(i-1)] = output_items[i]
             self.stream.stream(new_data, rollover = self.size)
             return
@@ -149,7 +153,7 @@ class time_sink_f():
 
     def enable_tags(self, which = -1, en = True):
         if which == -1:
-            for i in range(self.nconnections):
+            for i in range(2*self.nconnections):
                 enable_tags(i, en)
         else:
             if en:
@@ -197,74 +201,62 @@ class time_sink_f():
             self.lines_markers[i] = (self.plot.asterisk(
                                             x='x', y='y'+str(i),
                                             source=self.stream,
-                                            hover_fill_color="firebrick",
-                                            hover_alpha=0.3), '*')
+                                            ), '*')
         if marker == 'o':
             self.lines_markers[i] = (self.plot.circle(
                                             x='x', y='y'+str(i),
                                             source=self.stream,
-                                            hover_fill_color="firebrick",
-                                            hover_alpha=0.3), 'o')
+                                            ), 'o')
         if marker == 'o+':
             self.lines_markers[i] = (self.plot.circle_cross(
                                             x='x', y='y'+str(i),
                                             source=self.stream,
-                                            hover_fill_color="firebrick",
-                                            hover_alpha=0.3), 'o+')
+                                            ), 'o+')
         if marker == '+':
             self.lines_markers[i] = (self.plot.cross(
                                             x='x', y='y'+str(i),
                                             source=self.stream,
-                                            hover_fill_color="firebrick",
-                                            hover_alpha=0.3), '+')
+                                            ), '+')
         if marker == 'd':
             self.lines_markers[i] = (self.plot.diamond(
                                             x='x', y='y'+str(i),
                                             source=self.stream,
-                                            hover_fill_color="firebrick",
-                                            hover_alpha=0.3), 'd')
+                                            ), 'd')
         if marker == 'd+':
             self.lines_markers[i] = (self.plot.diamond_cross(
                                             x='x', y='y'+str(i),
                                             source=self.stream,
-                                            hover_fill_color="firebrick",
-                                            hover_alpha=0.3), 'd+')
+                                            ), 'd+')
         if marker == 'v':
             self.lines_markers[i] = (self.plot.inverted_triangle(
                                             x='x', y='y'+str(i),
                                             source=self.stream,
-                                            hover_fill_color="firebrick",
-                                            hover_alpha=0.3), 'v')
+                                            ), 'v')
         if marker == 's':
             self.lines_markers[i] = (self.plot.square(
                                             x='x', y='y'+str(i),
                                             source=self.stream,
-                                            hover_fill_color="firebrick",
-                                            hover_alpha=0.3), 's')
+                                            ), 's')
         if marker == 's+':
             self.lines_markers[i] = (self.plot.square_cross(
                                             x='x', y='y'+str(i),
                                             source=self.stream,
-                                            hover_fill_color="firebrick",
-                                            hover_alpha=0.3), 's+')
+                                            ), 's+')
         if marker == 'sx':
             self.lines_markers[i] = (self.plot.square_x(
                                             x='x', y='y'+str(i),
                                             source=self.stream,
-                                            hover_fill_color="firebrick",
-                                            hover_alpha=0.3), 'sx')
+                                            ), 'sx')
         if marker == '^':
             self.lines_markers[i] = (self.plot.triangle(
                                             x='x', y='y'+str(i),
                                             source=self.stream,
-                                            hover_fill_color="firebrick",
-                                            hover_alpha=0.3), '^')
+                                            ), '^')
         if marker == 'x':
             self.lines_markers[i] = (self.plot.x(
                                             x='x', y='y'+str(i),
                                             source=self.stream,
-                                            hover_fill_color="firebrick",
-                                            hover_alpha=0.3), 'x')
+                                            ), 'x')
     def get_line_marker(self, i):
         return self.lines_markers[i][1]
     def set_line_alpha(self, i, alpha):

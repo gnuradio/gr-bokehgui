@@ -32,5 +32,6 @@ except ImportError:
 
 # import any pure python here
 from time_sink_f import time_sink_f
+from time_sink_c import time_sink_c
 
 #
