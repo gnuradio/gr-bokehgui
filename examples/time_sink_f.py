@@ -54,7 +54,8 @@ class top_block(gr.top_block):
         ##################################################
         self.bokehgui_time_sink_f_0.initialize(log_x = True,
                                                legend_list = ['data0',
-                                                              'data1',],
+                                                              'data1',
+                                                             ],
                                                update_time = 100
                                                )
 

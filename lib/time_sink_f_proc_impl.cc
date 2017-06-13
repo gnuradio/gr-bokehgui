@@ -412,18 +412,17 @@ namespace gr {
       }
       // Copy data to buffer
       set_nsamps(len);
-      float* temp_buff[d_nconnections+1];
-      for(int n = 0; n < d_nconnections+1; n++) {
-        temp_buff[n] = new float[len];
-      }
-      std::pair<float**, int> pair = std::pair<float**, int>();
-      pair.first = temp_buff;
-      pair.second = len;
       if(d_buffers.size() == d_queue_size) {
         d_buffers.pop();
       }
+      std::pair<float**, int> pair = std::pair<float**, int>();
+      pair.first = new float*[d_nconnections+1];
+      pair.second = len;
       d_buffers.push(pair);
-      memcpy(d_buffers.front().first[d_nconnections], in, len*sizeof(float));
+      for(int n = 0; n < d_nconnections+1; n++) {
+        d_buffers.back().first[n] = new float[len];
+      }
+      memcpy(d_buffers.back().first[d_nconnections], in, len*sizeof(float));
     }
 
   } /* namespace bokehgui */
