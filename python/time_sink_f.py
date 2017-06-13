@@ -161,7 +161,7 @@ class time_sink_f():
     def enable_tags(self, which = -1, en = True):
         if which == -1:
             for i in range(self.nconnections):
-                enable_tags(i, en)
+                self.enable_tags(i, en)
         else:
             if en:
                 self.tags[which].text_color = 'black'
@@ -198,12 +198,20 @@ class time_sink_f():
     def get_line_width(self, i):
         return self.lines[i].glyph.line_width
     def set_line_style(self, i, style):
+        if style == 'None':
+            self.lines[i].glyph.visible = False
+            return
+        self.lines[i].glyph.visible = True
         # solid, dashed, dotted, dotdash, dashdot
         self.lines[i].glyph.line_dash = style
     def get_line_style(self, i):
+        if not self.lines[i].glyph.visible:
+            return
         # solid, dashed, dotted, dotdash, dashdot
         return self.lines[i].glyph.line_dash
     def set_line_marker(self, i, marker):
+        if marker == 'None':
+            self.lines_markers[i] = (None, None)
         if marker == '*':
             self.lines_markers[i] = (self.plot.asterisk(
                                             x='x', y='y'+str(i),

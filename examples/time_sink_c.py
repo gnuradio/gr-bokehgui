@@ -61,7 +61,7 @@ class top_block(gr.top_block):
         self.bokehgui_time_sink_c_0.set_x_label('Time (s)')
         self.bokehgui_time_sink_c_0.set_y_label('Value')
         self.bokehgui_time_sink_c_0.set_line_color(0, 'black')
-        self.bokehgui_time_sink_c_0.set_line_color(1, 'red')
+        self.bokehgui_time_sink_c_0.set_line_color(1, 'darkred')
         self.bokehgui_time_sink_c_0.set_line_color(2, 'green')
         self.bokehgui_time_sink_c_0.set_line_style(1, 'dashed')
         self.bokehgui_time_sink_c_0.set_line_style(2, 'dotdash')
