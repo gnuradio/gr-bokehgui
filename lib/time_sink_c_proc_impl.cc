@@ -92,7 +92,7 @@ namespace gr {
       gr::thread::scoped_lock lock(d_setlock);
       if(!d_buffers.size()) {
         *size = 0;
-        *nrows = 0;
+        *nrows = 2*d_nconnections + 3;
         return;
       }
       *nrows = 2*d_nconnections + 3;

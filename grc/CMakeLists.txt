@@ -17,7 +17,6 @@
 # the Free Software Foundation, Inc., 51 Franklin Street,
 # Boston, MA 02110-1301, USA.
 
-# install(FILES
-#     bokehgui_time_sink_f_proc.xml
-#     bokehgui_time_sink_f.xml DESTINATION share/gnuradio/grc/blocks
-# )
+install(FILES
+  bokehgui_time_sink_x.xml DESTINATION share/gnuradio/grc/blocks
+)
