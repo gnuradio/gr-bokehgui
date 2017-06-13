@@ -186,7 +186,7 @@ namespace gr {
             std::vector<gr::tag_t> tags;
             get_tags_in_range(tags, n, nr, nr + nitems);
             for(size_t t = 0; t < tags.size(); t++) {
-              tags[t].offset = tags[t].offset - nr - d_start;
+              tags[t].offset = tags[t].offset - nr - d_start - 1;
             }
             tag_buff.push_back(tags);
           }
@@ -332,7 +332,7 @@ namespace gr {
         // channel number, and slope direction
         if(_test_trigger_slope(&in[trigger_index])) {
           d_triggered = true;
-          int start = trigger_index - d_trigger_delay;
+          d_start = trigger_index - d_trigger_delay;
           d_trigger_count = 0;
           // _adjust_tags(-start);
           break;

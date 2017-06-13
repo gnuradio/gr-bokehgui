@@ -38,12 +38,12 @@ class qa_time_sink_c (gr_unittest.TestCase):
         original = (1+1j,2+2j,3, 4+3j, 5+4j,6,
                     7+1j, 8+9j, 1-1j, -1+1j, -2-1j, -3+10j,
                     4-1j)
-        src = blocks.vector_source_c(original, False, 1, [])
-
         expected_result = (tuple([i/32000.0 for i in range(len(original))]), original)
 
+        src = blocks.vector_source_c(original, False, 1, [])
         dst = time_sink_c_proc(6, 32000, 'Test', 1)
         self.tb.connect(src, dst)
+
         self.tb.run()
 
         result_data = dst.get_plot_data()
@@ -53,12 +53,11 @@ class qa_time_sink_c (gr_unittest.TestCase):
         self.assertEqual(tuple(np.imag(expected_result[1][0:6])), tuple(result_data[2])) # Check imag data
         self.assertEqual(tuple(np.real(expected_result[1][6:12])), tuple(result_data1[1])) # Check real data
         self.assertEqual(tuple(np.imag(expected_result[1][6:12])), tuple(result_data1[2])) # Check imag data
+
         self.tb.stop()
         self.tb.wait()
-        self.tearDown()
 
     def test_002_t (self):
-        self.setUp()
         src = blocks.vector_source_c(range(100), False, 1, [])
 
         throttle = blocks.throttle(gr.sizeof_gr_complex*1, 1, True)
@@ -73,14 +72,15 @@ class qa_time_sink_c (gr_unittest.TestCase):
         self.tb.connect((throttle,0), (dst,0))
 
         self.tb.run()
+
         result_data = dst.get_plot_data()
         tag_data = dst.get_tags()
 
         self.assertEqual(str(tag_data[0][0].key), "strobe")
         self.assertEqual(str(tag_data[0][0].value), "TEST")
+
         self.tb.stop()
         self.tb.wait()
-        self.tearDown()
 
 if __name__ == '__main__':
     gr_unittest.run(qa_time_sink_c, "qa_time_sink_c.xml")

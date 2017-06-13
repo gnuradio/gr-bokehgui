@@ -31,7 +31,7 @@ class time_sink_c():
     """
     def __init__(self, doc, proc, size,
                  samp_rate, name,
-                 nconnections = 1):
+                 nconnections = 1, is_message = False):
         self.doc = doc
         self.size = size
 	self.samp_rate = samp_rate
@@ -40,6 +40,7 @@ class time_sink_c():
         self.stream = None
         self.plot = None
         self.process = proc
+        self.is_message = is_message
 
     def set_trigger_mode(self, trigger_mode, trigger_slope,
                          level, delay, channel, tag_key):
@@ -76,17 +77,19 @@ class time_sink_c():
                            x_axis_type = x_axis_type)
         data = dict()
         data['x'] = []
-        # TODO: PDU not plotted
+
         for i in range(2*self.nconnections):
             data['y'+str(i)] = []
-        for i in range(self.nconnections):
-            data['tags'+str(i)] = []
+        if not self.is_message:
+            for i in range(self.nconnections):
+                data['tags'+str(i)] = []
         self.stream = ColumnDataSource(data)
 
         self.lines = []
         self.lines_markers = []
         self.legend_list = legend_list[:]
-        self.tags = []
+        if not self.is_message:
+            self.tags = []
         for i in range(2*self.nconnections):
             self.lines.append(self.plot.line(
                                         x='x', y='y'+str(i),
@@ -96,13 +99,14 @@ class time_sink_c():
                                         ))
             self.lines_markers.append((None,None))
 
-            self.tags.append(LabelSet(x='x',y='y'+str(i),
+            if not self.is_message:
+                self.tags.append(LabelSet(x='x',y='y'+str(i),
                                       text='tags'+str(i/2),
                                       level='glyph',
                                       x_offset=5, y_offset=5,
                                       source=self.stream,
                                       render_mode = 'canvas'))
-            self.plot.add_layout(self.tags[i])
+                self.plot.add_layout(self.tags[i])
 
         self.add_custom_tools()
         self.doc.add_root(self.plot)
@@ -112,16 +116,10 @@ class time_sink_c():
 
         self.set_update_time(update_time)
 
-    def clear(self):
-        self.doc.remove_root(self.plot)
-        self.plot = None
-        self.stream = None
-
     def update(self):
         ## Call to receive from buffers
-        is_triggered = self.process.is_triggered()
-        if is_triggered:
-            output_items = self.process.get_plot_data()
+        output_items = self.process.get_plot_data()
+        if not self.is_message:
             tags = self.process.get_tags()
             stream_tags = []
             for i in range(self.nconnections):
@@ -131,17 +129,20 @@ class time_sink_c():
 
                 stream_tags.append(temp_stream_tags[:])
 
-            # TODO: PDU not plotted
-            new_data = dict()
-            for i in range(2*self.nconnections+1):
-                if i == 0:
-                    new_data['x'] = output_items[i]
-                    continue
+        new_data = dict()
+        for i in range(2*self.nconnections+1):
+            if i == 0:
+                new_data['x'] = output_items[i]
+                continue
+            if self.is_message:
+                new_data['y'+str(i-1)] = output_items[i+2]
+            else:
+                new_data['y'+str(i-1)] = output_items[i]
+            if not self.is_message:
                 if (i-1) % 2 == 0:
                     new_data['tags'+str((i-1)/2)] = stream_tags[(i-1)/2]
-                new_data['y'+str(i-1)] = output_items[i]
-            self.stream.stream(new_data, rollover = self.size)
-            return
+        self.stream.stream(new_data, rollover = self.size)
+        return
 
     def set_samp_rate(self, samp_rate):
         self.process.set_samp_rate(samp_rate);

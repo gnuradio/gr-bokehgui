@@ -23,6 +23,7 @@
 #ifndef INCLUDED_BOKEHGUI_TIME_SINK_C_PROC_IMPL_H
 #define INCLUDED_BOKEHGUI_TIME_SINK_C_PROC_IMPL_H
 
+#include <queue>
 #include <bokehgui/time_sink_c_proc.h>
 
 namespace gr {
@@ -31,15 +32,22 @@ namespace gr {
     class time_sink_c_proc_impl : public time_sink_c_proc
     {
      private:
-      int d_size, d_buffer_size;
+      int d_size, d_queue_size;
       double d_samp_rate;
       std::string d_name;
       int d_nconnections;
 
-      int d_index, d_start, d_end;
-      std::vector<float*> d_buffers;
+      // 2D array of size ((2*nconn+2)*nitems). The int presents nitems
+      // define float buffer with PDU message handling
+      // Even integers -> I - part of signal
+      // Odd integers -> Q - part of signal
+      std::queue<std::pair<float**, int> > d_buffers;
       float* d_xbuffers;
-      std::vector<std::vector<gr::tag_t> > d_tags;
+      std::queue<std::vector<std::vector<gr::tag_t> > > d_tags;
+
+      // Used during checking a trigger
+      // Use output from this index
+      int d_start;
 
       // Members used for triggering scope
       trigger_mode d_trigger_mode;
@@ -60,6 +68,7 @@ namespace gr {
       ~time_sink_c_proc_impl();
 
       void get_plot_data (float** output_items, int* nrows, int*size);
+      std::vector<std::vector<gr::tag_t> > get_tags();
 
       // Where all the action really happens
       int work(int noutput_items,
@@ -71,19 +80,16 @@ namespace gr {
       int nsamps() const;
       void reset();
       void _reset();
-      void _adjust_tags(int adj);
-      std::vector<std::vector<gr::tag_t> > get_tags();
+//      void _adjust_tags(int adj);
       void handle_pdus(pmt::pmt_t);
 
       void set_trigger_mode(int mode, int slope, 
                             float level,
                             float delay, int channel,
                             const std::string &tag_key);
-      bool _test_trigger_slope(const float*, const float*) const;
-      void _test_trigger_norm();
-      void _test_trigger_tags();
-      void discard_buffer(int start);
-      bool is_triggered();
+      bool _test_trigger_slope(const gr_complex*) const;
+      void _test_trigger_norm(int, gr_vector_const_void_star);
+      void _test_trigger_tags(int);
     };
   } // namespace bokehgui
 } // namespace gr
