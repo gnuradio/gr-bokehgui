@@ -39,11 +39,12 @@ class qa_time_sink_f (gr_unittest.TestCase):
                     7,8,9,10,11,12,
                     13,14,15,16,17,
                     18,)
-        src = blocks.vector_source_f(original, False, 1, [])
-
         expected_result = (tuple([i/32000.0 for i in range(len(original))]), original)
 
+        src = blocks.vector_source_f(original, False, 1, [])
+
         dst = time_sink_f_proc(6, 32000, 'Test', 1)
+
         self.tb.connect(src, dst)
         self.tb.run()
 
@@ -54,12 +55,11 @@ class qa_time_sink_f (gr_unittest.TestCase):
         self.assertEqual(expected_result[1][0:6], tuple(result_data[1]))
         self.assertEqual(expected_result[1][6:12], tuple(result_data1[1]))
         self.assertEqual(expected_result[1][12:18], tuple(result_data2[1]))
+
         self.tb.stop()
         self.tb.wait()
-        self.tearDown()
 
     def test_002_t (self):
-        self.setUp()
         src = blocks.vector_source_f(range(100), False, 1, [])
 
         throttle = blocks.throttle(gr.sizeof_float*1, 1, True)
@@ -74,13 +74,15 @@ class qa_time_sink_f (gr_unittest.TestCase):
         self.tb.connect((throttle,0), (dst,0))
 
         self.tb.run()
+
         result_data = dst.get_plot_data()
         tag_data = dst.get_tags()
+
         self.assertEqual(str(tag_data[0][0].key), "strobe")
         self.assertEqual(str(tag_data[0][0].value), "TEST")
+
         self.tb.stop()
         self.tb.wait()
-        self.tearDown()
 
 if __name__ == '__main__':
     gr_unittest.run(qa_time_sink_f, "qa_time_sink_f.xml")

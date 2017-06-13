@@ -45,33 +45,27 @@ namespace gr {
       : sync_block("time_sink_f_proc",
                    io_signature::make(0, nconnections, sizeof(float)),
                    io_signature::make(0, 0, 0)),
-        d_size(size), d_buffer_size(3*size), d_samp_rate(samp_rate), d_name(name),
+        d_size(size), d_samp_rate(samp_rate), d_name(name),
         d_nconnections(nconnections)
     {
+      d_queue_size = 10;
+      d_start = 0;
+      d_buffers = std::queue<std::pair<float**, int> > ();
+
       // setup PDU handling input port
       message_port_register_in(pmt::mp("in"));
       set_msg_handler(pmt::mp("in"),
                       boost::bind(&time_sink_f_proc_impl::handle_pdus, this, _1));
 
-      // +1 for the PDU buffer
-      for (int n = 0; n < d_nconnections + 1; n++) {
-        d_buffers.push_back((float*)volk_malloc(d_buffer_size*sizeof(float), volk_get_alignment()));
-        memset(d_buffers[n], 0, d_buffer_size*sizeof(float));
-      }
       d_xbuffers = (float*)volk_malloc(d_size*sizeof(float), volk_get_alignment());
       for (int i = 0; i < d_size; i++) {
         d_xbuffers[i] = i/samp_rate;
       }
+
       const int alignment_multiple = volk_get_alignment() / sizeof(float);
       set_alignment(std::max(1, alignment_multiple));
 
-      d_tags = std::vector< std::vector<gr::tag_t> >(d_nconnections);
-
       set_output_multiple(d_size);
-
-      d_start = 0;
-      d_end = d_buffer_size;
-      d_index = 0;
 
       set_trigger_mode(static_cast<int>(TRIG_MODE_FREE), static_cast<int>(TRIG_SLOPE_POS), 0.0, 0.0, 0, "");
 
@@ -84,93 +78,122 @@ namespace gr {
      */
     time_sink_f_proc_impl::~time_sink_f_proc_impl()
     {
-      for(int n = 0; n < d_nconnections; n++) {
-        volk_free(d_buffers[n]);
-      }
+      while(!d_buffers.empty())
+        d_buffers.pop();
       volk_free(d_xbuffers);
+      while(!d_tags.empty())
+        d_tags.pop();
     }
 
     void
     time_sink_f_proc_impl::get_plot_data(float** output_items, int* nrows, int* size) {
       gr::thread::scoped_lock lock(d_setlock);
-      if (d_index < d_size)
+      if(!d_buffers.size()) {
         *size = 0;
-      else
-        *size = d_size;
+        *nrows = 0;
+        return;
+      }
       *nrows = d_nconnections + 2;
+      *size = d_buffers.front().second;
+
       float* arr = (float*)volk_malloc((*nrows)*(*size)*sizeof(float), volk_get_alignment());
 
       for (int n=0; n < *nrows; n++) {
         for (int i = 0; i < *size; i++) {
-          if (n == 0)
-            arr[n*(*size)+i] = d_xbuffers[i];
-          else
-            arr[n*(*size)+i] = d_buffers[n-1][i];
+          if (n == 0) {
+            if (*size < d_size)
+              arr[n*(*size)+i] = d_xbuffers[i+(d_size - *size)];
+            else
+              arr[n*(*size)+i] = d_xbuffers[i];
+          }
+          else {
+            arr[n*(*size)+i] = d_buffers.front().first[n-1][i];
+          }
         }
       }
       *output_items = arr;
-      if(*size) {
-        for (int n=0; n < d_nconnections+1; n++) {
-          memmove(&d_buffers[n][0], &d_buffers[n][*size], (d_end - *size)*sizeof(float));
-        }
-      }
-      d_index -= *size;
+      d_buffers.pop();
       return;
     }
 
     std::vector<std::vector<gr::tag_t> >
     time_sink_f_proc_impl::get_tags(void) {
       gr::thread::scoped_lock lock(d_setlock);
-
-      std::vector<std::vector<gr::tag_t> > tags = std::vector<std::vector<gr::tag_t> > (d_nconnections);
-
-      for(int i = 0; i < d_nconnections; i++) {
-        // Not sure if tags are in ascending order
-        // Hence, list of indexes of tags sent to plot
-        std::vector<int> temp_tag_lst = std::vector<int> ();
-        for(int j = 0; j < d_tags[i].size(); j++) {
-          if(d_tags[i][j].offset < d_size) {
-            tags[i].push_back(d_tags[i][j]);
-            temp_tag_lst.push_back(j);
-          }
-          else {
-            d_tags[i][j].offset -= d_size;
-          }
-        }
-
-        // Delete the sent tags from the d_tags
-        for(int j = 0; j < temp_tag_lst.size(); j++) {
-          // -j to consider already deleted elements
-          // in this loop
-          d_tags[i].erase (d_tags[i].begin() + temp_tag_lst[j] - j);
-        }
-        temp_tag_lst.clear();
+      if(!d_tags.size()) {
+        std::vector<std::vector<gr::tag_t> > tags = std::vector<std::vector<gr::tag_t> >(d_nconnections);
+        return tags;
       }
+
+      std::vector<std::vector<gr::tag_t> > tags = d_tags.front();
+      d_tags.pop();
       return tags;
     }
 
-    int time_sink_f_proc_impl::work (int noutput_items,
+    int
+    time_sink_f_proc_impl::work (int noutput_items,
               gr_vector_const_void_star &input_items,
               gr_vector_void_star &output_items) {
       gr::thread::scoped_lock lock(d_setlock);
-      int n=0;
-      const float *in;
 
-      int nfill = d_end - d_index; // Room left in buffers
-      int nitems = std::min(nfill, noutput_items);
-      for (int n=0; n<d_nconnections; n++) {
-        in = (const float*) input_items[n];
-        memcpy(&d_buffers[n][d_index], &in[1], nitems*sizeof(float));
-        uint64_t nr = nitems_read(n);
-        std::vector<gr::tag_t> tags;
-        get_tags_in_range(tags, n, nr, nr + nitems);
-        for(size_t t = 0; t < tags.size(); t++) {
-          tags[t].offset = tags[t].offset - nr + (d_index-d_start-1);
+      const float *in;
+      d_start = 0;
+      int nitems = std::min(d_size, noutput_items);
+      // If auto, normal, or tag trigger, look for the trigger
+      if ((d_trigger_mode != TRIG_MODE_FREE) && !d_triggered) {
+        // trigger off a tag key (first one found)
+        if(d_trigger_mode == TRIG_MODE_TAG) {
+          _test_trigger_tags(nitems);
         }
-        d_tags[n].insert(d_tags[n].end(), tags.begin(), tags.end());
+        // Normal or Auto trigger
+        else {
+          _test_trigger_norm(nitems, input_items);
+        }
       }
-      d_index += nitems;
-      return nitems;
+      // The d_triggered and d_start is set.
+      // We will now check if triggered.
+      // If it is triggered then we check the trigger index = d_start.
+      // We will start looking from d_start to the end of input_items
+      // First check if d_start+d_size < noutput_items
+      if(d_triggered) {
+        if (d_start + d_size > noutput_items) {
+          // Since, there is already a trigger at d_start, the triggers for next d_size is irrelevant.
+          // Hence, we can replace nitems by noutput_items
+          nitems = noutput_items - d_start;
+        }
+        if(d_buffers.size() == d_queue_size) {
+          d_buffers.pop();
+          d_tags.pop();
+        }
+
+        std::pair<float**, int> pair_buff;
+        pair_buff.first = new float*[d_nconnections + 1];
+        pair_buff.second = nitems;
+        d_buffers.push(pair_buff);
+
+        std::vector<std::vector<gr::tag_t> > tag_buff;
+        for (int n=0; n < d_nconnections + 1; n++) {
+          if (n == d_nconnections) {
+            d_buffers.back().first[n] = new float[nitems];
+            memset(d_buffers.back().first[n], 0, nitems*sizeof(float));
+          }
+          else {
+            d_buffers.back().first[n] = new float[nitems];
+            in = (const float*) input_items[n];
+            memset(d_buffers.back().first[n], 0, nitems*sizeof(float));
+            memcpy(d_buffers.back().first[n], &in[d_start+1], nitems*sizeof(float));
+
+            uint64_t nr = nitems_read(n);
+            std::vector<gr::tag_t> tags;
+            get_tags_in_range(tags, n, nr, nr + nitems);
+            for(size_t t = 0; t < tags.size(); t++) {
+              tags[t].offset = tags[t].offset - nr - d_start;
+            }
+            tag_buff.push_back(tags);
+          }
+        }
+        d_tags.push(tag_buff);
+      }
+      return nitems + d_start;
     }
 
     void
@@ -214,18 +237,15 @@ namespace gr {
         // Set new size and rest buffer indexs.
         // Throws away current data!
         d_size = newsize;
-        d_buffer_size = 3*d_size;
 
         // Resize buffers and relapce data
         volk_free(d_xbuffers);
-        d_xbuffers = (float*)volk_malloc(d_buffer_size*sizeof(float), volk_get_alignment());
+        d_xbuffers = (float*)volk_malloc(d_size*sizeof(float), volk_get_alignment());
         for (int i = 0; i < d_size; i++)
           d_xbuffers[i] = i/d_samp_rate;
-        for (int n = 0; n < d_nconnections; n++) {
-      	  volk_free(d_buffers[n]);
-      	  d_buffers[n] = (float*)volk_malloc(d_buffer_size*sizeof(float),
-                                                    volk_get_alignment());
-      	  memset(d_buffers[n], 0, d_buffer_size*sizeof(float));
+
+      	while(!d_buffers.empty()) {
+          d_buffers.pop();
         }
 
         // If delay was set beyond the new boundary, pull it back.
@@ -263,42 +283,26 @@ namespace gr {
     void
     time_sink_f_proc_impl::_reset()
     {
-      if(d_trigger_delay) {
-        for(int n = 0; n < d_nconnections; n++) {
-          // Move the tail of the buffers to the front. This section
-          // represents data that might have to be plotted again if a
-          // trigger occurs and we have a trigger delay set.  The tail
-          // section is between (d_end-d_trigger_delay) and d_end.
-          memmove(d_buffers[n], &d_buffers[n][d_end-d_trigger_delay], d_trigger_delay*sizeof(float));
-          // Also move the offsets of any tags that occur in the tail
-          // section so they would be plotted again, too.
-          std::vector<gr::tag_t> tmp_tags;
-          for(size_t t = 0; t < d_tags[n].size(); t++) {
-            if(d_tags[n][t].offset > (uint64_t)(d_size - d_trigger_delay)) {
-              d_tags[n][t].offset = d_tags[n][t].offset - (d_size - d_trigger_delay);
-              tmp_tags.push_back(d_tags[n][t]);
-            }
+      // TODO: Different from QT GUI:
+      // Ignored if d_trigger_delay condition
+      // Don't feel it is necessary in current scenario
+      while(d_tags.size()) {
+          for(int i = 0; i < d_tags.front().size(); i++) {
+              d_tags.front()[i].clear();
           }
-          d_tags[n] = tmp_tags;
-        }
-      }
-      // Otherwise clear tags and reset buffer indexes
-      else {
-        for (int n = 0; n < d_nconnections; n++) {
-          d_tags[n].clear();
-        }
-        d_start = 0;
-        d_end = d_buffer_size;
+          d_tags.pop();
       }
 
-      // Reset the trigger. If in free running mode, ignore the
-      // trigger delay and always set trigger to true
+      while(!d_buffers.empty()) {
+        d_buffers.pop();
+      }
+
+      // Reset the trigger. If in free running mode,
+      // always set trigger to true
       if(d_trigger_mode == TRIG_MODE_FREE) {
-        d_index = 0;
         d_triggered = true;
       }
       else {
-        d_index = d_trigger_delay;
         d_triggered = false;
       }
     }
@@ -317,10 +321,10 @@ namespace gr {
     }
 
     void
-    time_sink_f_proc_impl::_test_trigger_norm()
+    time_sink_f_proc_impl::_test_trigger_norm(int nitems, gr_vector_const_void_star inputs)
     {
       int trigger_index;
-      const float *in = (const float*)d_buffers[d_trigger_channel];
+      const float *in = (const float*)inputs[d_trigger_channel];
       for(trigger_index = 0; trigger_index < d_size; trigger_index++) {
         d_trigger_count++;
 
@@ -329,9 +333,8 @@ namespace gr {
         if(_test_trigger_slope(&in[trigger_index])) {
           d_triggered = true;
           int start = trigger_index - d_trigger_delay;
-          discard_buffer(start);
           d_trigger_count = 0;
-          _adjust_tags(-start);
+          // _adjust_tags(-start);
           break;
         }
       }
@@ -341,82 +344,40 @@ namespace gr {
       if((d_trigger_mode == TRIG_MODE_AUTO) && (d_trigger_count > d_size)) {
         d_triggered = true;
         d_trigger_count = 0;
+        d_start = 0;
       }
     }
 
     void
-    time_sink_f_proc_impl::_test_trigger_tags()
+    time_sink_f_proc_impl::_test_trigger_tags(int nitems)
     {
       int trigger_index;
-
+      uint64_t nr = nitems_read(d_trigger_channel);
       std::vector<gr::tag_t> tags;
-      // Can't use get_tags_in_range() because it uses input from a port
-      // In this case, since the call is from Python, we will check for
-      // tags.offset < d_size from tags buffer!
-      for(int j = 0; j < d_tags[d_trigger_channel].size(); j++) {
-        if(d_tags[d_trigger_channel][j].offset < d_size) {
-          if (pmt::eqv(d_trigger_tag_key, d_tags[d_trigger_channel][j].key))
-            tags.push_back(d_tags[d_trigger_channel][j]);
-        }
-      }
-
+      get_tags_in_range(tags, d_trigger_channel,
+                        nr, nr + nitems + 1,
+                        d_trigger_tag_key);
       if(tags.size() > 0) {
-        trigger_index = tags[0].offset;
+        trigger_index = tags[0].offset - nr;
         int start = trigger_index - d_trigger_delay - 1;
         if (start >= 0) {
             d_triggered = true;
-            discard_buffer(start);
+            d_start = start;
             d_trigger_count = 0;
-            _adjust_tags(-d_start);
+//            _adjust_tags(-d_start);
         }
       }
     }
 
-    void
-    time_sink_f_proc_impl::discard_buffer(int start) {
-      // Function used by tag_trigger_check. Discard initial
-      // buffer because initial tags were discarded
-      for (int i = 0; i < d_nconnections; i++) {
-        memcpy(&d_buffers[i], &d_buffers[i][start], (d_index - d_size)*sizeof(float));
-      }
-    }
-
-    bool
-    time_sink_f_proc_impl::is_triggered() {
-      // This function will be called by Python just before streaming the data
-      // Returns a bool value if trigger is on or not
-      // Hence, there will not be the data change! Python will call for the
-      // data later. The functions called by this function will check for
-      // first d_size data of data_buffer or tags with offset less than d_size in tag_buffer
-      // First of all, return False if there is not at least d_size data
-      if(d_index < d_size) {
-        return false;
-      }
-
-      // If auto, normal or tag trigger, look for the trigger
-      if((d_trigger_mode != TRIG_MODE_FREE) && !d_triggered) {
-        //trigger off a tag key (first one found)
-        if(d_trigger_mode == TRIG_MODE_TAG) {
-          _test_trigger_tags();
-        }
-        // Normal or Auto trigger
-        else {
-          _test_trigger_norm();
-        }
-      }
-      else
-        return true;
-    }
-
-    void
-    time_sink_f_proc_impl::_adjust_tags(int adj)
-    {
-      for(size_t n = 0; n < d_tags.size(); n++) {
-        for(size_t t = 0; t < d_tags[n].size(); t++) {
-          d_tags[n][t].offset += adj;
-        }
-      }
-    }
+//    void
+//    time_sink_f_proc_impl::_adjust_tags(int adj)
+//    {
+//      for(size_t n = 0; n < d_tags.size(); n++) {
+//        for(size_t t = 0; t < d_tags[n].size(); t++) {
+//          d_tags[n][t].offset += adj;
+//        }
+//      }
+//    }
 
     void
     time_sink_f_proc_impl::handle_pdus(pmt::pmt_t msg)
@@ -451,11 +412,18 @@ namespace gr {
       }
       // Copy data to buffer
       set_nsamps(len);
-      memcpy(d_buffers[d_nconnections], in, len);
-      // FIXME:
-      // Call to python to plot
-      // Things to note: No Tags in PDU. So, get_plot_data and
-      // get_tags will have different rows
+      float* temp_buff[d_nconnections+1];
+      for(int n = 0; n < d_nconnections+1; n++) {
+        temp_buff[n] = new float[len];
+      }
+      std::pair<float**, int> pair = std::pair<float**, int>();
+      pair.first = temp_buff;
+      pair.second = len;
+      if(d_buffers.size() == d_queue_size) {
+        d_buffers.pop();
+      }
+      d_buffers.push(pair);
+      memcpy(d_buffers.front().first[d_nconnections], in, len*sizeof(float));
     }
 
   } /* namespace bokehgui */
