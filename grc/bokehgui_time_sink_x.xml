@@ -45,8 +45,8 @@ self.$(id)_plot.initialize(log_x = $(xlog),
                            update_time = $update_time,
                            legend_list = legend_list)
 self.$(id)_plot.set_y_axis([$ymin, $ymax])
-self.$(id)_plot.set_y_label($ylabel + '(' +$yunit+')')
-self.$(id)_plot.set_x_label($xlabel + '(' +$xunit+')')
+self.$(id)_plot.set_y_label($ylabel + ('(' +$yunit+')') if $yunit != "" else $ylabel)
+self.$(id)_plot.set_x_label($xlabel + ('(' +$xunit+')') if $xunit != "" else $xlabel)
 
 self.$(id)_plot.enable_tags(-1, $entags)
 
@@ -502,51 +502,51 @@ for i in xrange(#if $type.t == 'message' then 1 else $nconnections#):
     </option>
     <option>
       <name>Circle</name>
-      <key>o</key>
+      <key>'o'</key>
     </option>
     <option>
       <name>Star</name>
-      <key>*</key>
+      <key>'*'</key>
     </option>
     <option>
       <name>Circle Plus</name>
-      <key>o+</key>
+      <key>'o+'</key>
     </option>
     <option>
       <name>Plus</name>
-      <key>+</key>
+      <key>'+'</key>
     </option>
     <option>
       <name>Diamond</name>
-      <key>d</key>
+      <key>'d'</key>
     </option>
     <option>
       <name>Diamond Plus</name>
-      <key>d+</key>
+      <key>'d+'</key>
     </option>
     <option>
       <name>Down Triangle</name>
-      <key>v</key>
+      <key>'v'</key>
     </option>
     <option>
       <name>Square</name>
-      <key>s</key>
+      <key>'s'</key>
     </option>
     <option>
       <name>Square Plus</name>
-      <key>s+</key>
+      <key>'s+'</key>
     </option>
     <option>
       <name>Square Cross</name>
-      <key>sx</key>
+      <key>'sx'</key>
     </option>
     <option>
       <name>Triangle</name>
-      <key>^</key>
+      <key>'^'</key>
     </option>
     <option>
       <name>X-Cross</name>
-      <key>x</key>
+      <key>'x'</key>
     </option>
     <tab>Config</tab>
   </param>
