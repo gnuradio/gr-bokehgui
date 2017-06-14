@@ -192,6 +192,8 @@ namespace gr {
           }
         }
         d_tags.push(tag_buff);
+        if(d_trigger_mode != TRIG_MODE_FREE)
+          d_triggered = false;
       }
       return nitems + d_start;
     }
