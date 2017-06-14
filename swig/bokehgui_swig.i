@@ -42,7 +42,7 @@ if(PyArray_API == NULL)
 %template(tagDoubleVector) std::vector<std::vector<gr::tag_t> >;
 
 
-%apply (float** ARGOUTVIEWM_ARRAY2, int* DIM1, int* DIM2) {(float **output_items, int* nrows, int* size)};
+%apply (float** ARGOUTVIEW_ARRAY2, int* DIM1, int* DIM2) {(float **output_items, int* nrows, int* size)};
 
 %include "bokehgui/time_sink_f_proc.h"
 %include "bokehgui/time_sink_c_proc.h"
