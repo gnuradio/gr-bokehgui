@@ -3,6 +3,7 @@
   <name>Bokeh GUI Time Sink</name>
   <key>bokehgui_time_sink_x</key>
   <category>[Bokeh GUI]</category>
+  <import>import bokehgui</import>
   <make>#set $win = 'self._%s_win'%$id
 bokehgui.$(type.fcn)(
     $size, \#size
