@@ -39,7 +39,7 @@ class qa_time_sink_f (gr_unittest.TestCase):
                     7,8,9,10,11,12,
                     13,14,15,16,17,
                     18,)
-        expected_result = (tuple([i/32000.0 for i in range(len(original))]), original)
+        expected_result = original
 
         src = blocks.vector_source_f(original, False, 1, [])
 
@@ -52,21 +52,21 @@ class qa_time_sink_f (gr_unittest.TestCase):
         result_data1 = dst.get_plot_data()
         result_data2 = dst.get_plot_data()
 
-        self.assertEqual(expected_result[1][0:6], tuple(result_data[1]))
-        self.assertEqual(expected_result[1][6:12], tuple(result_data1[1]))
-        self.assertEqual(expected_result[1][12:18], tuple(result_data2[1]))
+        self.assertEqual(expected_result[0:6], tuple(result_data[0]))
+        self.assertEqual(expected_result[6:12], tuple(result_data1[0]))
+        self.assertEqual(expected_result[12:18], tuple(result_data2[0]))
 
         self.tb.stop()
         self.tb.wait()
 
     def test_002_t (self):
-        src = blocks.vector_source_f(range(100), False, 1, [])
+        src = blocks.vector_source_f(range(12), False, 1, [])
 
         throttle = blocks.throttle(gr.sizeof_float*1, 1, True)
-        tag = blocks.tags_strobe(gr.sizeof_float*1, pmt.intern("TEST"), 20, pmt.intern("strobe"))
+        tag = blocks.tags_strobe(gr.sizeof_float*1, pmt.intern("TEST"), 2, pmt.intern("strobe"))
         add = blocks.add_vff(1)
 
-        dst = time_sink_f_proc(50, 1, 'Test', 1)
+        dst = time_sink_f_proc(6, 1, 'Test', 1)
 
         self.tb.connect((src,0), (add,0))
         self.tb.connect((tag,0), (add,1))

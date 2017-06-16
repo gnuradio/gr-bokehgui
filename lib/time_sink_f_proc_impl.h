@@ -38,7 +38,6 @@ namespace gr {
 
       // 2D array of size (nconn*nitems). The int represents nitems
       std::queue<std::pair<float**, int> > d_buffers;
-      float* d_xbuffers;
       std::queue<std::vector<std::vector<gr::tag_t> > > d_tags;
 
       // Used during checking a trigger

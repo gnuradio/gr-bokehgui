@@ -55,13 +55,8 @@ namespace gr {
       set_msg_handler(pmt::mp("in"),
                       boost::bind(&time_sink_c_proc_impl::handle_pdus, this, _1));
 
-      d_xbuffers = (float*)volk_malloc(d_size*sizeof(float), volk_get_alignment());
-      for (int i = 0; i < d_size; i++) {
-        d_xbuffers[i] = i/samp_rate;
-      }
-
       // Set alignment properties for VOLK
-      const int alignment_multiple = volk_get_alignment() / sizeof(float);
+      const int alignment_multiple = volk_get_alignment() / sizeof(gr_complex);
       set_alignment(std::max(1, alignment_multiple));
 
       set_output_multiple(d_size);
@@ -76,7 +71,6 @@ namespace gr {
     {
       while(!d_buffers.empty())
         d_buffers.pop();
-      volk_free(d_xbuffers);
       while(!d_tags.empty())
         d_tags.pop();
     }
@@ -229,11 +223,6 @@ namespace gr {
         d_size = newsize;
 
         // Resize buffers and replace data
-        volk_free(d_xbuffers);
-        d_xbuffers = (float*) volk_malloc(d_size*sizeof(float), volk_get_alignment());
-        for (int i = 0; i < d_size; i++)
-          d_xbuffers[i] = i/d_samp_rate;
-
         while(!d_buffers.empty()) {
           d_buffers.pop();
         }
@@ -253,8 +242,6 @@ namespace gr {
     {
       gr::thread::scoped_lock lock(d_setlock);
       d_samp_rate = samp_rate;
-      for (int i = 0; i < d_size; i++)
-        d_xbuffers[i] = i/d_samp_rate;
     }
 
     int

@@ -130,17 +130,19 @@ class time_sink_f():
 
         new_data = dict()
         for i in range(self.nconnections + 1):
-            if i == 0:
-                new_data['x'] = output_items[i]
+            if (not self.is_message) and i == self.nconnections:
                 continue
-            if self.is_message:
-                new_data['y'+str(i-1)] = output_items[i+1]
-            else:
-                new_data['y'+str(i-1)] = output_items[i]
+            new_data['y'+str(i)] = output_items[i]
             if not self.is_message:
-                new_data['tags'+str(i-1)] = stream_tags[i-1]
+                new_data['tags'+str(i)] = stream_tags[i]
+        if self.is_message:
+            self.size = len(new_data['y0'])
+        new_data['x'] = self.values_x()
         self.stream.stream(new_data, rollover = self.size)
         return
+
+    def values_x(self):
+        return [i/float(self.samp_rate) for i in range(self.size)]
 
     def set_samp_rate(self, samp_rate):
         self.process.set_samp_rate(samp_rate);

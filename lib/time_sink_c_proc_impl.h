@@ -42,7 +42,6 @@ namespace gr {
       // Even integers -> I - part of signal
       // Odd integers -> Q - part of signal
       std::queue<std::pair<gr_complex**, int> > d_buffers;
-      float* d_xbuffers;
       std::queue<std::vector<std::vector<gr::tag_t> > > d_tags;
 
       // Used during checking a trigger
