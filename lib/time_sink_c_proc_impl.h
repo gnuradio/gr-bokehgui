@@ -41,7 +41,7 @@ namespace gr {
       // define float buffer with PDU message handling
       // Even integers -> I - part of signal
       // Odd integers -> Q - part of signal
-      std::queue<std::pair<float**, int> > d_buffers;
+      std::queue<std::pair<gr_complex**, int> > d_buffers;
       float* d_xbuffers;
       std::queue<std::vector<std::vector<gr::tag_t> > > d_tags;
 
@@ -67,7 +67,7 @@ namespace gr {
       time_sink_c_proc_impl(int size, double samp_rate, const std::string &name, int nconnections);
       ~time_sink_c_proc_impl();
 
-      void get_plot_data (float** output_items, int* nrows, int*size);
+      void get_plot_data (gr_complex** output_items, int* nrows, int*size);
       std::vector<std::vector<gr::tag_t> > get_tags();
 
       // Where all the action really happens

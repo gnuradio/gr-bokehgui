@@ -37,8 +37,8 @@ class qa_time_sink_c (gr_unittest.TestCase):
     def test_001_t (self):
         original = (1+1j,2+2j,3, 4+3j, 5+4j,6,
                     7+1j, 8+9j, 1-1j, -1+1j, -2-1j, -3+10j,
-                    4-1j)
-        expected_result = (tuple([i/32000.0 for i in range(len(original))]), original)
+                   )
+        expected_result = original
 
         src = blocks.vector_source_c(original, False, 1, [])
         dst = time_sink_c_proc(6, 32000, 'Test', 1)
@@ -49,22 +49,20 @@ class qa_time_sink_c (gr_unittest.TestCase):
         result_data = dst.get_plot_data()
         result_data1 = dst.get_plot_data()
 
-        self.assertEqual(tuple(np.real(expected_result[1][0:6])), tuple(result_data[1])) # Check real data
-        self.assertEqual(tuple(np.imag(expected_result[1][0:6])), tuple(result_data[2])) # Check imag data
-        self.assertEqual(tuple(np.real(expected_result[1][6:12])), tuple(result_data1[1])) # Check real data
-        self.assertEqual(tuple(np.imag(expected_result[1][6:12])), tuple(result_data1[2])) # Check imag data
+        self.assertEqual(tuple(expected_result[0:6]), tuple(result_data[0]))
+        self.assertEqual(tuple(expected_result[6:12]), tuple(result_data1[0]))
 
         self.tb.stop()
         self.tb.wait()
 
     def test_002_t (self):
-        src = blocks.vector_source_c(range(100), False, 1, [])
+        src = blocks.vector_source_c(range(12), False, 1, [])
 
         throttle = blocks.throttle(gr.sizeof_gr_complex*1, 1, True)
-        tag = blocks.tags_strobe(gr.sizeof_gr_complex*1, pmt.intern("TEST"), 20, pmt.intern("strobe"))
+        tag = blocks.tags_strobe(gr.sizeof_gr_complex*1, pmt.intern("TEST"), 2, pmt.intern("strobe"))
         add = blocks.add_vcc(1)
 
-        dst = time_sink_c_proc(50, 1, 'Test', 1)
+        dst = time_sink_c_proc(6, 1, 'Test', 1)
 
         self.tb.connect((src,0), (add,0))
         self.tb.connect((tag,0), (add,1))
