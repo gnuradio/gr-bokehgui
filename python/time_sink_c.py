@@ -100,7 +100,7 @@ class time_sink_c():
             self.lines_markers.append((None,None))
 
             if not self.is_message:
-                self.tags.append(LabelSet(x='x',y='y'+str(i),
+                self.tags.append(LabelSet(x='x', y='y'+str(i),
                                       text='tags'+str(i/2),
                                       level='glyph',
                                       x_offset=5, y_offset=5,
@@ -123,26 +123,29 @@ class time_sink_c():
             tags = self.process.get_tags()
             stream_tags = []
             for i in range(self.nconnections):
-                temp_stream_tags = ["" for k in range(len(output_items[2*i]))]
+                temp_stream_tags = ["" for k in range(len(output_items[i]))]
                 for j in range(len(tags[i])):
                     temp_stream_tags[tags[i][j].offset] = str(tags[i][j].key) + ":" + str(tags[i][j].value)
 
                 stream_tags.append(temp_stream_tags[:])
 
         new_data = dict()
-        for i in range(2*self.nconnections+1):
-            if i == 0:
-                new_data['x'] = output_items[i]
+        for i in range(self.nconnections+1):
+            if (not self.is_message) and i == self.nconnections:
                 continue
-            if self.is_message:
-                new_data['y'+str(i-1)] = output_items[i+2]
-            else:
-                new_data['y'+str(i-1)] = output_items[i]
+            new_data['y'+str(2*i+0)] = output_items[i].real
+            new_data['y'+str(2*i+1)] = output_items[i].imag
+
             if not self.is_message:
-                if (i-1) % 2 == 0:
-                    new_data['tags'+str((i-1)/2)] = stream_tags[(i-1)/2]
+                new_data['tags'+str(i)] = stream_tags[i]
+        if self.is_message:
+            self.size = len(new_data['y0'])
+        new_data['x'] = self.values_x()
         self.stream.stream(new_data, rollover = self.size)
         return
+
+    def values_x(self):
+        return [i/float(self.samp_rate) for i in range(self.size)]
 
     def set_samp_rate(self, samp_rate):
         self.process.set_samp_rate(samp_rate);

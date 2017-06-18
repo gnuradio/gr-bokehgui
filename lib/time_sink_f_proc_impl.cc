@@ -57,11 +57,6 @@ namespace gr {
       set_msg_handler(pmt::mp("in"),
                       boost::bind(&time_sink_f_proc_impl::handle_pdus, this, _1));
 
-      d_xbuffers = (float*)volk_malloc(d_size*sizeof(float), volk_get_alignment());
-      for (int i = 0; i < d_size; i++) {
-        d_xbuffers[i] = i/samp_rate;
-      }
-
       const int alignment_multiple = volk_get_alignment() / sizeof(float);
       set_alignment(std::max(1, alignment_multiple));
 
@@ -80,7 +75,6 @@ namespace gr {
     {
       while(!d_buffers.empty())
         d_buffers.pop();
-      volk_free(d_xbuffers);
       while(!d_tags.empty())
         d_tags.pop();
     }
@@ -90,26 +84,16 @@ namespace gr {
       gr::thread::scoped_lock lock(d_setlock);
       if(!d_buffers.size()) {
         *size = 0;
-        *nrows = d_nconnections + 2;
+        *nrows = d_nconnections + 1;
         return;
       }
-      *nrows = d_nconnections + 2;
+      *nrows = d_nconnections + 1;
       *size = d_buffers.front().second;
 
       float* arr = (float*)volk_malloc((*nrows)*(*size)*sizeof(float), volk_get_alignment());
 
       for (int n=0; n < *nrows; n++) {
-        for (int i = 0; i < *size; i++) {
-          if (n == 0) {
-            if (*size < d_size)
-              arr[n*(*size)+i] = d_xbuffers[i+(d_size - *size)];
-            else
-              arr[n*(*size)+i] = d_xbuffers[i];
-          }
-          else {
-            arr[n*(*size)+i] = d_buffers.front().first[n-1][i];
-          }
-        }
+        memcpy(&arr[n*(*size)], &d_buffers.front().first[n][0], *size * sizeof(float));
       }
       *output_items = arr;
       d_buffers.pop();
@@ -172,24 +156,22 @@ namespace gr {
 
         std::vector<std::vector<gr::tag_t> > tag_buff;
         for (int n=0; n < d_nconnections + 1; n++) {
+          d_buffers.back().first[n] = new float[nitems];
+          memset(d_buffers.back().first[n], 0, nitems*sizeof(float));
           if (n == d_nconnections) {
-            d_buffers.back().first[n] = new float[nitems];
-            memset(d_buffers.back().first[n], 0, nitems*sizeof(float));
+            continue;
           }
-          else {
-            d_buffers.back().first[n] = new float[nitems];
-            in = (const float*) input_items[n];
-            memset(d_buffers.back().first[n], 0, nitems*sizeof(float));
-            memcpy(d_buffers.back().first[n], &in[d_start+1], nitems*sizeof(float));
+          d_buffers.back().first[n] = new float[nitems];
+          in = (const float*) input_items[n];
+          memcpy(d_buffers.back().first[n], &in[d_start+1], nitems*sizeof(float));
 
-            uint64_t nr = nitems_read(n);
-            std::vector<gr::tag_t> tags;
-            get_tags_in_range(tags, n, nr, nr + nitems);
-            for(size_t t = 0; t < tags.size(); t++) {
-              tags[t].offset = tags[t].offset - nr - d_start - 1;
-            }
-            tag_buff.push_back(tags);
+          uint64_t nr = nitems_read(n);
+          std::vector<gr::tag_t> tags;
+          get_tags_in_range(tags, n, nr, nr + nitems);
+          for(size_t t = 0; t < tags.size(); t++) {
+            tags[t].offset = tags[t].offset - nr - d_start - 1;
           }
+          tag_buff.push_back(tags);
         }
         d_tags.push(tag_buff);
         if(d_trigger_mode != TRIG_MODE_FREE)
@@ -241,11 +223,6 @@ namespace gr {
         d_size = newsize;
 
         // Resize buffers and relapce data
-        volk_free(d_xbuffers);
-        d_xbuffers = (float*)volk_malloc(d_size*sizeof(float), volk_get_alignment());
-        for (int i = 0; i < d_size; i++)
-          d_xbuffers[i] = i/d_samp_rate;
-
       	while(!d_buffers.empty()) {
           d_buffers.pop();
         }
@@ -265,8 +242,6 @@ namespace gr {
     {
       gr::thread::scoped_lock lock(d_setlock);
       d_samp_rate = samp_rate;
-      for (int i = 0; i < d_size; i++)
-        d_xbuffers[i] = i/d_samp_rate;
     }
 
     int

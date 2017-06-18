@@ -52,8 +52,7 @@ class top_block(gr.top_block):
         ##################################################
         # Customizing the plot
         ##################################################
-        self.bokehgui_time_sink_f_0.initialize(log_x = True,
-                                               legend_list = ['data0',
+        self.bokehgui_time_sink_f_0.initialize(legend_list = ['data0',
                                                               'data1',
                                                              ],
                                                update_time = 100

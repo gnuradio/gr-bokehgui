@@ -48,20 +48,15 @@ namespace gr {
     {
       d_queue_size = 10;
       d_start = 0;
-      d_buffers = std::queue<std::pair<float**, int> > ();
+      d_buffers = std::queue<std::pair<gr_complex**, int> > ();
 
       // setup PDU handling input port
       message_port_register_in(pmt::mp("in"));
       set_msg_handler(pmt::mp("in"),
                       boost::bind(&time_sink_c_proc_impl::handle_pdus, this, _1));
 
-      d_xbuffers = (float*)volk_malloc(d_size*sizeof(float), volk_get_alignment());
-      for (int i = 0; i < d_size; i++) {
-        d_xbuffers[i] = i/samp_rate;
-      }
-
       // Set alignment properties for VOLK
-      const int alignment_multiple = volk_get_alignment() / sizeof(float);
+      const int alignment_multiple = volk_get_alignment() / sizeof(gr_complex);
       set_alignment(std::max(1, alignment_multiple));
 
       set_output_multiple(d_size);
@@ -76,7 +71,6 @@ namespace gr {
     {
       while(!d_buffers.empty())
         d_buffers.pop();
-      volk_free(d_xbuffers);
       while(!d_tags.empty())
         d_tags.pop();
     }
@@ -88,14 +82,14 @@ namespace gr {
     }
 
     void
-    time_sink_c_proc_impl::get_plot_data(float** output_items, int* nrows, int* size) {
+    time_sink_c_proc_impl::get_plot_data(gr_complex** output_items, int* nrows, int* size) {
       gr::thread::scoped_lock lock(d_setlock);
       if(!d_buffers.size()) {
         *size = 0;
-        *nrows = 2*d_nconnections + 3;
+        *nrows = d_nconnections + 1;
         return;
       }
-      *nrows = 2*d_nconnections + 3;
+      *nrows = d_nconnections + 1;
       *size = d_buffers.front().second;
 
       // 0th row for xbuffer
@@ -103,19 +97,10 @@ namespace gr {
       // (2*i+2)th row for Q-part of i-th input; 0 <= i < d_nconnections;
       // (2*d_nconnections + 1)th row for I-part of PDU message
       // (2*d_nconnections + 2)th row for Q-part of PDU message
-      float* arr = (float*)volk_malloc((*nrows)*(*size)*sizeof(float), volk_get_alignment());
+      gr_complex* arr = (gr_complex*)volk_malloc((*nrows)*(*size)*sizeof(gr_complex), volk_get_alignment());
 
-      for(int i = 0; i < *size; i++) {
-        if(*size < d_size)
-          arr[i] = d_xbuffers[i + (d_size - *size)];
-        else
-          arr[i] = d_xbuffers[i];
-      }
-
-      for(int n = 1; n < *nrows; n++) {
-        for(int i = 0; i < *size; i++) {
-          arr[n*(*size)+i] = d_buffers.front().first[n-1][i];
-        }
+      for(int n = 0; n < *nrows; n++) {
+        memcpy(&arr[n*(*size)], &d_buffers.front().first[n][0], (*size)*sizeof(gr_complex));
       }
       *output_items = arr;
       d_buffers.pop();
@@ -140,7 +125,6 @@ namespace gr {
         gr_vector_void_star &output_items)
     {
       gr::thread::scoped_lock lock(d_setlock);
-
       const gr_complex *in;
       d_start = 0;
       int nitems = std::min(d_size, noutput_items);
@@ -172,26 +156,21 @@ namespace gr {
           d_tags.pop();
         }
 
-        std::pair<float**, int> pair_buff;
-        pair_buff.first = new float*[2*d_nconnections + 2];
+        std::pair<gr_complex**, int> pair_buff;
+        pair_buff.first = new gr_complex*[d_nconnections+1];
         pair_buff.second = nitems;
         d_buffers.push(pair_buff);
 
         std::vector<std::vector<gr::tag_t> > tag_buff;
         for(int n = 0; n < d_nconnections + 1; n++) {
+          d_buffers.back().first[n] = new gr_complex[nitems];
+          memset(d_buffers.back().first[n], 0, nitems*sizeof(gr_complex));
           if (n == d_nconnections) {
-            d_buffers.back().first[2*n + 0] = new float[nitems];
-            d_buffers.back().first[2*n + 1] = new float[nitems];
-            memset(d_buffers.back().first[2*n + 0], 0, nitems*sizeof(float));
-            memset(d_buffers.back().first[2*n + 1], 0, nitems*sizeof(float));
+            continue;
           }
           else {
-            d_buffers.back().first[2*n + 0] = new float[nitems];
-            d_buffers.back().first[2*n + 1] = new float[nitems];
             in = (const gr_complex*) input_items[n];
-            volk_32fc_deinterleave_32f_x2(d_buffers.back().first[2*n+0],
-                                          d_buffers.back().first[2*n+1],
-                                          &in[d_start+1], nitems);
+            memcpy(&d_buffers.back().first[n][0], &in[d_start+1], nitems*sizeof(gr_complex));
 
             uint64_t nr = nitems_read(n);
             std::vector<gr::tag_t> tags;
@@ -244,11 +223,6 @@ namespace gr {
         d_size = newsize;
 
         // Resize buffers and replace data
-        volk_free(d_xbuffers);
-        d_xbuffers = (float*) volk_malloc(d_size*sizeof(float), volk_get_alignment());
-        for (int i = 0; i < d_size; i++)
-          d_xbuffers[i] = i/d_samp_rate;
-
         while(!d_buffers.empty()) {
           d_buffers.pop();
         }
@@ -268,8 +242,6 @@ namespace gr {
     {
       gr::thread::scoped_lock lock(d_setlock);
       d_samp_rate = samp_rate;
-      for (int i = 0; i < d_size; i++)
-        d_xbuffers[i] = i/d_samp_rate;
     }
 
     int
@@ -423,17 +395,17 @@ namespace gr {
       if(d_buffers.size() == d_queue_size) {
         d_buffers.pop();
       }
-      std::pair<float**, int> pair = std::pair<float**, int>();
-      pair.first = new float*[2*d_nconnections+2];
-      pair.second = len;
-      d_buffers.push(pair);
+
+      std::pair<gr_complex**, int> pair_buff;
+      pair_buff.first = new gr_complex*[d_nconnections+1];
+      pair_buff.second = len;
+      d_buffers.push(pair_buff);
+
       for(int n = 0; n < d_nconnections+1; n++) {
-        d_buffers.back().first[2*n + 0] = new float[len];
-        d_buffers.back().first[2*n + 1] = new float[len];
+        d_buffers.back().first[n] = new gr_complex[len];
+        memset(d_buffers.back().first[n], 0, len*sizeof(gr_complex));
       }
-      volk_32fc_deinterleave_32f_x2(d_buffers.back().first[2*d_nconnections+0],
-                                    d_buffers.back().first[2*d_nconnections+1],
-                                    in, len);
+      memcpy(d_buffers.back().first[d_nconnections], &in[0], len*sizeof(gr_complex));
     }
   } /* namespace bokehgui */
 } /* namespace gr */

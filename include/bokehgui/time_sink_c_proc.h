@@ -52,7 +52,7 @@ namespace gr {
        */
       static sptr make(int size, double sample_rate, const std::string &name, int nconnections);
 
-      virtual void get_plot_data (float** output_items, int* nrows, int* size) = 0;
+      virtual void get_plot_data (gr_complex** output_items, int* nrows, int* size) = 0;
       virtual std::vector<std::vector<gr::tag_t> > get_tags() = 0;
       virtual int work(int noutput_items,
          gr_vector_const_void_star &input_items,
