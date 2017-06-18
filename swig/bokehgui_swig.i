@@ -23,6 +23,9 @@ if(PyArray_API == NULL)
 //load generated python docstrings
 %include "bokehgui_swig_doc.i"
 
+//load trigger modes
+%include "bokehgui/trigger_mode.h"
+
 %{
 #include "bokehgui/time_sink_f_proc.h"
 #include "bokehgui/time_sink_c_proc.h"

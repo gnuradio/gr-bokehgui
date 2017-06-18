@@ -43,7 +43,7 @@ class top_block(gr.top_block):
         ##################################################
         self.bokehgui_time_sink_f_proc_0 = bokehgui.time_sink_f_proc(500, samp_rate, 'TimeSink', 2)
         self.bokehgui_time_sink_f_0 = bokehgui.time_sink_f(self.doc, self.bokehgui_time_sink_f_proc_0, 500, samp_rate, 'TImeSink', 2)
-        self.bokehgui_time_sink_f_0.set_trigger_mode('FREE','POS',0,0,0,"")
+        self.bokehgui_time_sink_f_0.set_trigger_mode(bokehgui.TRIG_MODE_FREE,bokehgui.TRIG_SLOPE_POS,0,0,0,"")
         self.bokehgui_time_sink_f_0.initialize(legend_list=['data0','data1'])
 
         self.blocks_throttle_0 = blocks.throttle(gr.sizeof_float*1, samp_rate,True)

@@ -290,24 +290,24 @@ for i in xrange(#if $type.t == 'message' then 1 else $nconnections#):
   <param>
     <name>Trigger Mode</name>
     <key>tr_mode</key>
-    <value>'FREE'</value>
+    <value>bokehgui.TRIG_MODE_FREE</value>
     <type>enum</type>
     <hide>part</hide>
     <option>
       <name>Free</name>
-      <key>'FREE'</key>
+      <key>bokehgui.TRIG_MODE_FREE</key>
     </option>
     <option>
       <name>Auto</name>
-      <key>'AUTO'</key>
+      <key>bokehgui.TRIG_MODE_AUTO</key>
     </option>
     <option>
       <name>Normal</name>
-      <key>'NORM'</key>
+      <key>bokehgui.TRIG_MODE_NORM</key>
     </option>
     <option>
       <name>Tag</name>
-      <key>'TAG'</key>
+      <key>bokehgui.TRIG_MODE_TAG</key>
     </option>
     <tab>Trigger</tab>
   </param>
@@ -315,16 +315,16 @@ for i in xrange(#if $type.t == 'message' then 1 else $nconnections#):
   <param>
     <name>Trigger Slope</name>
     <key>tr_slope</key>
-    <value>'POS'</value>
+    <value>bokehgui.TRIG_SLOPE_POS</value>
     <type>enum</type>
     <hide>part</hide>
     <option>
       <name>Positive</name>
-      <key>'POS'</key>
+      <key>bokehgui.TRIG_SLOPE_POS</key>
     </option>
     <option>
       <name>Negative</name>
-      <key>'NEG'</key>
+      <key>bokehgui.TRIG_SLOPE_NEG</key>
     </option>
     <tab>Trigger</tab>
   </param>
