@@ -62,16 +62,14 @@ class qa_time_sink_f (gr_unittest.TestCase):
     def test_002_t (self):
         src = blocks.vector_source_f(range(12), False, 1, [])
 
-        throttle = blocks.throttle(gr.sizeof_float*1, 1, True)
         tag = blocks.tags_strobe(gr.sizeof_float*1, pmt.intern("TEST"), 2, pmt.intern("strobe"))
         add = blocks.add_vff(1)
 
-        dst = time_sink_f_proc(6, 1, 'Test', 1)
+        dst = time_sink_f_proc(6, 32000, 'Test', 1)
 
         self.tb.connect((src,0), (add,0))
         self.tb.connect((tag,0), (add,1))
-        self.tb.connect((add,0), (throttle, 0))
-        self.tb.connect((throttle,0), (dst,0))
+        self.tb.connect((add,0), (dst,0))
 
         self.tb.run()
 

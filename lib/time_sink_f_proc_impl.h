@@ -42,7 +42,7 @@ namespace gr {
 
       // Used during checking a trigger
       // Use output from this index
-      int d_start;
+      int d_index;
 
       // Members used for triggering scope
       trigger_mode d_trigger_mode;
@@ -79,8 +79,8 @@ namespace gr {
                             float delay, int channel,
                             const std::string &tag_key);
       bool _test_trigger_slope(const float *input) const;
-      void _test_trigger_norm(int, gr_vector_const_void_star);
-      void _test_trigger_tags(int);
+      void _test_trigger_norm(int, int, gr_vector_const_void_star);
+      void _test_trigger_tags(int, int);
     };
   } // namespace bokehgui
 } // namespace gr

@@ -47,7 +47,7 @@ namespace gr {
       d_nconnections(nconnections)
     {
       d_queue_size = 10;
-      d_start = 0;
+      d_index = 0;
       d_buffers = std::queue<std::pair<gr_complex**, int> > ();
 
       // setup PDU handling input port
@@ -126,66 +126,65 @@ namespace gr {
     {
       gr::thread::scoped_lock lock(d_setlock);
       const gr_complex *in;
-      d_start = 0;
-      int nitems = std::min(d_size, noutput_items);
-      // If auto, normal, or tag trigger, look for the trigger
-      if ((d_trigger_mode != TRIG_MODE_FREE) && !d_triggered) {
-        // trigger off a tag key (first one found)
-        if (d_trigger_mode == TRIG_MODE_TAG) {
-          _test_trigger_tags(nitems);
-        }
-        // Normal or Auto trigger
-        else {
-          _test_trigger_norm(nitems, input_items);
-        }
-      }
-      // The d_triggered and d_start is set.
-      // We will now check if triggered.
-      // If it is triggered then we check the trigger index = d_start
-      // We will start looking from d_start to the end of input_items
-      // First check if d_start+d_size < noutput_items
-      if(d_triggered) {
-        if (d_start + d_size > noutput_items) {
-          // Since, there is already a trigger at d_start,
-          // the triggers for next d_size is irrelevant.
-          // Hence, we can replace nitems by noutput_items
-          nitems = noutput_items - d_start;
-        }
-        if (d_buffers.size() == d_queue_size) {
-          d_buffers.pop();
-          d_tags.pop();
-        }
 
-        std::pair<gr_complex**, int> pair_buff;
-        pair_buff.first = new gr_complex*[d_nconnections+1];
-        pair_buff.second = nitems;
-        d_buffers.push(pair_buff);
-
-        std::vector<std::vector<gr::tag_t> > tag_buff;
-        for(int n = 0; n < d_nconnections + 1; n++) {
-          d_buffers.back().first[n] = new gr_complex[nitems];
-          memset(d_buffers.back().first[n], 0, nitems*sizeof(gr_complex));
-          if (n == d_nconnections) {
-            continue;
+      // Consume all possible set of data. Each with nitems
+      for(int d_index = 0; d_index < noutput_items;) {
+        int nitems = std::min(d_size, noutput_items);
+        // If auto, normal, or tag trigger, look for the trigger
+        if ((d_trigger_mode != TRIG_MODE_FREE) && !d_triggered) {
+          // trigger off a tag key (first one found)
+          if (d_trigger_mode == TRIG_MODE_TAG) {
+            _test_trigger_tags(d_index, nitems);
           }
+          // Normal or Auto trigger
           else {
+            _test_trigger_norm(d_index, nitems, input_items);
+          }
+        }
+        // The d_triggered and d_index is set.
+        // We will now check if triggered.
+        // If it is triggered then we check the trigger index = d_index
+        // We will start looking from d_index to the end of input_items
+        // First check if d_index+d_size < noutput_items
+        if(d_triggered) {
+          if (d_index + nitems > noutput_items) {
+            nitems = noutput_items - d_index;
+          }
+          if (d_buffers.size() == d_queue_size) {
+            d_buffers.pop();
+            d_tags.pop();
+          }
+
+          std::pair<gr_complex**, int> pair_buff;
+          pair_buff.first = new gr_complex*[d_nconnections+1];
+          pair_buff.second = nitems;
+          d_buffers.push(pair_buff);
+
+          std::vector<std::vector<gr::tag_t> > tag_buff;
+          for(int n = 0; n < d_nconnections + 1; n++) {
+            d_buffers.back().first[n] = new gr_complex[nitems];
+            memset(d_buffers.back().first[n], 0, nitems*sizeof(gr_complex));
+            if (n == d_nconnections) {
+              continue;
+            }
             in = (const gr_complex*) input_items[n];
-            memcpy(&d_buffers.back().first[n][0], &in[d_start+1], nitems*sizeof(gr_complex));
+            memcpy(&d_buffers.back().first[n][0], &in[d_index + 1], nitems*sizeof(gr_complex));
 
             uint64_t nr = nitems_read(n);
             std::vector<gr::tag_t> tags;
-            get_tags_in_range(tags, n, nr, nr + nitems);
+            get_tags_in_range(tags, n, nr + d_index, nr + d_index + nitems);
             for(size_t t = 0; t < tags.size(); t++) {
-              tags[t].offset = tags[t].offset - nr -d_start-1;
+              tags[t].offset = tags[t].offset - nr - d_index - 1;
             }
             tag_buff.push_back(tags);
           }
+          d_tags.push(tag_buff);
+          if(d_trigger_mode != TRIG_MODE_FREE)
+            d_triggered = false;
         }
-        d_tags.push(tag_buff);
-        if(d_trigger_mode != TRIG_MODE_FREE)
-          d_triggered = false;
+        d_index += nitems;
       }
-      return nitems + d_start;
+      return noutput_items;
     }
 
     void
@@ -303,18 +302,18 @@ namespace gr {
     }
 
     void
-    time_sink_c_proc_impl::_test_trigger_norm(int nitems, gr_vector_const_void_star inputs)
+    time_sink_c_proc_impl::_test_trigger_norm(int start, int nitems, gr_vector_const_void_star inputs)
     {
       int trigger_index;
       const gr_complex *cBuff = (const gr_complex*) inputs[d_trigger_channel];
-      for(trigger_index = 0; trigger_index < d_size; trigger_index++) {
+      for(trigger_index = start; trigger_index < start + nitems; trigger_index++) {
         d_trigger_count++;
 
         // Test if trigger has occurred based on the input stream,
         // channel number, and slope direction
         if(_test_trigger_slope(&cBuff[trigger_index])) {
           d_triggered = true;
-          d_start = trigger_index - d_trigger_delay;
+          d_index = trigger_index;
           d_trigger_count = 0;
           // _adjust_tags(-d_start);
           break;
@@ -330,20 +329,20 @@ namespace gr {
     }
 
     void
-    time_sink_c_proc_impl::_test_trigger_tags(int nitems)
+    time_sink_c_proc_impl::_test_trigger_tags(int start, int nitems)
     {
       int trigger_index;
       uint64_t nr = nitems_read(d_trigger_channel);
       std::vector<gr::tag_t> tags;
       get_tags_in_range(tags, d_trigger_channel,
-                        nr, nr + nitems + 1,
+                        nr + start, nr + start + nitems + 1,
                         d_trigger_tag_key);
       if(tags.size() > 0) {
         trigger_index = tags[0].offset - nr;
-        int start = trigger_index - d_trigger_delay - 1;
-        if (start >= 0) {
+        int startpoint = trigger_index - d_trigger_delay - 1;
+        if (startpoint >= 0) {
           d_triggered = true;
-          d_start = start;
+          d_index = trigger_index;
           d_trigger_count = 0;
 //          _adjust_tags(-d_start);
         }
