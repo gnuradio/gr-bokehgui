@@ -31,6 +31,7 @@ endif()
 GR_PYTHON_INSTALL(
     FILES
     __init__.py
+    bokeh_plot_config.py
     time_sink_f.py
     time_sink_c.py
     utils.py DESTINATION ${GR_PYTHON_DIR}/bokehgui
