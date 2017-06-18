@@ -221,6 +221,7 @@ namespace gr {
         // Set new size and rest buffer indexes
         // Throws away current data!
         d_size = newsize;
+        set_output_multiple(d_size);
 
         // Resize buffers and replace data
         while(!d_buffers.empty()) {
