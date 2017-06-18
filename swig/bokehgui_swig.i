@@ -1,6 +1,7 @@
 /* -*- c++ -*- */
 
 #define BOKEHGUI_API
+#define FILTER_API
 
 %{
 #define SWIG_FILE_WITH_INIT
@@ -24,6 +25,9 @@ if(PyArray_API == NULL)
 
 //load trigger modes
 %include "bokehgui/trigger_mode.h"
+
+// load the firdes window types
+%import "gnuradio/filter/firdes.h"
 
 %{
 #include "bokehgui/time_sink_f_proc.h"
