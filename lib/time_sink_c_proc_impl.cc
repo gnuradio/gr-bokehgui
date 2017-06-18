@@ -61,7 +61,7 @@ namespace gr {
 
       set_output_multiple(d_size);
 
-      set_trigger_mode(static_cast<int>(TRIG_MODE_FREE), static_cast<int>(TRIG_SLOPE_POS), 0.0, 0.0, 0, "");
+      set_trigger_mode(TRIG_MODE_FREE, TRIG_SLOPE_POS, 0.0, 0.0, 0, "");
 
       set_history(2);          // so we can look ahead for the trigger slope
       declare_sample_delay(1); // delay the tags for a history of 2
@@ -189,7 +189,7 @@ namespace gr {
     }
 
     void
-    time_sink_c_proc_impl::set_trigger_mode(int mode, int slope,
+    time_sink_c_proc_impl::set_trigger_mode(trigger_mode mode, trigger_slope slope,
                                        float level,
                                        float delay, int channel,
                                        const std::string &tag_key)

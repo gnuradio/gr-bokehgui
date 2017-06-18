@@ -64,7 +64,7 @@ namespace gr {
 //      virtual void _adjust_tags(int adj) = 0;
       virtual void _reset() = 0;
       virtual void handle_pdus(pmt::pmt_t) = 0;
-      virtual void set_trigger_mode(int mode, int slope,
+      virtual void set_trigger_mode(trigger_mode mode, trigger_slope slope,
                                     float level,
                                     float delay, int channel,
                                     const std::string &tag_key) = 0;

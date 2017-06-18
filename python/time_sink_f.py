@@ -45,26 +45,8 @@ class time_sink_f(bokeh_plot_config):
 
     def set_trigger_mode(self, trigger_mode, trigger_slope,
                          level, delay, channel, tag_key):
-        if trigger_mode == 'FREE':
-            trigger_mode_val = 0
-        elif trigger_mode == 'AUTO':
-            trigger_mode_val = 1
-        elif trigger_mode == 'NORM':
-            trigger_mode_val = 2
-        elif trigger_mode == 'TAG':
-            trigger_mode_val = 3
-        else:
-            raise Exception
-
-        if trigger_slope == 'POS':
-            trigger_slope_val = 0
-        elif trigger_slope == 'NEG':
-            trigger_slope_val = 1
-        else:
-            raise Exception
-
-        self.process.set_trigger_mode(trigger_mode_val,
-                                      trigger_slope_val,
+        self.process.set_trigger_mode(trigger_mode,
+                                      trigger_slope,
                                       level, delay, channel,
                                       tag_key)
 

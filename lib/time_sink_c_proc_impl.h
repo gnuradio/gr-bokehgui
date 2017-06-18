@@ -82,7 +82,7 @@ namespace gr {
 //      void _adjust_tags(int adj);
       void handle_pdus(pmt::pmt_t);
 
-      void set_trigger_mode(int mode, int slope, 
+      void set_trigger_mode(trigger_mode mode, trigger_slope slope, 
                             float level,
                             float delay, int channel,
                             const std::string &tag_key);
