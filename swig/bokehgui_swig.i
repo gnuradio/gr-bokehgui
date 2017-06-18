@@ -19,13 +19,13 @@ if(PyArray_API == NULL)
 }
 %}
 
-
 //load generated python docstrings
 %include "bokehgui_swig_doc.i"
 
 %{
 #include "bokehgui/time_sink_f_proc.h"
 #include "bokehgui/time_sink_c_proc.h"
+#include "bokehgui/freq_sink_f_proc.h"
 %}
 
 %{
@@ -45,8 +45,8 @@ if(PyArray_API == NULL)
 %apply (gr_complex** ARGOUTVIEW_ARRAY2, int* DIM1, int* DIM2) {(gr_complex** output_items, int* nrows, int* size)};
 
 %include "bokehgui/time_sink_f_proc.h"
-%include "bokehgui/time_sink_c_proc.h"
-
-
 GR_SWIG_BLOCK_MAGIC2(bokehgui, time_sink_f_proc);
+%include "bokehgui/time_sink_c_proc.h"
 GR_SWIG_BLOCK_MAGIC2(bokehgui, time_sink_c_proc);
+%include "bokehgui/freq_sink_f_proc.h"
+GR_SWIG_BLOCK_MAGIC2(bokehgui, freq_sink_f_proc);
