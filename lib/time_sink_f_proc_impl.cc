@@ -73,10 +73,18 @@ namespace gr {
      */
     time_sink_f_proc_impl::~time_sink_f_proc_impl()
     {
-      while(!d_buffers.empty())
+      while(!d_buffers.empty()) {
+        for(int n = 0; n < d_nconnections + 1; n++)
+          delete d_buffers.front().first[n];
+        delete d_buffers.front().first;
         d_buffers.pop();
-      while(!d_tags.empty())
+      }
+      while(!d_tags.empty()) {
+        for(int n = 0; n < d_nconnections; n++)
+          std::vector<gr::tag_t>().swap(d_tags.front()[n]);
+        std::vector<std::vector<gr::tag_t> >().swap(d_tags.front());
         d_tags.pop();
+      }
     }
 
     void
@@ -96,7 +104,12 @@ namespace gr {
         memcpy(&arr[n*(*size)], &d_buffers.front().first[n][0], *size * sizeof(float));
       }
       *output_items = arr;
+
+      for(int n = 0; n < d_nconnections + 1; n++)
+        delete d_buffers.front().first[n];
+      delete d_buffers.front().first;
       d_buffers.pop();
+
       return;
     }
 
@@ -109,6 +122,9 @@ namespace gr {
       }
 
       std::vector<std::vector<gr::tag_t> > tags = d_tags.front();
+      for(int n = 0; n < d_nconnections; n++)
+        std::vector<gr::tag_t>().swap(d_tags.front()[n]);
+      std::vector<std::vector<gr::tag_t> >().swap(d_tags.front());
       d_tags.pop();
       return tags;
     }
@@ -144,7 +160,14 @@ namespace gr {
             nitems = noutput_items - d_index;
           }
           if(d_buffers.size() == d_queue_size) {
+            for(int n = 0; n < d_nconnections + 1; n++)
+              delete d_buffers.front().first[n];
+            delete d_buffers.front().first;
             d_buffers.pop();
+
+            for(int n = 0; n < d_nconnections; n++)
+              std::vector<gr::tag_t>().swap(d_tags.front()[n]);
+            std::vector<std::vector<gr::tag_t> >().swap(d_tags.front());
             d_tags.pop();
           }
 
@@ -225,6 +248,9 @@ namespace gr {
 
         // Resize buffers and relapce data
       	while(!d_buffers.empty()) {
+          for(int n = 0; n < d_nconnections + 1; n++)
+            delete d_buffers.front().first[n];
+          delete d_buffers.front().first;
           d_buffers.pop();
         }
 
@@ -264,14 +290,17 @@ namespace gr {
       // TODO: Different from QT GUI:
       // Ignored if d_trigger_delay condition
       // Don't feel it is necessary in current scenario
-      while(d_tags.size()) {
-          for(int i = 0; i < d_tags.front().size(); i++) {
-              d_tags.front()[i].clear();
-          }
-          d_tags.pop();
+      while(!d_tags.empty()) {
+        for(int n = 0; n < d_nconnections; n++)
+          std::vector<gr::tag_t>().swap(d_tags.front()[n]);
+        std::vector<std::vector<gr::tag_t> >().swap(d_tags.front());
+        d_tags.pop();
       }
 
       while(!d_buffers.empty()) {
+        for(int n = 0; n < d_nconnections + 1; n++)
+          delete d_buffers.front().first[n];
+        delete d_buffers.front().first;
         d_buffers.pop();
       }
 
@@ -390,6 +419,9 @@ namespace gr {
       // Copy data to buffer
       set_nsamps(len);
       if(d_buffers.size() == d_queue_size) {
+        for(int n = 0; n < d_nconnections + 1; n++)
+          delete d_buffers.front().first[n];
+        delete d_buffers.front().first;
         d_buffers.pop();
       }
       std::pair<float**, int> pair = std::pair<float**, int>();
