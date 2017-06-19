@@ -37,7 +37,7 @@ namespace gr {
       int d_nconnections;
 
       // 2D array of size (nconn*nitems). The int represents nitems
-      std::queue<std::pair<float**, int> > d_buffers;
+      std::queue<std::vector<std::vector<float> > > d_buffers;
       std::queue<std::vector<std::vector<gr::tag_t> > > d_tags;
 
       // Used during checking a trigger
