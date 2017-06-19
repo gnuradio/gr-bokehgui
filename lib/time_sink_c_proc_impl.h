@@ -37,11 +37,9 @@ namespace gr {
       std::string d_name;
       int d_nconnections;
 
-      // 2D array of size ((2*nconn+2)*nitems). The int presents nitems
+      // 2D array of size ((nconn+1)*nitems). The int presents nitems
       // define float buffer with PDU message handling
-      // Even integers -> I - part of signal
-      // Odd integers -> Q - part of signal
-      std::queue<std::pair<gr_complex**, int> > d_buffers;
+      std::queue<std::vector<std::vector<gr_complex> > > d_buffers;
       std::queue<std::vector<std::vector<gr::tag_t> > > d_tags;
 
       // Used during checking a trigger
