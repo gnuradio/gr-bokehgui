@@ -48,7 +48,6 @@ namespace gr {
     {
       d_queue_size = 10;
       d_index = 0;
-      d_buffers = std::queue<std::pair<gr_complex**, int> > ();
 
       // setup PDU handling input port
       message_port_register_in(pmt::mp("in"));
@@ -69,18 +68,10 @@ namespace gr {
 
     time_sink_c_proc_impl::~time_sink_c_proc_impl()
     {
-      while(!d_buffers.empty()) {
-        for(int n = 0; n < d_nconnections + 1; n++)
-          delete d_buffers.front().first[n];
-        delete d_buffers.front().first;
+      while(!d_buffers.empty())
         d_buffers.pop();
-      }
-      while(!d_tags.empty()) {
-        for(int n = 0; n < d_nconnections; n++)
-          std::vector<gr::tag_t>().swap(d_tags.front()[n]);
-        std::vector<std::vector<gr::tag_t> >().swap(d_tags.front());
+      while(!d_tags.empty())
         d_tags.pop();
-      }
     }
 
     bool
@@ -98,23 +89,15 @@ namespace gr {
         return;
       }
       *nrows = d_nconnections + 1;
-      *size = d_buffers.front().second;
+      *size = d_buffers.front()[0].size();
 
-      // 0th row for xbuffer
-      // (2*i+1)th row for I-part
-      // (2*i+2)th row for Q-part of i-th input; 0 <= i < d_nconnections;
-      // (2*d_nconnections + 1)th row for I-part of PDU message
-      // (2*d_nconnections + 2)th row for Q-part of PDU message
       gr_complex* arr = (gr_complex*)volk_malloc((*nrows)*(*size)*sizeof(gr_complex), volk_get_alignment());
 
       for(int n = 0; n < *nrows; n++) {
-        memcpy(&arr[n*(*size)], &d_buffers.front().first[n][0], (*size)*sizeof(gr_complex));
+        memcpy(&arr[n*(*size)], &d_buffers.front()[n][0], (*size)*sizeof(gr_complex));
       }
       *output_items = arr;
 
-      for(int n = 0; n < d_nconnections + 1; n++)
-        delete d_buffers.front().first[n];
-      delete d_buffers.front().first;
       d_buffers.pop();
 
       return;
@@ -128,10 +111,9 @@ namespace gr {
         return tags;
       }
       std::vector<std::vector<gr::tag_t> > tags = d_tags.front();
-      for(int n = 0; n < d_nconnections; n++)
-        std::vector<gr::tag_t>().swap(d_tags.front()[n]);
-      std::vector<std::vector<gr::tag_t> >().swap(d_tags.front());
+
       d_tags.pop();
+
       return tags;
     }
 
@@ -167,31 +149,25 @@ namespace gr {
             nitems = noutput_items - d_index;
           }
           if (d_buffers.size() == d_queue_size) {
-            for(int n = 0; n < d_nconnections + 1; n++)
-              delete d_buffers.front().first[n];
-            delete d_buffers.front().first;
             d_buffers.pop();
-
-            for(int n = 0; n < d_nconnections; n++)
-              std::vector<gr::tag_t>().swap(d_tags.front()[n]);
-            std::vector<std::vector<gr::tag_t> >().swap(d_tags.front());
             d_tags.pop();
           }
 
-          std::pair<gr_complex**, int> pair_buff;
-          pair_buff.first = new gr_complex*[d_nconnections+1];
-          pair_buff.second = nitems;
-          d_buffers.push(pair_buff);
+          std::vector<std::vector<gr_complex> > data_buff;
+          data_buff.reserve(d_nconnections + 1);
+          d_buffers.push(data_buff);
 
           std::vector<std::vector<gr::tag_t> > tag_buff;
+          tag_buff.reserve(d_nconnections);
+          d_tags.push(tag_buff);
+
           for(int n = 0; n < d_nconnections + 1; n++) {
-            d_buffers.back().first[n] = new gr_complex[nitems];
-            memset(d_buffers.back().first[n], 0, nitems*sizeof(gr_complex));
+            d_buffers.back().push_back(std::vector<gr_complex>(nitems, 0));
             if (n == d_nconnections) {
               continue;
             }
             in = (const gr_complex*) input_items[n];
-            memcpy(&d_buffers.back().first[n][0], &in[d_index + 1], nitems*sizeof(gr_complex));
+            memcpy(&d_buffers.back()[n][0], &in[d_index + 1], nitems*sizeof(gr_complex));
 
             uint64_t nr = nitems_read(n);
             std::vector<gr::tag_t> tags;
@@ -199,9 +175,8 @@ namespace gr {
             for(size_t t = 0; t < tags.size(); t++) {
               tags[t].offset = tags[t].offset - nr - d_index - 1;
             }
-            tag_buff.push_back(tags);
+            d_tags.back().push_back(tags);
           }
-          d_tags.push(tag_buff);
           if(d_trigger_mode != TRIG_MODE_FREE)
             d_triggered = false;
         }
@@ -246,12 +221,8 @@ namespace gr {
         set_output_multiple(d_size);
 
         // Resize buffers and replace data
-        while(!d_buffers.empty()) {
-          for(int n = 0; n < d_nconnections + 1; n++)
-            delete d_buffers.front().first[n];
-          delete d_buffers.front().first;
+        while(!d_buffers.empty())
           d_buffers.pop();
-        }
 
         // If delay was set beyond the new boundary, pull it back.
         if(d_trigger_delay >= d_size) {
@@ -289,19 +260,12 @@ namespace gr {
       // TODO: Different from QT GUI
       // Ignored if d_trigger_delay condition
       // Don't feel it is necessary in current scenario
-      while(!d_tags.empty()) {
-        for(int n = 0; n < d_nconnections; n++)
-          std::vector<gr::tag_t>().swap(d_tags.front()[n]);
-        std::vector<std::vector<gr::tag_t> >().swap(d_tags.front());
+      while(!d_tags.empty())
         d_tags.pop();
-      }
 
-      while(!d_buffers.empty()) {
-        for(int n = 0; n < d_nconnections + 1; n++)
-          delete d_buffers.front().first[n];
-        delete d_buffers.front().first;
+      while(!d_buffers.empty())
         d_buffers.pop();
-      }
+
       // Reset the trigger. If in free running mode,
       // always set trigger to true
       if (d_trigger_mode == TRIG_MODE_FREE) {
@@ -421,23 +385,17 @@ namespace gr {
 
       // Copy data to buffer
       set_nsamps(len);
-      if(d_buffers.size() == d_queue_size) {
-        for(int n = 0; n < d_nconnections + 1; n++)
-          delete d_buffers.front().first[n];
-        delete d_buffers.front().first;
+      if(d_buffers.size() == d_queue_size)
         d_buffers.pop();
-      }
 
-      std::pair<gr_complex**, int> pair_buff;
-      pair_buff.first = new gr_complex*[d_nconnections+1];
-      pair_buff.second = len;
-      d_buffers.push(pair_buff);
+      std::vector<std::vector<gr_complex> > data_buff;
+      data_buff.reserve(d_nconnections + 1);
+      d_buffers.push(data_buff);
 
       for(int n = 0; n < d_nconnections+1; n++) {
-        d_buffers.back().first[n] = new gr_complex[len];
-        memset(d_buffers.back().first[n], 0, len*sizeof(gr_complex));
+        d_buffers.back().push_back(std::vector<gr_complex> (len, 0));
       }
-      memcpy(d_buffers.back().first[d_nconnections], &in[0], len*sizeof(gr_complex));
+      memcpy(&d_buffers.back()[d_nconnections][0], &in[0], len*sizeof(gr_complex));
     }
   } /* namespace bokehgui */
 } /* namespace gr */
