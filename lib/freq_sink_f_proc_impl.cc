@@ -61,22 +61,18 @@ namespace gr {
       // This is usually desired when plotting
       d_shift = true;
       d_fft = new fft::fft_complex(d_fftsize, true);
+
       // Used to save FFT values temporarily
-      d_fbuf = (float*)volk_malloc(d_fftsize*sizeof(float),
-                                   volk_get_alignment());
-      memset(d_fbuf, 0, d_fftsize*sizeof(float));
+      d_fbuf = std::vector<float> (d_fftsize, 0);
 
       // Used as temporary variable while performing fft shift
       d_tmpbuflen = (unsigned int)(floor(d_fftsize/2.0));
-      d_tmpbuf = (float*)volk_malloc(sizeof(float)*(d_tmpbuflen + 1),
-                                     volk_get_alignment());
-
+      d_tmpbuf = std::vector<float>(d_tmpbuflen+1, 0);
 
       // Used as temporary storage of input values
+      d_residbufs.reserve(d_nconnections + 1);
       for(int n = 0; n < d_nconnections + 1; n++) {
-        d_residbufs.push_back((float*)volk_malloc(d_fftsize*sizeof(float),
-                                             volk_get_alignment()));
-        memset(d_residbufs[n], 0, d_fftsize*sizeof(float));
+        d_residbufs.push_back(std::vector<float> (d_fftsize, 0));
       }
 
       // To check trigger index
@@ -95,20 +91,13 @@ namespace gr {
     {
       delete d_fft;
 
-      volk_free(d_fbuf);
-      volk_free(d_tmpbuf);
+      d_fbuf = std::vector<float> ();
+      d_tmpbuf = std::vector<float> ();
 
-      for(int n = 0; n < d_nconnections + 1; n++) {
-        volk_free(d_residbufs[n]);
-      }
-      std::vector<float*> ().swap(d_residbufs);
+      d_residbufs = std::vector<std::vector<float> > ();
 
-      while(!d_magbufs.empty()) {
-        for(int n = 0; n < d_nconnections + 1; n++)
-          delete d_magbufs.front()[n];
-        delete d_magbufs.front();
+      while(!d_magbufs.empty())
         d_magbufs.pop();
-      }
     }
 
     bool
@@ -152,9 +141,6 @@ namespace gr {
       }
       *output_items = arr;
 
-      for(int n = 0; n < d_nconnections + 1; n++)
-        delete d_magbufs.front()[n];
-      delete d_magbufs.front();
       d_magbufs.pop();
 
       return;
@@ -170,7 +156,12 @@ namespace gr {
     freq_sink_f_proc_impl::reset()
     {
       gr::thread::scoped_lock lock(d_setlock);
+      _reset();
+    }
 
+    void
+    freq_sink_f_proc_impl::_reset()
+    {
       // Reset the trigger
       if(d_trigger_mode == TRIG_MODE_FREE)
         d_triggered = true;
@@ -184,7 +175,9 @@ namespace gr {
       // float to complex conversion
       gr_complex *dst = d_fft->get_inbuf();
 
-      memcpy(&dst[0], &data_in[0], size);
+      std::vector<float> temp_zeros = std::vector<float> (size, 0);
+
+      volk_32f_x2_interleave_32fc(dst, data_in, &temp_zeros[0], size);
 
       if(d_window.size()) {
         volk_32fc_32f_multiply_32fc(d_fft->get_inbuf(), dst, &d_window.front(), size);
@@ -195,9 +188,9 @@ namespace gr {
                                                    size, 1.0, size);
 
       // Perform shift operation
-      memcpy(d_tmpbuf, &data_out[0], sizeof(float)*(d_tmpbuflen + 1));
+      memcpy(&d_tmpbuf[0], &data_out[0], sizeof(float)*(d_tmpbuflen + 1));
       memcpy(&data_out[0], &data_out[size - d_tmpbuflen], sizeof(float)*d_tmpbuflen);
-      memcpy(&data_out[d_tmpbuflen], d_tmpbuf, (d_tmpbuflen + 1)*sizeof(float));
+      memcpy(&data_out[d_tmpbuflen], &d_tmpbuf[0], (d_tmpbuflen + 1)*sizeof(float));
     }
 
     bool
@@ -238,31 +231,17 @@ namespace gr {
         delete d_fft;
         d_fft = new fft::fft_complex(d_fftsize, true);
 
-        volk_free(d_fbuf);
-        d_fbuf = (float*) volk_malloc(d_fftsize*sizeof(float),
-                                      volk_get_alignment());
-        memset(d_fbuf, 0, d_fftsize*sizeof(float));
-        volk_free(d_tmpbuf);
+        d_fbuf = std::vector<float> (d_fftsize, 0);
         d_tmpbuflen = (unsigned int)(floor(d_fftsize/2.0));
-        d_tmpbuf = (float*)volk_malloc(d_fftsize*sizeof(float),
-                                       volk_get_alignment());
+        d_tmpbuf = std::vector<float> (d_tmpbuflen, 0);
+
         set_output_multiple(d_fftsize);
 
-        for(int n = 0; n < d_nconnections + 1; n++) {
-          volk_free(d_residbufs[n]);
-        }
-        for(int n = 0; n < d_nconnections + 1; n++) {
-          d_residbufs[n] = (float*)volk_malloc(d_fftsize*sizeof(float),
-                                               volk_get_alignment());
-          memset(d_residbufs[n], 0, d_fftsize*sizeof(float));
-        }
+        for(int n = 0; n < d_nconnections + 1; n++)
+          d_residbufs[n] = std::vector<float> (d_fftsize, 0);
 
-        while(!d_magbufs.empty()) {
-          for(int n = 0; n < d_nconnections + 1; n++)
-            delete d_magbufs.front()[n];
-          delete d_magbufs.front();
+        while(!d_magbufs.empty())
           d_magbufs.pop();
-        }
 
         return true;
       }
@@ -299,9 +278,9 @@ namespace gr {
     }
 
     void
-    freq_sink_f_proc_impl::_test_trigger_norm(int nitems, double** inputs)
+    freq_sink_f_proc_impl::_test_trigger_norm(int nitems, std::vector<std::vector<float> > inputs)
     {
-      const double *in = (const double*) inputs[d_trigger_channel];
+      const float *in = &inputs[d_trigger_channel][0];
       for(int i = 0; i < nitems; i++) {
         d_trigger_count++;
 
@@ -340,20 +319,20 @@ namespace gr {
               return d_index;
           }
         }
-        double** temp_buf = new double*[d_nconnections+1];
+        std::vector<std::vector<float> > data_buff;
+        data_buff.reserve(d_nconnections + 1);
         for(int n = 0; n < d_nconnections + 1; n++) {
-          temp_buf[n] = new double[d_fftsize];
-          memset(&temp_buf[n][0], 0, d_fftsize*sizeof(float));
+          data_buff.push_back(std::vector<float> (d_fftsize, 0));
 
           if (n == d_nconnections)
             continue;
 
           // Fill up residbuf with d_fftsize number of items
           in = (const float*)input_items[n];
-          memcpy(d_residbufs[n], &in[d_index], d_fftsize*sizeof(float));
-          fft(d_fbuf, d_residbufs[n], d_fftsize);
+          memcpy(&d_residbufs[n][0], &in[d_index], d_fftsize*sizeof(float));
+          fft(&d_fbuf[0], &d_residbufs[n][0], d_fftsize);
           for(int x = 0; x < d_fftsize; x++) {
-            temp_buf[n][x] = (double)((1.0 - d_fftavg)*temp_buf[n][x] + (d_fftavg)*d_fbuf[x]);
+            data_buff[n][x] = (1.0 - d_fftavg)*data_buff[n][x] + (d_fftavg)*d_fbuf[x];
           }
         }
 
@@ -364,19 +343,9 @@ namespace gr {
 
         // If there is a trigger (FREE always triggers), save array in d_magbufs!
         if(d_triggered) {
-          if(d_magbufs.size() == d_queue_size) {
-            for(int n = 0; n < d_nconnections + 1; n++)
-              delete d_magbufs.front()[n];
-            delete d_magbufs.front();
+          if(d_magbufs.size() == d_queue_size)
             d_magbufs.pop();
-          }
-          d_magbufs.push(temp_buf);
-        }
-        else {
-          for(int n = 0; n < d_nconnections + 1; n++) {
-            delete temp_buf[n];
-          }
-          delete temp_buf;
+          d_magbufs.push(data_buff);
         }
         _reset();
       }
@@ -422,34 +391,32 @@ namespace gr {
       float num = static_cast<float>(winoverlap * len) / static_cast<float>(d_fftsize);
       int nffts = static_cast<int>(ceilf(num));
 
-      double** temp_buf = new double*[d_nconnections + 1];
-      for (int n = 0; n < d_nconnections + 1; n++) {
-        temp_buf[n] = new double[d_fftsize];
-        memset(temp_buf, 0, sizeof(double)*d_fftsize);
-      }
+      std::vector<std::vector<float> > data_buff;
+      data_buff.reserve(d_nconnections + 1);
 
-      if(d_magbufs.size() == d_queue_size) {
-        for(int n = 0; n < d_nconnections + 1; n++)
-          delete d_magbufs.front()[n];
-        delete d_magbufs.front();
+      if(d_magbufs.size() == d_queue_size)
         d_magbufs.pop();
+
+      d_magbufs.push(data_buff);
+
+      for (int n = 0; n < d_nconnections + 1; n++) {
+        d_magbufs.back().push_back(std::vector<float> (d_fftsize, 0));
       }
-      d_magbufs.push(temp_buf);
 
       size_t min = 0;
       size_t max = std::min(d_fftsize, static_cast<int>(len));
-      for(int n= 0; n < nffts; n ++) {
+      for(int n= 0; n < nffts; n++) {
         // Clear in case (max - min) < d_fftsize
-        memset(d_residbufs[d_nconnections], 0, d_fftsize*sizeof(float));
+        memset(&d_residbufs[d_nconnections][0], 0, d_fftsize*sizeof(float));
 
         // Copy in as much of the input samples as we can
-        memcpy(d_residbufs[d_nconnections], &in[min], (max-min)*sizeof(float));
+        memcpy(&d_residbufs[d_nconnections][0], &in[min], (max-min)*sizeof(float));
 
         // Apply the window and FFT; copy data into the PDU
         // magnitude buffer
-        fft(d_fbuf, d_residbufs[d_nconnections], d_fftsize);
+        fft(&d_fbuf[0], &d_residbufs[d_nconnections][0], d_fftsize);
         for(int x = 0; x < d_fftsize; x++) {
-          d_magbufs.back()[d_nconnections][x] += (double)d_fbuf[x];
+          d_magbufs.back()[d_nconnections][x] += d_fbuf[x];
         }
 
         // Increment our indices; set max up to the number of
@@ -459,9 +426,8 @@ namespace gr {
       }
 
       // Perform the averaging
-      for(int x = 0; x < d_fftsize; x++) {
-        d_magbufs.back()[d_nconnections][x] /= static_cast<double>(nffts);
-      }
+      for(int x = 0; x < d_fftsize; x++)
+        d_magbufs.back()[d_nconnections][x] /= static_cast<float>(nffts);
     }
   } /* namespace bokehgui */
 } /* namespace gr */

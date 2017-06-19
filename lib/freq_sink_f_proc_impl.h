@@ -21,7 +21,6 @@
 #define INCLUDED_BOKEHGUI_FREQ_SINK_F_PROC_IMPL_H
 
 #include <queue>
-#include <gnuradio/filter/firdes.h>
 #include <gnuradio/fft/fft.h>
 #include <bokehgui/freq_sink_f_proc.h>
 
@@ -41,11 +40,11 @@ namespace gr {
        int d_queue_size;
        bool d_shift;
        fft::fft_complex* d_fft;
-       float* d_fbuf;
+       std::vector<float> d_fbuf;
        unsigned int d_tmpbuflen;
-       float* d_tmpbuf;
-       std::vector<float*> d_residbufs;
-       std::queue<double**> d_magbufs;
+       std::vector<float> d_tmpbuf;
+       std::vector<std::vector<float> > d_residbufs;
+       std::queue<std::vector<std::vector<float> > > d_magbufs;
        int d_index;
 
        trigger_mode d_trigger_mode;
@@ -64,7 +63,7 @@ namespace gr {
                             float level,
                             int channel,
                             const std::string &tag_key);
-      void get_plot_data(float**, int*, int*);
+      void get_plot_data(float** output_items, int* nrows, int* size);
       void reset();
       void _reset();
       void fft(float*, const float*, int);
@@ -74,7 +73,7 @@ namespace gr {
       bool fftresize(int);
       void handle_set_freq(pmt::pmt_t);
       void _test_trigger_tags(int, int);
-      void _test_trigger_norm(int, double**);
+      void _test_trigger_norm(int, std::vector<std::vector<float> >);
 
       int work(int noutput_items,
          gr_vector_const_void_star &input_items,

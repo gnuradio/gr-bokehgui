@@ -53,7 +53,7 @@ namespace gr {
                             float level,
                             int channel,
                             const std::string &tag_key) = 0;
-      virtual void get_plot_data(float**, int*, int*) = 0;
+      virtual void get_plot_data(float** output_items, int* nrows, int* size) = 0;
       virtual void reset() = 0;
       virtual bool set_fft_window(filter::firdes::win_type newwintype) = 0;
       virtual void buildwindow() = 0;
