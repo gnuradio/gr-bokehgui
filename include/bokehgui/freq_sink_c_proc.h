@@ -23,6 +23,8 @@
 
 #include <bokehgui/api.h>
 #include <gnuradio/sync_block.h>
+#include <bokehgui/trigger_mode.h>
+#include <gnuradio/filter/firdes.h>
 
 namespace gr {
   namespace bokehgui {
@@ -46,6 +48,31 @@ namespace gr {
        * creating new instances.
        */
       static sptr make(int fftsize, int wintype, double fc, double bw, const std::string &name, int nconnections);
+
+      virtual void set_trigger_mode(trigger_mode mode,
+                            float level,
+                            int channel,
+                            const std::string &tag_key) = 0;
+      virtual void get_plot_data(float** output_items, int* nrows, int* size) = 0;
+      virtual void reset() = 0;
+      virtual bool set_fft_window(filter::firdes::win_type newwintype) = 0;
+      virtual void buildwindow() = 0;
+      virtual bool fftresize(const int) = 0;
+      virtual void handle_set_freq(pmt::pmt_t) = 0;
+
+      virtual void set_frequency_range(double, double) = 0;
+      virtual int work(int noutput_items,
+         gr_vector_const_void_star &input_items,
+         gr_vector_void_star &output_items) = 0;
+
+      virtual void handle_pdus(pmt::pmt_t) = 0;
+
+      virtual double get_center_freq() = 0;
+      virtual double get_bandwidth() = 0;
+      virtual int get_fft_size() = 0;
+      virtual int get_wintype() = 0;
+      virtual std::string get_name() = 0;
+      virtual int get_nconnections() = 0;
     };
 
   } // namespace bokehgui
