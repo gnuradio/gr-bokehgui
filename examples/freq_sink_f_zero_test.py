@@ -40,7 +40,7 @@ class top_block(gr.top_block):
         # Blocks
         ##################################################
         self.bokehgui_freq_sink_f_proc_0 = bokehgui.freq_sink_f_proc(1024, firdes.WIN_BLACKMAN_hARRIS, 0, samp_rate/2, "Frequency Sink", 1)
-        self.bokehgui_freq_sink_f_0 = bokehgui.freq_sink_f(self.doc, self.bokehgui_freq_sink_f_proc_0, 1024, firdes.WIN_BLACKMAN_hARRIS, 0, samp_rate/2, 'Frequency Sink', 1)
+        self.bokehgui_freq_sink_f_0 = bokehgui.freq_sink_f(self.doc, self.bokehgui_freq_sink_f_proc_0)
         self.blocks_vector_source_x_0 = blocks.vector_source_f([1,]*1024, True, 1, [])
         self.blocks_throttle_0_0 = blocks.throttle(gr.sizeof_float*1, samp_rate,True)
 

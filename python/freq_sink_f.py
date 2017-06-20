@@ -28,22 +28,26 @@ class freq_sink_f(bokeh_plot_config):
     """
     docstring for block freq_sink_f
     """
-    def __init__(self, doc, proc, fftsize, wintype,
-                 fc, bw, name, nconnections,
+    def __init__(self, doc, proc,
                  is_message = False):
         super(freq_sink_f, self).__init__()
+
         self.doc = doc
         self.process = proc
-        self.fftsize = fftsize
-        self.wintype = wintype
-        self.name = name
-        self.nconnections = nconnections
+
+        self.fftsize = self.process.get_fft_size()
+        self.wintype = self.process.get_wintype()
+        self.name = self.process.get_name()
+        self.nconnections = self.process.get_nconnections()
+        self.fc = self.process.get_center_freq()
+        self.bw = self.process.get_bandwidth()
+
         self.is_message = is_message
 
         self.stream = None
         self.plot = None
 
-        self.set_frequency_range(fc, bw, set_x_axis = False)
+        self.set_frequency_range(self.fc, self.bw, set_x_axis = False, notify_process = False)
 
     def set_trigger_mode(self, trigger_mode, level, channel, tag_key):
         self.process.set_trigger_mode(trigger_mode, level,
@@ -93,7 +97,7 @@ class freq_sink_f(bokeh_plot_config):
             fftsize = self.process.get_fft_size()
             if self.fc != fc or self.bw != bw or self.fftsize != fftsize:
                 self.fftsize = fftsize
-                self.set_frequency_range(fc, bw)
+                self.set_frequency_range(fc, bw, notify_process = False)
 
 
             new_data = dict()
@@ -105,10 +109,11 @@ class freq_sink_f(bokeh_plot_config):
             self.stream.stream(new_data, rollover = self.fftsize)
         return
 
-    def set_frequency_range(self, fc, bw, set_x_axis = True):
+    def set_frequency_range(self, fc, bw, set_x_axis = True, notify_process = True):
         self.fc = fc
         self.bw = bw
-        self.process.set_frequency_range(fc, bw)
+        if notify_process:
+            self.process.set_frequency_range(fc, bw)
 
         step = bw/self.fftsize
 

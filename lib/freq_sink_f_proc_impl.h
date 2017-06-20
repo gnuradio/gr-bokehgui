@@ -69,9 +69,6 @@ namespace gr {
       void fft(float*, const float*, int);
       bool set_fft_window(filter::firdes::win_type newwintype);
       void set_frequency_range(double, double);
-      double get_center_freq();
-      double get_bandwidth();
-      int get_fft_size();
       void buildwindow();
       bool fftresize(int);
       void handle_set_freq(pmt::pmt_t);
@@ -83,6 +80,13 @@ namespace gr {
          gr_vector_void_star &output_items);
 
       void handle_pdus(pmt::pmt_t);
+      
+      double get_center_freq();
+      double get_bandwidth();
+      int get_fft_size();
+      int get_wintype();
+      std::string get_name();
+      int get_nconnections();
     };
 
   } // namespace bokehgui

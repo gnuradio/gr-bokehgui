@@ -448,6 +448,23 @@ namespace gr {
       return d_fftsize;
     }
 
+    int
+    freq_sink_f_proc_impl::get_wintype()
+    {
+      return d_wintype;
+    }
+
+    std::string
+    freq_sink_f_proc_impl::get_name()
+    {
+      return d_name;
+    }
+
+    int
+    freq_sink_f_proc_impl::get_nconnections()
+    {
+      return d_nconnections;
+    }
   } /* namespace bokehgui */
 } /* namespace gr */
 
