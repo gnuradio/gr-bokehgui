@@ -28,19 +28,21 @@ class time_sink_c(bokeh_plot_config):
     """
     docstring for block time_sink_c
     """
-    def __init__(self, doc, proc, size,
-                 samp_rate, name,
-                 nconnections = 1, is_message = False):
+    def __init__(self, doc, proc,
+                 is_message = False):
         super(time_sink_c, self).__init__()
+
         self.doc = doc
-        self.size = size
-	self.samp_rate = samp_rate
-        self.name = name
-	self.nconnections = nconnections
+        self.process = proc
+
+        self.size = self.process.get_size()
+	self.samp_rate = self.process.get_samp_rate()
+        self.name = self.process.get_name()
+	self.nconnections = self.process.get_nconnections()
+        self.is_message = is_message
+
         self.stream = None
         self.plot = None
-        self.process = proc
-        self.is_message = is_message
 
     def set_trigger_mode(self, trigger_mode, trigger_slope,
                          level, delay, channel, tag_key):

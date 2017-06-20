@@ -87,6 +87,11 @@ namespace gr {
       bool _test_trigger_slope(const gr_complex*) const;
       void _test_trigger_norm(int, int, gr_vector_const_void_star);
       void _test_trigger_tags(int, int);
+
+      int get_size();
+      double get_samp_rate();
+      std::string get_name();
+      int get_nconnections();
     };
   } // namespace bokehgui
 } // namespace gr

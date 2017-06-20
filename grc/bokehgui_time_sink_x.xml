@@ -13,10 +13,6 @@ bokehgui.$(type.fcn)(
 )
 self.$(id)_plot = bokehgui.$(type.plot)(
     self.doc, self.$(id),
-    $size,
-    $srate,
-    $name,
-    #if $type.t == 'message' then 0 else $nconnections#,
     is_message = #if $type.t == 'message' then True else False#
 )
 

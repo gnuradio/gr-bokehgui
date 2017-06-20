@@ -68,8 +68,12 @@ namespace gr {
                                     float level,
                                     float delay, int channel,
                                     const std::string &tag_key) = 0;
-    };
 
+      virtual int get_size() = 0;
+      virtual double get_samp_rate() = 0;
+      virtual std::string get_name() = 0;
+      virtual int get_nconnections() = 0;
+    };
   } // namespace bokehgui
 } // namespace gr
 

@@ -396,6 +396,30 @@ namespace gr {
       }
       memcpy(&d_buffers.back()[d_nconnections][0], &in[0], len*sizeof(gr_complex));
     }
+
+    int
+    time_sink_c_proc_impl::get_size()
+    {
+      return d_size;
+    }
+
+    double
+    time_sink_c_proc_impl::get_samp_rate()
+    {
+      return d_samp_rate;
+    }
+
+    std::string
+    time_sink_c_proc_impl::get_name()
+    {
+      return d_name;
+    }
+
+    int
+    time_sink_c_proc_impl::get_nconnections()
+    {
+      return d_nconnections;
+    }
   } /* namespace bokehgui */
 } /* namespace gr */
 
