@@ -25,5 +25,6 @@ install(FILES
     trigger_mode.h
     time_sink_c_proc.h
     time_sink_f_proc.h
-    freq_sink_f_proc.h DESTINATION include/bokehgui
+    freq_sink_f_proc.h
+    freq_sink_c_proc.h DESTINATION include/bokehgui
 )

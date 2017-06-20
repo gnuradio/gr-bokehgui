@@ -33,6 +33,7 @@ if(PyArray_API == NULL)
 #include "bokehgui/time_sink_f_proc.h"
 #include "bokehgui/time_sink_c_proc.h"
 #include "bokehgui/freq_sink_f_proc.h"
+#include "bokehgui/freq_sink_c_proc.h"
 %}
 
 %{
@@ -57,3 +58,5 @@ GR_SWIG_BLOCK_MAGIC2(bokehgui, time_sink_f_proc);
 GR_SWIG_BLOCK_MAGIC2(bokehgui, time_sink_c_proc);
 %include "bokehgui/freq_sink_f_proc.h"
 GR_SWIG_BLOCK_MAGIC2(bokehgui, freq_sink_f_proc);
+%include "bokehgui/freq_sink_c_proc.h"
+GR_SWIG_BLOCK_MAGIC2(bokehgui, freq_sink_c_proc);
