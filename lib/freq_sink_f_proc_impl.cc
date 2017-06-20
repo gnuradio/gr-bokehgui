@@ -112,7 +112,7 @@ namespace gr {
                                             int channel,
                                             const std::string &tag_key)
     {
-      gr::thread::scoped_lock(d_setlock);
+      gr::thread::scoped_lock lock(d_setlock);
 
       d_trigger_mode = mode;
       d_trigger_level = level;
@@ -253,7 +253,6 @@ namespace gr {
     void
     freq_sink_f_proc_impl::handle_set_freq(pmt::pmt_t msg)
     {
-      // TODO: Notify to Python
       if(pmt::is_pair(msg)) {
         pmt::pmt_t x = pmt::cdr(msg);
         if(pmt::is_real(x)) {
@@ -306,8 +305,7 @@ namespace gr {
         gr_vector_const_void_star &input_items,
         gr_vector_void_star &output_items)
     {
-      const float *in = (const float*) input_items[0];
-
+      const float *in;
       gr::thread::scoped_lock lock(d_setlock);
       // Consume all possible set of data. Each with size d_fftsize
       for(int d_index = 0; d_index < noutput_items; d_index += d_fftsize) {

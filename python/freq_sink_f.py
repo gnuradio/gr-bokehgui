@@ -143,5 +143,7 @@ class freq_sink_f(bokeh_plot_config):
             self.process.set_fft_window(wintype)
 
     def set_fft_size(self, fftsize):
+        if fftsize < 16 or fftsize > 16384:
+            raise ValueError("FreqSink: FFT Size must be between 16 to 16384")
         self.fftsize = fftsize
         self.process.fftresize(fftsize)

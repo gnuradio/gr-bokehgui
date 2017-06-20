@@ -34,8 +34,9 @@ class qa_freq_sink_f (gr_unittest.TestCase):
         self.tb = None
 
     def test_001_t (self):
-        original = (1,)*500
-        expected_result = (-200,)*50 + (0,) + (-200,)*49
+        original = (1,)*100 + (-1,)*100 + (0,)*50 + (10,) + (0,)*49
+        expected_result = [(-200,)*50 + (0,) + (-200,)*49,
+                           (-20,)*100]
 
         src = blocks.vector_source_f(original, False, 1, [])
 
@@ -48,9 +49,9 @@ class qa_freq_sink_f (gr_unittest.TestCase):
         result_data1 = dst.get_plot_data()
         result_data2 = dst.get_plot_data()
 
-        self.assertEqual(expected_result, tuple(result_data[0]))
-        self.assertEqual(expected_result, tuple(result_data1[0]))
-        self.assertEqual(expected_result, tuple(result_data2[0]))
+        self.assertEqual(expected_result[0], tuple(result_data[0]))
+        self.assertEqual(expected_result[0], tuple(result_data1[0]))
+        self.assertEqual(expected_result[1], tuple(result_data2[0]))
 
         self.tb.stop()
         self.tb.wait()
