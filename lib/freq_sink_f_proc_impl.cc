@@ -305,6 +305,7 @@ namespace gr {
         gr_vector_const_void_star &input_items,
         gr_vector_void_star &output_items)
     {
+      const float *in;
       gr::thread::scoped_lock lock(d_setlock);
       // Consume all possible set of data. Each with size d_fftsize
       for(int d_index = 0; d_index < noutput_items; d_index += d_fftsize) {
