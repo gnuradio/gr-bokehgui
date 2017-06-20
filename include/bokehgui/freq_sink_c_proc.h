@@ -71,6 +71,7 @@ namespace gr {
       virtual double get_bandwidth() = 0;
       virtual int get_fft_size() = 0;
       virtual int get_wintype() = 0;
+      virtual void set_fft_avg(float) = 0;
       virtual std::string get_name() = 0;
       virtual int get_nconnections() = 0;
     };

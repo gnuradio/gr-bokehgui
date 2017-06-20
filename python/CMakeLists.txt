@@ -35,6 +35,7 @@ GR_PYTHON_INSTALL(
     time_sink_f.py
     time_sink_c.py
     freq_sink_f.py
+    freq_sink_c.py
     utils.py DESTINATION ${GR_PYTHON_DIR}/bokehgui
 )
 

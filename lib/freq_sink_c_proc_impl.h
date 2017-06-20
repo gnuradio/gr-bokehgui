@@ -87,6 +87,7 @@ namespace gr {
       int get_wintype();
       std::string get_name();
       int get_nconnections();
+      void set_fft_avg(float);
     };
 
   } // namespace bokehgui
