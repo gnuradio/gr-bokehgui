@@ -42,7 +42,7 @@ class top_block(gr.top_block):
         # Blocks
         ##################################################
         self.bokehgui_time_sink_c_proc_0 = bokehgui.time_sink_c_proc(200, samp_rate, 'TimeSink', 2)
-        self.bokehgui_time_sink_c_0 = bokehgui.time_sink_c(self.doc, self.bokehgui_time_sink_c_proc_0, 200, samp_rate, 'TImeSink', 2)
+        self.bokehgui_time_sink_c_0 = bokehgui.time_sink_c(self.doc, self.bokehgui_time_sink_c_proc_0)
         self.blocks_throttle_0 = blocks.throttle(gr.sizeof_gr_complex*1, samp_rate,True)
         self.blocks_throttle_1 = blocks.throttle(gr.sizeof_gr_complex*1, samp_rate,True)
         self.analog_sig_source_x_0 = analog.sig_source_c(samp_rate, analog.GR_COS_WAVE, 300, 3, 0)

@@ -29,19 +29,21 @@ class time_sink_f(bokeh_plot_config):
     """
     docstring for block time_sink_f
     """
-    def __init__(self, doc, proc, size,
-                 samp_rate, name,
-                 nconnections = 1, is_message = False):
+    def __init__(self, doc, proc,
+                 is_message = False):
         super(time_sink_f, self).__init__()
+
         self.doc = doc
-        self.size = size
-	self.samp_rate = samp_rate
-        self.name = name
-	self.nconnections = nconnections
+        self.process = proc
+
+        self.size = self.process.get_size()
+	self.samp_rate = self.process.get_samp_rate()
+        self.name = self.process.get_name()
+	self.nconnections = self.process.get_nconnections()
+        self.is_message = is_message
+
         self.stream = None
         self.plot = None
-        self.process = proc
-        self.is_message = is_message
 
     def set_trigger_mode(self, trigger_mode, trigger_slope,
                          level, delay, channel, tag_key):
@@ -61,7 +63,12 @@ class time_sink_f(bokeh_plot_config):
         data = dict()
         data['x'] = []
 
-        for i in range(self.nconnections):
+        if self.is_message:
+            nconnection = 1
+        else:
+            nconnection = self.nconnections
+
+        for i in range(nconnection):
             data['y'+str(i)] = []
             if not self.is_message:
                 data['tags'+str(i)] = []
@@ -72,7 +79,7 @@ class time_sink_f(bokeh_plot_config):
         self.legend_list = legend_list[:]
         if not self.is_message:
             self.tags = []
-        for i in range(self.nconnections):
+        for i in range(nconnection):
             self.lines.append(self.plot.line(
                                         x='x', y='y'+str(i),
                                         source = self.stream,
@@ -96,7 +103,7 @@ class time_sink_f(bokeh_plot_config):
         if self.name:
             self.set_title(self.name)
 
-        self.set_update_time(update_time)
+        self.doc.add_periodic_callback(self.update, update_time)
 
     def update(self):
         ## Call to receive from buffers
@@ -112,15 +119,21 @@ class time_sink_f(bokeh_plot_config):
                 stream_tags.append(temp_stream_tags[:])
 
         new_data = dict()
-        for i in range(self.nconnections + 1):
-            if (not self.is_message) and i == self.nconnections:
-                continue
+        if self.is_message:
+            nconnection = 1
+        else:
+            nconnection = self.nconnections
+        for i in range(nconnection):
             new_data['y'+str(i)] = output_items[i]
+
             if not self.is_message:
                 new_data['tags'+str(i)] = stream_tags[i]
+
         if self.is_message:
             self.size = len(new_data['y0'])
+            self.set_x_axis([0, self.size/self.samp_rate])
         new_data['x'] = self.values_x()
+
         self.stream.stream(new_data, rollover = self.size)
         return
 
@@ -128,14 +141,14 @@ class time_sink_f(bokeh_plot_config):
         return [i/float(self.samp_rate) for i in range(self.size)]
 
     def set_samp_rate(self, samp_rate):
-        self.process.set_samp_rate(samp_rate);
+        self.process.set_samp_rate(samp_rate)
         self.samp_rate = samp_rate
 
     def set_nsamps(self, param, oldsize, newsize):
         if newsize != self.size:
-            self.process.set_nsamps(newsize);
+            self.process.set_nsamps(newsize)
             self.size = newsize
-        self.set_x_axis(0, self.size/self.samp_rate);
+        self.set_x_axis([0, self.size/self.samp_rate])
 
     def enable_tags(self, which = -1, en = True):
         if which == -1:
@@ -146,8 +159,3 @@ class time_sink_f(bokeh_plot_config):
                 self.tags[which].text_color = 'black'
             else:
                 self.tags[which].text_color = None
-
-    def set_update_time(self, miliseconds):
-        self.doc.add_periodic_callback(self.update, miliseconds)
-
-
