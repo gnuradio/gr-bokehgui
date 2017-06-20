@@ -397,5 +397,28 @@ namespace gr {
       memcpy(&d_buffers.back()[d_nconnections][0], in, len*sizeof(float));
     }
 
+    int
+    time_sink_f_proc_impl::get_size()
+    {
+      return d_size;
+    }
+
+    double
+    time_sink_f_proc_impl::get_samp_rate()
+    {
+      return d_samp_rate;
+    }
+
+    std::string
+    time_sink_f_proc_impl::get_name()
+    {
+      return d_name;
+    }
+
+    int
+    time_sink_f_proc_impl::get_nconnections()
+    {
+      return d_nconnections;
+    }
   } /* namespace bokehgui */
 } /* namespace gr */
