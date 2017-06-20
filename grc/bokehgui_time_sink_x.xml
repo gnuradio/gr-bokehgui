@@ -548,7 +548,6 @@ for i in xrange(#if $type.t == 'message' then 1 else $nconnections#):
     <option>
       <name>X-Cross</name>
       <key>'x'</key>
->>>>>>> develop_PR
     </option>
     <tab>Config</tab>
   </param>

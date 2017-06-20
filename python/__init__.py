@@ -34,4 +34,5 @@ except ImportError:
 from bokeh_plot_config import bokeh_plot_config
 from time_sink_f import time_sink_f
 from time_sink_c import time_sink_c
+from freq_sink_f import freq_sink_f
 #

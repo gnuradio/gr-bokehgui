@@ -34,6 +34,7 @@ GR_PYTHON_INSTALL(
     bokeh_plot_config.py
     time_sink_f.py
     time_sink_c.py
+    freq_sink_f.py
     utils.py DESTINATION ${GR_PYTHON_DIR}/bokehgui
 )
 

@@ -58,6 +58,9 @@ namespace gr {
       virtual bool set_fft_window(filter::firdes::win_type newwintype) = 0;
       virtual void buildwindow() = 0;
       virtual bool fftresize(const int) = 0;
+      virtual double get_center_freq() = 0;
+      virtual double get_bandwidth() = 0;
+      virtual int get_fft_size() = 0;
       virtual void handle_set_freq(pmt::pmt_t) = 0;
 
       virtual void set_frequency_range(double, double) = 0;

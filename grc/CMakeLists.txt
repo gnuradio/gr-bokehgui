@@ -18,6 +18,4 @@
 # Boston, MA 02110-1301, USA.
 
 install(FILES
-    bokehgui_time_sink_x.xml
-    bokehgui_freq_sink_f_proc.xml DESTINATION share/gnuradio/grc/blocks
-)
+    bokehgui_time_sink_x.xml DESTINATION share/gnuradio/grc/blocks)

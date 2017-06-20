@@ -26,7 +26,6 @@ from tornado.ioloop import IOLoop
 from bokeh.application import Application
 from bokeh.server.server import Server
 
-
 class top_block(gr.top_block):
     def __init__(self, doc):
         gr.top_block.__init__(self, "Top Block")
@@ -40,38 +39,26 @@ class top_block(gr.top_block):
         ##################################################
         # Blocks
         ##################################################
-        self.bokehgui_time_sink_f_proc_0 = bokehgui.time_sink_f_proc(750, samp_rate, 'TimeSink', 2)
-        self.bokehgui_time_sink_f_0 = bokehgui.time_sink_f(self.doc, self.bokehgui_time_sink_f_proc_0, 750, samp_rate, 'TImeSink', 2)
-        self.blocks_throttle_0 = blocks.throttle(gr.sizeof_float*1, samp_rate,True)
-        self.blocks_throttle_1 = blocks.throttle(gr.sizeof_float*1, samp_rate,True)
-        self.analog_sig_source_x_0 = analog.sig_source_f(samp_rate, analog.GR_COS_WAVE, 500, 3, 0)
-        self.analog_sig_source_x_1 = analog.sig_source_f(samp_rate, analog.GR_COS_WAVE, 100, 1, 0)
-
+        self.bokehgui_freq_sink_f_proc_0 = bokehgui.freq_sink_f_proc(1024, firdes.WIN_BLACKMAN_hARRIS, 0, samp_rate/2, "Frequency Sink", 1)
+        self.bokehgui_freq_sink_f_0 = bokehgui.freq_sink_f(self.doc, self.bokehgui_freq_sink_f_proc_0, 1024, firdes.WIN_BLACKMAN_hARRIS, 0, samp_rate/2, 'Frequency Sink', 1)
+        self.blocks_vector_source_x_0 = blocks.vector_source_f([1,]*1024, True, 1, [])
+        self.blocks_throttle_0_0 = blocks.throttle(gr.sizeof_float*1, samp_rate,True)
 
         ##################################################
         # Customizing the plot
         ##################################################
-        self.bokehgui_time_sink_f_0.initialize(legend_list = ['data0',
-                                                              'data1',
-                                                             ],
-                                               update_time = 100
-                                               )
+        self.bokehgui_freq_sink_f_0.initialize(update_time = 100, legend_list=['data0'])
 
-        self.bokehgui_time_sink_f_0.set_x_label('Time (s)')
-        self.bokehgui_time_sink_f_0.set_y_label('Value')
-        self.bokehgui_time_sink_f_0.set_line_color(0, 'black')
-        self.bokehgui_time_sink_f_0.set_line_color(1, 'red')
-        self.bokehgui_time_sink_f_0.set_line_style(1, 'dashed')
-        self.bokehgui_time_sink_f_0.set_line_marker(0, '^')
-        self.bokehgui_time_sink_f_0.set_line_width(1, 2)
+        self.bokehgui_freq_sink_f_0.set_x_label('Frequency (Hz)')
+        self.bokehgui_freq_sink_f_0.set_y_label('Relative Gain (dB)')
+        self.bokehgui_freq_sink_f_0.set_y_axis([-150, 10])
+        self.bokehgui_freq_sink_f_0.set_line_color(0, 'blue')
 
         ##################################################
         # Connections
         ##################################################
-        self.connect((self.analog_sig_source_x_0, 0), (self.blocks_throttle_0, 0))
-        self.connect((self.analog_sig_source_x_1, 0), (self.blocks_throttle_1, 0))
-        self.connect((self.blocks_throttle_0, 0), (self.bokehgui_time_sink_f_proc_0, 0))
-        self.connect((self.blocks_throttle_1, 0), (self.bokehgui_time_sink_f_proc_0, 1))
+        self.connect((self.blocks_vector_source_x_0, 0), (self.blocks_throttle_0_0, 0))
+        self.connect((self.blocks_throttle_0_0, 0), (self.bokehgui_freq_sink_f_proc_0, 0))
 
     def get_samp_rate(self):
         return self.samp_rate
@@ -80,7 +67,7 @@ class top_block(gr.top_block):
         self.samp_rate = samp_rate
         self.blocks_throttle_0.set_sample_rate(self.samp_rate)
         self.analog_sig_source_x_0.set_sampling_freq(self.samp_rate)
-        self.bokehgui_time_sink_f_0.set_sample_rate(self.samp_rate)
+        self.bokehgui_freq_sink_f_0.set_frequency_range([0, self.samp_rate/2])
 
 def main(top_block_cls=top_block, options=None):
     # Define tornado loop
@@ -92,7 +79,7 @@ def main(top_block_cls=top_block, options=None):
     srv = Server({'/':app},io_loop=loop)
     # Start server process
     srv.start()
-   # Define the document instance
+    # Define the document instance
     doc = curdoc()
     session = push_session(doc, session_id="test", io_loop=loop, url='http://localhost:5006/')
 
@@ -116,4 +103,5 @@ def main(top_block_cls=top_block, options=None):
 
 if __name__ == '__main__':
     main()
+
 

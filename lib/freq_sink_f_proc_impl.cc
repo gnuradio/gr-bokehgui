@@ -429,6 +429,25 @@ namespace gr {
       for(int x = 0; x < d_fftsize; x++)
         d_magbufs.back()[d_nconnections][x] /= static_cast<float>(nffts);
     }
+
+    double
+    freq_sink_f_proc_impl::get_center_freq()
+    {
+      return d_center_freq;
+    }
+
+    double
+    freq_sink_f_proc_impl::get_bandwidth()
+    {
+      return d_bandwidth;
+    }
+
+    int
+    freq_sink_f_proc_impl::get_fft_size()
+    {
+      return d_fftsize;
+    }
+
   } /* namespace bokehgui */
 } /* namespace gr */
 

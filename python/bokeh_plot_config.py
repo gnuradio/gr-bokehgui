@@ -45,10 +45,6 @@ class bokeh_plot_config(object):
         self.plot.xaxis[0].axis_label = xlabel
     def set_y_label(self, ylabel):
         self.plot.yaxis[0].axis_label = ylabel
-    def set_line_label(self, i, label):
-        self.legend_list[i] = label
-    def get_line_label(self, i):
-        return self.legend_list[i]
     def set_line_color(self, i, color):
         self.lines[i].glyph.line_color = color
     def get_line_color(self, i):
