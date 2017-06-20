@@ -463,6 +463,12 @@ namespace gr {
     {
       return d_nconnections;
     }
+
+    void
+    freq_sink_f_proc_impl::set_fft_avg(float newavg)
+    {
+      d_fftavg = newavg;
+    }
   } /* namespace bokehgui */
 } /* namespace gr */
 
