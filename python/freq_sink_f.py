@@ -147,3 +147,6 @@ class freq_sink_f(bokeh_plot_config):
             raise ValueError("FreqSink: FFT Size must be between 16 to 16384")
         self.fftsize = fftsize
         self.process.fftresize(fftsize)
+
+    def set_fft_avg(self, newavg):
+        self.process.set_fft_avg(newavg)
