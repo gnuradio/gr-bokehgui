@@ -161,7 +161,7 @@ class bokeh_plot_config(object):
         self.enable_y_grid(en)
     def enable_axis_labels(self, en = True):
         if en:
-            self.plot.xaxis[0].axis_label = '#000000'
+            self.plot.xaxis[0].axis_label_text_color = '#000000'
             self.plot.yaxis[0].axis_label_text_color = '#000000'
         else:
             self.plot.xaxis[0].axis_label_text_color = '#FFFFFF'

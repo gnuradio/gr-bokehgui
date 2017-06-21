@@ -282,7 +282,11 @@
     </param>
   </block>
   <block>
-    <key>audio_source</key>
+    <key>analog_sig_source_x</key>
+    <param>
+      <key>amp</key>
+      <value>1</value>
+    </param>
     <param>
       <key>alias</key>
       <value></value>
@@ -296,16 +300,16 @@
       <value></value>
     </param>
     <param>
-      <key>device_name</key>
-      <value></value>
-    </param>
-    <param>
       <key>_enabled</key>
       <value>True</value>
     </param>
     <param>
+      <key>freq</key>
+      <value>1000</value>
+    </param>
+    <param>
       <key>_coordinate</key>
-      <value>(440, 260)</value>
+      <value>(440, 264)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -313,7 +317,7 @@
     </param>
     <param>
       <key>id</key>
-      <value>audio_source_0</value>
+      <value>analog_sig_source_x_1</value>
     </param>
     <param>
       <key>maxoutbuf</key>
@@ -324,16 +328,20 @@
       <value>0</value>
     </param>
     <param>
-      <key>num_outputs</key>
-      <value>1</value>
+      <key>offset</key>
+      <value>0</value>
     </param>
     <param>
-      <key>ok_to_block</key>
-      <value>True</value>
+      <key>type</key>
+      <value>float</value>
     </param>
     <param>
       <key>samp_rate</key>
       <value>samp_rate</value>
+    </param>
+    <param>
+      <key>waveform</key>
+      <value>analog.GR_COS_WAVE</value>
     </param>
   </block>
   <block>
@@ -588,7 +596,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(968, 76)</value>
+      <value>(984, 84)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -888,7 +896,7 @@
     </param>
     <param>
       <key>xlabel</key>
-      <value>Time</value>
+      <value>Frequency</value>
     </param>
     <param>
       <key>xunit</key>
@@ -951,7 +959,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(944, 268)</value>
+      <value>(960, 276)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -1219,7 +1227,7 @@
     </param>
     <param>
       <key>freqhalf</key>
-      <value>False</value>
+      <value>True</value>
     </param>
     <param>
       <key>tr_chan</key>
@@ -1251,7 +1259,7 @@
     </param>
     <param>
       <key>xlabel</key>
-      <value>Time</value>
+      <value>Frequency</value>
     </param>
     <param>
       <key>xunit</key>
@@ -1293,7 +1301,7 @@
     <sink_key>0</sink_key>
   </connection>
   <connection>
-    <source_block_id>audio_source_0</source_block_id>
+    <source_block_id>analog_sig_source_x_1</source_block_id>
     <sink_block_id>blocks_add_xx_1</sink_block_id>
     <source_key>0</source_key>
     <sink_key>0</sink_key>

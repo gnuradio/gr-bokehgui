@@ -273,7 +273,7 @@ for i in xrange(#if $type.t == 'message' then 1 else $nconnections#):
   <param>
     <name>X Axis Label</name>
     <key>xlabel</key>
-    <value>Time</value>
+    <value>Frequency</value>
     <type>string</type>
     <hide>part</hide>
   </param>
