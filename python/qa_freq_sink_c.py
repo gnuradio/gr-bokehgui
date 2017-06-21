@@ -35,7 +35,7 @@ class qa_freq_sink_c (gr_unittest.TestCase):
         self.tb = None
 
     def test_001_t (self):
-        original = (1+0j,)*100 + (0+1j,)*100 + (0+2j,)*300
+        original = (1+0j,)*100 + (0+1j,)*100 + (0+2j,)*100
         expected_result = [(-200,)*50 + (0,) + (-200,)*49,
                            (-200,)*50 + (0,) + (-200,)*49,
                            (-200,)*50 + (6.02,) + (-200,)*49,
@@ -52,9 +52,9 @@ class qa_freq_sink_c (gr_unittest.TestCase):
         result_data1 = dst.get_plot_data()
         result_data2 = dst.get_plot_data()
 
-        self.assertAlmostEqual(expected_result[0], tuple(round(x,2) for x in result_data[0]))
-        self.assertAlmostEqual(expected_result[1], tuple(round(x,2) for x in result_data1[0]))
-        self.assertAlmostEqual(expected_result[2], tuple(round(x,2) for x in result_data2[0]))
+        self.assertEqual(expected_result[0], tuple(round(x,2) for x in result_data[0]))
+        self.assertEqual(expected_result[1], tuple(round(x,2) for x in result_data1[0]))
+        self.assertEqual(expected_result[2], tuple(round(x,2) for x in result_data2[0]))
 
         self.tb.stop()
         self.tb.wait()

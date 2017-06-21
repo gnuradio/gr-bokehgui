@@ -48,7 +48,7 @@ namespace gr {
       d_center_freq(fc), d_bandwidth(bw), d_name(name),
       d_nconnections(nconnections)
     {
-      d_queue_size = 10;
+      d_queue_size = BOKEH_BUFFER_QUEUE_SIZE;
 
       // TODO: Double click on plot callback
 
