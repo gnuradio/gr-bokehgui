@@ -30,4 +30,6 @@
 #  define BOKEHGUI_API __GR_ATTR_IMPORT
 #endif
 
+#define BOKEH_BUFFER_QUEUE_SIZE 3
+
 #endif /* INCLUDED_BOKEHGUI_API_H */
