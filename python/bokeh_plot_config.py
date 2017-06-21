@@ -25,8 +25,10 @@ class bokeh_plot_config(object):
 
     def add_custom_tools(self):
         from bokeh.models import HoverTool, CrosshairTool
-        hover = HoverTool(tooltips = [("x", "$sx"),
-                                      ("y", "$sy")])
+        hover = HoverTool(tooltips = [("x", "$x"),
+                                      ("y", "$y")],
+                          mode = 'vline',
+                          renderers = self.lines)
         crosshair = CrosshairTool()
         self.plot.add_tools(hover, crosshair)
 
