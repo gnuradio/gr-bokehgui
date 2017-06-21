@@ -24,10 +24,13 @@ class bokeh_plot_config(object):
         pass
 
     def add_custom_tools(self):
-        from bokeh.models import HoverTool
+        from bokeh.models import HoverTool, CrosshairTool
         hover = HoverTool(tooltips = [("x", "$x"),
-                                      ("y", "$y")])
-        self.plot.add_tools(hover)
+                                      ("y", "$y")],
+                          mode = 'vline',
+                          renderers = self.lines)
+        crosshair = CrosshairTool()
+        self.plot.add_tools(hover, crosshair)
 
     def set_title(self, name):
         self.plot.title.text = self.name

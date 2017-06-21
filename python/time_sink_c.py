@@ -42,6 +42,7 @@ class time_sink_c(bokeh_plot_config):
         self.is_message = is_message
 
         self.stream = None
+        self.tag_stream = None
         self.plot = None
 
     def set_trigger_mode(self, trigger_mode, trigger_slope,
@@ -62,6 +63,8 @@ class time_sink_c(bokeh_plot_config):
         data = dict()
         data['x'] = []
 
+        tag_data = dict()
+
         if self.is_message:
             nconnection = 1
         else:
@@ -70,17 +73,21 @@ class time_sink_c(bokeh_plot_config):
         for i in range(2*nconnection):
             data['y'+str(i)] = []
 
+            tag_data['y'+str(i)] = []
+            tag_data['x'+str(i)] = []
+
         for i in range(self.nconnections):
-            data['tags'+str(i)] = []
+            tag_data['tags'+str(i)] = []
 
         self.stream = ColumnDataSource(data)
+        self.tag_stream = ColumnDataSource(tag_data)
 
         self.lines = []
         self.lines_markers = []
         self.legend_list = legend_list[:]
         if not self.nconnections == 0:
             self.tags = []
-
+            self.tags_marker = []
         for i in range(2*nconnection):
             self.lines.append(self.plot.line(
                                         x='x', y='y'+str(i),
@@ -91,12 +98,19 @@ class time_sink_c(bokeh_plot_config):
             self.lines_markers.append((None,None))
 
             if not self.is_message:
-                self.tags.append(LabelSet(x='x', y='y'+str(i),
+                self.tags.append(LabelSet(x='x'+str(i), y='y'+str(i),
                                       text='tags'+str(i/2),
                                       level='glyph',
-                                      x_offset=5, y_offset=5,
-                                      source=self.stream,
+                                      x_offset=-20, y_offset=5,
+                                      source=self.tag_stream,
+                                      text_font_style = 'bold',
+                                      text_font_size = '11pt',
                                       render_mode = 'canvas'))
+                self.tags_marker.append(self.plot.triangle(
+                                            x = 'x'+str(i), y = 'y'+str(i),
+                                            source = self.tag_stream,
+                                            size = 10, fill_color = 'red',
+                                            ))
                 self.plot.add_layout(self.tags[i])
 
         self.add_custom_tools()
@@ -114,29 +128,45 @@ class time_sink_c(bokeh_plot_config):
             tags = self.process.get_tags()
             stream_tags = []
             for i in range(self.nconnections):
-                temp_stream_tags = ["" for k in range(len(output_items[i]))]
+                temp_stream_tags = {}
                 for j in range(len(tags[i])):
                     temp_stream_tags[tags[i][j].offset] = str(tags[i][j].key) + ":" + str(tags[i][j].value)
 
-                stream_tags.append(temp_stream_tags[:])
+                stream_tags.append(temp_stream_tags)
 
         new_data = dict()
         if self.is_message:
             nconnection = 1
         else:
             nconnection = self.nconnections
+
         for i in range(nconnection):
             new_data['y'+str(2*i+0)] = output_items[i].real
             new_data['y'+str(2*i+1)] = output_items[i].imag
 
-            if not self.is_message:
-                new_data['tags'+str(i)] = stream_tags[i]
         if self.is_message:
             self.size = len(new_data['y0'])
             self.set_x_axis([0, self.size/self.samp_rate])
         new_data['x'] = self.values_x()
 
+        new_tagged_data = {}
+        max_tag_size = 0
+        for i in range(2*self.nconnections):
+            temp_x = []
+            temp_y = []
+            temp_tags = []
+            for j in stream_tags[i/2].keys():
+                temp_x.append(self.values_x()[j])
+                temp_y.append(new_data['y'+str(i)][j])
+                temp_tags.append(stream_tags[i/2][j])
+            new_tagged_data['x'+str(i)] = temp_x
+            new_tagged_data['y'+str(i)] = temp_y
+            new_tagged_data['tags'+str(i/2)] = temp_tags
+            if len(temp_x) > max_tag_size:
+                max_tag_size = len(temp_x)
+
         self.stream.stream(new_data, rollover = self.size)
+        self.tag_stream.stream(new_tagged_data, rollover = max_tag_size)
         return
 
     def values_x(self):
