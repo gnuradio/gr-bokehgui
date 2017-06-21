@@ -46,7 +46,7 @@ namespace gr {
       d_size(size), d_samp_rate(samp_rate), d_name(name),
       d_nconnections(nconnections)
     {
-      d_queue_size = 10;
+      d_queue_size = BOKEH_BUFFER_QUEUE_SIZE;
       d_index = 0;
 
       // setup PDU handling input port
