@@ -43,6 +43,7 @@ class freq_sink_f(bokeh_plot_config):
         self.bw = self.process.get_bandwidth()
 
         self.is_message = is_message
+        self.half_plot = False
 
         self.stream = None
         self.plot = None
@@ -125,7 +126,7 @@ class freq_sink_f(bokeh_plot_config):
             self.frequency_range[i + 1 + (self.fftsize+1)/2] = fc + step*i
 
         if set_x_axis:
-            self.set_x_axis([fc - bw/2, fc + bw/2])
+            self.set_plot_pos_half(self.half_plot)
 
     def set_center_freq(self, fc):
         if self.fc != fc:
@@ -150,3 +151,10 @@ class freq_sink_f(bokeh_plot_config):
 
     def set_fft_avg(self, newavg):
         self.process.set_fft_avg(newavg)
+
+    def set_plot_pos_half(self, en):
+        self.half_plot = en
+        if en:
+            self.set_x_axis([0, self.fc + self.bw/2])
+        else:
+            self.set_x_axis([self.fc - self.bw/2, self.fc + self.bw/2])
