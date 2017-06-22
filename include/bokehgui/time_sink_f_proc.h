@@ -34,10 +34,10 @@ namespace gr {
 
     /*!
      * \brief A buffer store-sink of multiple signals in time-domain
-     * \ingroup bokehgui_blk
+     * \ingroup bokehgui
      *
      * \details
-     * This block is part of Bokeh based time sink.
+     * This block is part of Bokeh based time sink for Float values.
      *
      * This is a buffer store that takes set of float streams and save in
      * buffers. The corresponding Python class retrieve the buffer data 
@@ -61,6 +61,7 @@ namespace gr {
     {
     public:
       typedef boost::shared_ptr <time_sink_f_proc> sptr;
+
       /*!
        * \brief Build floating point time sink
        *
