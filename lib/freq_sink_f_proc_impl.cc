@@ -253,6 +253,7 @@ namespace gr {
     void
     freq_sink_f_proc_impl::handle_set_freq(pmt::pmt_t msg)
     {
+      // TODO: Connect frequency message port
       if(pmt::is_pair(msg)) {
         pmt::pmt_t x = pmt::cdr(msg);
         if(pmt::is_real(x)) {
