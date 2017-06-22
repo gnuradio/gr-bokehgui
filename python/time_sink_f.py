@@ -36,7 +36,7 @@ class time_sink_f(bokeh_plot_config):
         self.doc = doc
         self.process = proc
 
-        self.size = self.process.get_size()
+        self.size = self.process.nsamps()
 	self.samp_rate = self.process.get_samp_rate()
         self.name = self.process.get_name()
 	self.nconnections = self.process.get_nconnections()

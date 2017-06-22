@@ -71,7 +71,6 @@ namespace gr {
       int nsamps() const;
       void reset();
       void _reset();
-//      void _adjust_tags(int adj);
       void handle_pdus(pmt::pmt_t);
 
       void set_trigger_mode(trigger_mode mode, trigger_slope slope,
@@ -82,7 +81,6 @@ namespace gr {
       void _test_trigger_norm(int, int, gr_vector_const_void_star);
       void _test_trigger_tags(int, int);
 
-      int get_size();
       double get_samp_rate();
       std::string get_name();
       int get_nconnections();

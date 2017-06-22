@@ -246,12 +246,6 @@ namespace gr {
       d_samp_rate = samp_rate;
     }
 
-    int
-    time_sink_f_proc_impl::nsamps() const
-    {
-      return d_size;
-    }
-
     void
     time_sink_f_proc_impl::reset()
     {
@@ -262,9 +256,6 @@ namespace gr {
     void
     time_sink_f_proc_impl::_reset()
     {
-      // TODO: Different from QT GUI:
-      // Ignored if d_trigger_delay condition
-      // Don't feel it is necessary in current scenario
       while(!d_tags.empty())
         d_tags.pop();
 
@@ -308,7 +299,6 @@ namespace gr {
           d_triggered = true;
           d_index = trigger_index;
           d_trigger_count = 0;
-          // _adjust_tags(-d_start);
           break;
         }
       }
@@ -337,20 +327,9 @@ namespace gr {
             d_triggered = true;
             d_index = trigger_index;
             d_trigger_count = 0;
-//            _adjust_tags(-d_start);
         }
       }
     }
-
-//    void
-//    time_sink_f_proc_impl::_adjust_tags(int adj)
-//    {
-//      for(size_t n = 0; n < d_tags.size(); n++) {
-//        for(size_t t = 0; t < d_tags[n].size(); t++) {
-//          d_tags[n][t].offset += adj;
-//        }
-//      }
-//    }
 
     void
     time_sink_f_proc_impl::handle_pdus(pmt::pmt_t msg)
@@ -398,8 +377,9 @@ namespace gr {
       memcpy(&d_buffers.back()[d_nconnections][0], in, len*sizeof(float));
     }
 
+    // Some get methods
     int
-    time_sink_f_proc_impl::get_size()
+    time_sink_f_proc_impl::nsamps() const
     {
       return d_size;
     }
