@@ -596,7 +596,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(984, 84)</value>
+      <value>(976, 76)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -864,7 +864,7 @@
     </param>
     <param>
       <key>freqhalf</key>
-      <value>True</value>
+      <value>False</value>
     </param>
     <param>
       <key>tr_chan</key>
@@ -975,7 +975,7 @@
     </param>
     <param>
       <key>legend</key>
-      <value>True</value>
+      <value>False</value>
     </param>
     <param>
       <key>alpha1</key>

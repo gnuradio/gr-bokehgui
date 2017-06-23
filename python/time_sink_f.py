@@ -53,7 +53,7 @@ class time_sink_f(bokeh_plot_config):
                                       level, delay, channel,
                                       tag_key)
 
-    def initialize(self, log_x = False, log_y = False, legend_list = [], update_time = 100):
+    def initialize(self, log_x = False, log_y = False, legend_list = utils.default_labels_f, update_time = 100):
         y_axis_type = 'log' if log_y else 'linear'
         x_axis_type = 'log' if log_x else 'linear'
         self.plot = figure(tools=utils.default_tools(),

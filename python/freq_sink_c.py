@@ -53,7 +53,7 @@ class freq_sink_c(bokeh_plot_config):
         self.process.set_trigger_mode(trigger_mode, level,
                                       channel, tag_key)
 
-    def initialize(self, legend_list = [], update_time = 100):
+    def initialize(self, legend_list = utils.default_labels_f, update_time = 100):
         self.plot = figure(tools = utils.default_tools(),
                             active_drag = 'ypan',
                             active_scroll = 'ywheel_zoom',)

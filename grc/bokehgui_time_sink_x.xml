@@ -5,21 +5,12 @@
   <category>[Bokeh GUI]</category>
   <import>import bokehgui</import>
   <make>#set $win = 'self._%s_win'%$id
-bokehgui.$(type.fcn)(
-    $size, \#size
-    $srate, \#samp_rate
-    $name, \#name
-    #if $type.t == 'message' then 0 else $nconnections# \#number of inputs
-)
-self.$(id)_plot = bokehgui.$(type.plot)(
-    self.doc, self.$(id),
-    is_message = #if $type.t == 'message' then True else False#
-)
+bokehgui.$(type.fcn)($size, $srate, $name, #if $type.t == 'message' then 0 else $nconnections#)
+self.$(id)_plot = bokehgui.$(type.plot)(self.doc, self.$(id), is_message = #if $type.t == 'message' then True else False#)
 
 labels = [$label1, $label2, $label3, $label4, $label5,
           $label6, $label7, $label8, $label9, $label10]
 legend_list = []
-
 #if ($type() == 'complex' or $type() == 'msg_complex')
 for i in xrange(#if $type.t == 'message' then 2 else 2*$nconnections()#):
     if len(labels[i]) == 0:
@@ -41,48 +32,45 @@ self.$(id)_plot.initialize(log_x = $(xlog),
                            log_y = $(ylog),
                            update_time = $update_time,
                            legend_list = legend_list)
+
 self.$(id)_plot.set_y_axis([$ymin, $ymax])
-self.$(id)_plot.set_y_label($ylabel + ('(' +$yunit+')') if $yunit != "" else $ylabel)
-self.$(id)_plot.set_x_label($xlabel + ('(' +$xunit+')') if $xunit != "" else $xlabel)
+#if ($yunit() == "")
+self.$(id)_plot.set_y_label($ylabel)
+#else
+self.$(id)_plot.set_y_label($ylabel + '(' +$yunit+')')
+#end if
+#if ($xunit() == "")
+self.$(id)_plot.set_x_label($xlabel)
+#else
+self.$(id)_plot.set_x_label($xlabel + '(' +$xunit+')')
+#end if
 
 self.$(id)_plot.enable_tags(-1, $entags)
-
 self.$(id)_plot.set_trigger_mode($tr_mode, $tr_slope, $tr_level, $tr_delay, $tr_chan, $tr_tag)
-
 self.$(id)_plot.enable_grid($grid)
 self.$(id)_plot.enable_axis_labels($axislabels)
+#if $legend() == 'False'
+self.$(id)_plot.disable_legend()
+#end if
 
-if not $legend:
-  self.$(id)_plot.disable_legend()
-
-widths = [$width1, $width2, $width3, $width4, $width5,
-          $width6, $width7, $width8, $width9, $width10]
 colors = [$color1, $color2, $color3, $color4, $color5,
           $color6, $color7, $color8, $color9, $color10]
+widths = [$width1, $width2, $width3, $width4, $width5,
+          $width6, $width7, $width8, $width9, $width10]
 styles = [$style1, $style2, $style3, $style4, $style5,
           $style6, $style7, $style8, $style9, $style10]
 markers = [$marker1, $marker2, $marker3, $marker4, $marker5,
            $marker6, $marker7, $marker8, $marker9, $marker10]
 alphas = [$alpha1, $alpha2, $alpha3, $alpha4, $alpha5,
           $alpha6, $alpha7, $alpha8, $alpha9, $alpha10]
-
 #if ($type() == 'complex' or $type() == 'msg_complex')
 for i in xrange(#if $type.t == 'message' then 2 else 2*$nconnections()#):
-    self.$(id)_plot.set_line_width(i, widths[i])
-    self.$(id)_plot.set_line_color(i, colors[i])
-    self.$(id)_plot.set_line_style(i, styles[i])
-    self.$(id)_plot.set_line_marker(i, markers[i])
-    self.$(id)_plot.set_line_alpha(i, alphas[i])
+    self.$(id)_plot.format_line(i, colors[i], widths[i], styles[i], markers[i], alphas[i])
 #else
 for i in xrange(#if $type.t == 'message' then 1 else $nconnections#):
-    self.$(id)_plot.set_line_width(i, widths[i])
-    self.$(id)_plot.set_line_color(i, colors[i])
-    self.$(id)_plot.set_line_style(i, styles[i])
-    self.$(id)_plot.set_line_marker(i, markers[i])
-    self.$(id)_plot.set_line_alpha(i, alphas[i])
+    self.$(id)_plot.format_line(i, colors[i], widths[i], styles[i], markers[i], alphas[i])
 #end if
-  
-  
+
   </make>
   <callback>set_x_axis([$min, $max])</callback>
   <callback>set_title($which, $title)</callback>
@@ -171,7 +159,7 @@ for i in xrange(#if $type.t == 'message' then 1 else $nconnections#):
       <key>True</key>
     </option>
   </param>
-  
+
   <param>
     <name>X Axis Label</name>
     <key>xlabel</key>
@@ -262,8 +250,8 @@ for i in xrange(#if $type.t == 'message' then 1 else $nconnections#):
   <param>
     <name>Update Period</name>
     <key>update_time</key>
-    <value>0.10</value>
-    <type>float</type>
+    <value>100</value>
+    <type>int</type>
     <hide>part</hide>
   </param>
 
@@ -961,6 +949,6 @@ for i in xrange(#if $type.t == 'message' then 1 else $nconnections#):
     <optional>1</optional>
   </sink>
 
-      
+
 
 </block>

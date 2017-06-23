@@ -48,6 +48,14 @@ class bokeh_plot_config(object):
         self.plot.xaxis[0].axis_label = xlabel
     def set_y_label(self, ylabel):
         self.plot.yaxis[0].axis_label = ylabel
+
+    def format_line(self, i, color, width, style, marker, alpha):
+        self.set_line_color(i, color)
+        self.set_line_width(i, width)
+        self.set_line_style(i, style)
+        self.set_line_marker(i, marker)
+        self.set_line_alpha(i, alpha)
+
     def set_line_color(self, i, color):
         self.lines[i].glyph.line_color = color
     def get_line_color(self, i):
