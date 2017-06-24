@@ -19,7 +19,7 @@
 import numpy
 
 from bokeh.plotting import figure
-from bokeh.models import ColumnDataSource, LabelSet
+from bokeh.models import ColumnDataSource, LabelSet, CustomJS
 
 from gnuradio import gr
 from bokehgui import freq_sink_f_proc, utils, bokeh_plot_config
@@ -35,7 +35,7 @@ class freq_sink_f(bokeh_plot_config):
         self.doc = doc
         self.process = proc
 
-        self.fftsize = self.process.get_fft_size()
+        self.size = self.process.get_fft_size()
         self.wintype = self.process.get_wintype()
         self.name = self.process.get_name()
         self.nconnections = self.process.get_nconnections()
@@ -60,8 +60,11 @@ class freq_sink_f(bokeh_plot_config):
                             active_scroll = 'ywheel_zoom',)
         data = dict()
         data['x'] = []
-
-        for i in range(self.nconnections):
+        if self.is_message:
+            nconn = 1
+        else:
+            nconn = self.nconnections
+        for i in range(nconn):
             data['y'+str(i)] = []
 
         self.stream = ColumnDataSource(data)
@@ -79,6 +82,33 @@ class freq_sink_f(bokeh_plot_config):
             self.lines_markers.append((None, None))
 
         self.add_custom_tools()
+
+        # Add max-hold plot
+        max_hold_source = ColumnDataSource(data=dict(x=range(self.size),y=[-1000]*self.size))
+        self.max_hold = self.plot.line(x = 'x', y='y',
+                                  source = max_hold_source,
+                                  line_color = 'green',
+                                  line_dash = 'dotdash',
+                                  line_alpha = 0)
+        callback = CustomJS(args=dict(max_hold_source = self.max_hold.data_source), code = """
+                                           var no_of_elem = cb_obj.data.x.length;
+                                           console.log(no_of_elem);
+                                           var data = cb_obj.data;
+                                           nconn = Object.getOwnPropertyNames(data).length -1;
+                                           var max_data = max_hold_source.data;
+                                           max_data.x = cb_obj.data.x;
+
+                                           for(n = 0; n < nconn; n++) {
+                                               for (i = 0; i < no_of_elem; i++) {
+                                                   if(max_data['y'][i] < data['y'+n][i]) {
+                                                       max_data['y'][i] = data['y'+n][i]
+                                                   }
+                                               }
+                                           }
+                                           max_hold_source.change.emit();
+                                           """)
+        self.stream.js_on_change("streaming", callback)
+        # max-hold plot done
         self.doc.add_root(self.plot)
 
         if self.name:
@@ -96,8 +126,8 @@ class freq_sink_f(bokeh_plot_config):
             fc = self.process.get_center_freq()
             bw = self.process.get_bandwidth()
             fftsize = self.process.get_fft_size()
-            if self.fc != fc or self.bw != bw or self.fftsize != fftsize:
-                self.fftsize = fftsize
+            if self.fc != fc or self.bw != bw or self.size != fftsize:
+                self.size = fftsize
                 self.set_frequency_range(fc, bw, notify_process = False)
 
 
@@ -107,7 +137,7 @@ class freq_sink_f(bokeh_plot_config):
                     continue
                 new_data['y'+str(i)] = output_items[i]
             new_data['x'] = self.frequency_range
-            self.stream.stream(new_data, rollover = self.fftsize)
+            self.stream.stream(new_data, rollover = self.size)
         return
 
     def set_frequency_range(self, fc, bw, set_x_axis = True, notify_process = True):
@@ -116,14 +146,14 @@ class freq_sink_f(bokeh_plot_config):
         if notify_process:
             self.process.set_frequency_range(fc, bw)
 
-        step = bw/self.fftsize
+        step = bw/self.size
 
-        self.frequency_range = [0]*self.fftsize
-        for i in range(self.fftsize/2):
-            self.frequency_range[i] = fc - step*(self.fftsize/2 - i)
-        self.frequency_range[(self.fftsize + 1)/2] = self.fc
-        for i in range((self.fftsize-1)/2):
-            self.frequency_range[i + 1 + (self.fftsize+1)/2] = fc + step*i
+        self.frequency_range = [0]*self.size
+        for i in range(self.size/2):
+            self.frequency_range[i] = fc - step*(self.size/2 - i)
+        self.frequency_range[(self.size + 1)/2] = self.fc
+        for i in range((self.size-1)/2):
+            self.frequency_range[i + 1 + (self.size+1)/2] = fc + step*i
 
         if set_x_axis:
             self.set_plot_pos_half(self.half_plot)
@@ -146,7 +176,7 @@ class freq_sink_f(bokeh_plot_config):
     def set_fft_size(self, fftsize):
         if fftsize < 16 or fftsize > 16384:
             raise ValueError("FreqSink: FFT Size must be between 16 to 16384")
-        self.fftsize = fftsize
+        self.size = fftsize
         self.process.fftresize(fftsize)
 
     def set_fft_avg(self, newavg):
@@ -158,3 +188,10 @@ class freq_sink_f(bokeh_plot_config):
             self.set_x_axis([0, self.fc + self.bw/2])
         else:
             self.set_x_axis([self.fc - self.bw/2, self.fc + self.bw/2])
+
+    def enable_max_hold(self, en = True):
+        if en:
+            self.max_hold.glyph.line_alpha = 1
+
+        else:
+            self.max_hold.glyph.line_alpha = 0

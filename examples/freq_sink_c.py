@@ -67,6 +67,7 @@ class top_block(gr.top_block):
         self.bokehgui_freq_sink_c_0.set_line_color(1, 'red')
         self.bokehgui_freq_sink_c_0.set_line_style(1, 'dashed')
         self.bokehgui_freq_sink_c_0.set_line_width(1, 1)
+        self.bokehgui_freq_sink_c_0.enable_max_hold()
 
         ##################################################
         # Connections
