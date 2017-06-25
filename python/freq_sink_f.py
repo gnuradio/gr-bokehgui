@@ -83,31 +83,10 @@ class freq_sink_f(bokeh_plot_config):
 
         self.add_custom_tools()
 
-        # Add max-hold plot
-        max_hold_source = ColumnDataSource(data=dict(x=range(self.size),y=[-1000]*self.size))
-        self.max_hold = self.plot.line(x = 'x', y='y',
-                                  source = max_hold_source,
-                                  line_color = 'green',
-                                  line_dash = 'dotdash',
-                                  line_alpha = 0)
-        callback = CustomJS(args=dict(max_hold_source = self.max_hold.data_source), code = """
-                                           var no_of_elem = cb_obj.data.x.length;
-                                           console.log(no_of_elem);
-                                           var data = cb_obj.data;
-                                           nconn = Object.getOwnPropertyNames(data).length -1;
-                                           var max_data = max_hold_source.data;
-                                           max_data.x = cb_obj.data.x;
 
-                                           for(n = 0; n < nconn; n++) {
-                                               for (i = 0; i < no_of_elem; i++) {
-                                                   if(max_data['y'][i] < data['y'+n][i]) {
-                                                       max_data['y'][i] = data['y'+n][i]
-                                                   }
-                                               }
-                                           }
-                                           max_hold_source.change.emit();
-                                           """)
-        self.stream.js_on_change("streaming", callback)
+        # Add max-hold plot
+        self.max_hold = None
+        self.enable_max_hold(False)
         # max-hold plot done
         self.doc.add_root(self.plot)
 
@@ -190,6 +169,31 @@ class freq_sink_f(bokeh_plot_config):
             self.set_x_axis([self.fc - self.bw/2, self.fc + self.bw/2])
 
     def enable_max_hold(self, en = True):
+        if self.max_hold == None:
+            max_hold_source = ColumnDataSource(data=dict(x=range(self.size),y=[float("-inf")]*self.size))
+            self.max_hold = self.plot.line(x = 'x', y='y',
+                                      source = max_hold_source,
+                                      line_color = 'green',
+                                      line_dash = 'dotdash',
+                                      line_alpha = 0)
+            callback = CustomJS(args=dict(max_hold_source = max_hold_source), code = """
+                                               var no_of_elem = cb_obj.data.x.length;
+                                               console.log(no_of_elem);
+                                               var data = cb_obj.data;
+                                               nconn = Object.getOwnPropertyNames(data).length -1;
+                                               var max_data = max_hold_source.data;
+                                               max_data.x = cb_obj.data.x;
+
+                                               for(n = 0; n < nconn; n++) {
+                                                   for (i = 0; i < no_of_elem; i++) {
+                                                       if(max_data['y'][i] < data['y'+n][i]) {
+                                                           max_data['y'][i] = data['y'+n][i]
+                                                       }
+                                                   }
+                                               }
+                                               max_hold_source.change.emit();
+                                               """)
+            self.stream.js_on_change("streaming", callback)
         if en:
             self.max_hold.glyph.line_alpha = 1
 
