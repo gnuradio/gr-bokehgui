@@ -22,7 +22,6 @@
 #ifndef INCLUDED_BOKEHGUI_TIME_SINK_F_PROC_IMPL_H
 #define INCLUDED_BOKEHGUI_TIME_SINK_F_PROC_IMPL_H
 
-#include <queue>
 #include <bokehgui/time_sink_f_proc.h>
 
 namespace gr {
@@ -31,18 +30,18 @@ namespace gr {
     class time_sink_f_proc_impl : public time_sink_f_proc
     {
      private:
-      int d_size, d_queue_size;
+//      int d_size, d_queue_size;
       double d_samp_rate;
-      std::string d_name;
-      int d_nconnections;
+  //    std::string d_name;
+    //  int d_nconnections;
 
       // 2D array of size (nconn*nitems). The int represents nitems
-      std::queue<std::vector<std::vector<float> > > d_buffers;
+      //std::queue<std::vector<std::vector<float> > > d_buffers;
       std::queue<std::vector<std::vector<gr::tag_t> > > d_tags;
 
       // Used during checking a trigger
       // Use output from this index
-      int d_index;
+      //int d_index;
 
       // Members used for triggering scope
       trigger_mode d_trigger_mode;
@@ -59,20 +58,24 @@ namespace gr {
       time_sink_f_proc_impl(int size, double samp_rate, const std::string &name, int nconnections);
       ~time_sink_f_proc_impl();
 
-      void get_plot_data (float** output_items, int* nrows, int* size);
+      //void get_plot_data (float** output_items, int* nrows, int* size);
       std::vector<std::vector<gr::tag_t> > get_tags();
       // Where all the action really happens
-      int work(int noutput_items,
-         gr_vector_const_void_star &input_items,
-         gr_vector_void_star &output_items);
-      bool check_topology(int ninputs, int noutputs);
-      void set_nsamps(const int newsize);
+//      int work(int noutput_items,
+//         gr_vector_const_void_star &input_items,
+//         gr_vector_void_star &output_items);
+//      bool check_topology(int ninputs, int noutputs);
+      void set_size(const int newsize);
       void set_samp_rate(const double samp_rate);
-      int nsamps() const;
+//      int nsamps() const;
       void reset();
       void _reset();
-      void handle_pdus(pmt::pmt_t);
+//      void handle_pdus(pmt::pmt_t);
 
+      void process_plot(float* arr, int nrows, int size);
+      void pop_other_queues();
+      void verify_datatype_PDU(const float*, pmt::pmt_t, size_t);
+      void work_process_other_queues(int start, int nitems);
       void set_trigger_mode(trigger_mode mode, trigger_slope slope,
                             float level,
                             float delay, int channel,
@@ -82,8 +85,8 @@ namespace gr {
       void _test_trigger_tags(int, int);
 
       double get_samp_rate();
-      std::string get_name();
-      int get_nconnections();
+//      std::string get_name();
+//      int get_nconnections();
     };
   } // namespace bokehgui
 } // namespace gr
