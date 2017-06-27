@@ -49,12 +49,12 @@ namespace gr {
       set_output_multiple (d_size);
     }
 
-//    template <class T, class U>
-//    base_sink<T, U>::~base_sink()
-//    {
-//      while(!d_buffers.empty())
-//        d_buffers.pop();
-//    }
+    template <class T, class U>
+    base_sink<T, U>::~base_sink()
+    {
+      while(!d_buffers.empty())
+        d_buffers.pop();
+    }
 
     template <class T, class U>
     void

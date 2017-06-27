@@ -33,7 +33,7 @@ namespace gr {
     {
      public:
       base_sink(std::string class_name, int size, const std::string &name, int nconnections);
-//      ~base_sink();
+      ~base_sink();
 
       void get_plot_data (U** output_items, int* nrows, int*size);
       int work(int noutput_items,

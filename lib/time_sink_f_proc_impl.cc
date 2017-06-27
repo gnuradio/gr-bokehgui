@@ -71,7 +71,6 @@ namespace gr {
     {
 //      while(!d_buffers.empty())
 //        d_buffers.pop();
-      clear_queue();
       while(!d_tags.empty())
         d_tags.pop();
     }
