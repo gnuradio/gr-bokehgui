@@ -43,10 +43,6 @@ namespace gr {
      * buffers. The corresponding Python class retrieve the buffer data
      * and plot the signals using Bokeh library.
      *
-     * A queue of 2D array is maintained. Each 2D array is of size
-     * \p nconnection \p x \p d_size. For each call to get the data from
-     * Python, first element of queue is sent.
-     *
      * The sink supports storing float data or messages. The message port
      * is named "in". When using message port, \p nconnections should be
      * set to 0. An option for "Float Message" is provided in GRC to use
@@ -74,23 +70,6 @@ namespace gr {
       static sptr make(int size, double samp_rate, const std::string &name, int nconnections);
 
       /*!
-       * \brief Called from Python to get the first element of queue.
-       *
-       * The function takes no argument when called from Python. Using
-       * a beautiful combination of SWIG and Numpy, the 2D array \p output_items
-       * is returned to Python interface.
-       *
-       * After each call, first element of Queue is popped to allow further
-       * data to be stored.
-       *
-       * \param output_items Pointer to 2D array to be sent to Python
-       * \param nrows Pointer to integer value representing number of rows
-       *              Generally, \p nconnection+1
-       * \param size Pointer to integer value representing number of elements
-       *             in a row. Generally \p d_size
-       */
-//      virtual void get_plot_data (float** output_items, int* nrows, int* size) = 0;
-      /*!
        *
        * \brief Called from Python to get the list of tags.
        *
@@ -99,17 +78,9 @@ namespace gr {
        */
       virtual std::vector<std::vector<gr::tag_t> > get_tags() = 0;
 
-//      virtual int work(int noutput_items,
-//         gr_vector_const_void_star &input_items,
-//         gr_vector_void_star &output_items) = 0;
-//      virtual void handle_pdus(pmt::pmt_t) = 0;
-
       virtual void set_size(const int newsize) = 0;
       virtual void set_samp_rate(const double samp_rate) = 0;
-//      virtual int nsamps() const = 0;
       virtual double get_samp_rate() = 0;
-//      virtual std::string get_name() = 0;
-//      virtual int get_nconnections() = 0;
 
       virtual void reset() = 0;
 
