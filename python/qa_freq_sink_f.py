@@ -23,7 +23,7 @@
 from gnuradio import gr, gr_unittest
 from gnuradio import blocks
 from gnuradio import filter
-from bokehgui import freq_sink_f_proc
+from bokehgui_swig import freq_sink_f_proc
 
 class qa_freq_sink_f (gr_unittest.TestCase):
 

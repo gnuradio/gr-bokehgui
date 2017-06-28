@@ -23,7 +23,7 @@
 from gnuradio import gr, gr_unittest
 from gnuradio import blocks
 import pmt
-from bokehgui import time_sink_f_proc
+from bokehgui_swig import time_sink_f_proc
 import numpy as np
 
 class qa_time_sink_f (gr_unittest.TestCase):
