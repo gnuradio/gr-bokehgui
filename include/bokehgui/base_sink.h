@@ -29,9 +29,10 @@
 
 namespace gr {
   namespace bokehgui {
-    template <class T, class U> class base_sink : virtual public sync_block
+    template <class T, class U> class base_sink : public sync_block
     {
      public:
+      base_sink() {} // To allow a virtual inheritance
       base_sink(std::string class_name, int size, const std::string &name, int nconnections);
       ~base_sink();
 

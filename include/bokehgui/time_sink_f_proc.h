@@ -57,7 +57,7 @@ namespace gr {
      * uniform vector of float32 values.
      *
      */
-    class BOKEHGUI_API time_sink_f_proc : public base_sink<float, float>
+    class BOKEHGUI_API time_sink_f_proc : virtual public base_sink<float, float>
     {
     public:
       typedef boost::shared_ptr <time_sink_f_proc> sptr;
@@ -72,14 +72,6 @@ namespace gr {
        *
        */
       static sptr make(int size, double samp_rate, const std::string &name, int nconnections);
-
-      /*!
-       * virtual constructor
-       */
-      inline time_sink_f_proc(std::string class_name, int size, const std::string &name, int nconnection) :
-        base_sink<float, float>(class_name, size, name, nconnection)
-      {
-      }
 
       /*!
        * \brief Called from Python to get the first element of queue.

@@ -43,12 +43,10 @@ class qa_time_sink_f (gr_unittest.TestCase):
 
         src = blocks.vector_source_f(original, False, 1, [])
 
-        print "done"
         dst = time_sink_f_proc(6, 32000, 'Test', 1)
 
         self.tb.connect(src, dst)
         self.tb.run()
-        print "done1"
 
         result_data = dst.get_plot_data()
         result_data1 = dst.get_plot_data()

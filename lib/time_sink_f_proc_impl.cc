@@ -42,7 +42,7 @@ namespace gr {
      * The private constructor
      */
     time_sink_f_proc_impl::time_sink_f_proc_impl(int size, double samp_rate, const std::string &name, int nconnections)
-      : time_sink_f_proc("time_sink_f_proc", size, name, nconnections),
+      : base_sink<float, float>("time_sink_f_proc", size, name, nconnections),
        d_samp_rate(samp_rate)
     {
 //      d_queue_size = BOKEH_BUFFER_QUEUE_SIZE;
