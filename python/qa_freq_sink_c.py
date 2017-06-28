@@ -24,7 +24,7 @@ import numpy as np
 from gnuradio import gr, gr_unittest
 from gnuradio import blocks
 from gnuradio import filter
-from bokehgui import freq_sink_c_proc
+from bokehgui_swig import freq_sink_c_proc
 
 class qa_freq_sink_c (gr_unittest.TestCase):
 

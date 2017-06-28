@@ -59,6 +59,7 @@ GR_SWIG_INSTALL(TARGETS bokehgui_swig DESTINATION ${GR_PYTHON_DIR}/bokehgui)
 ########################################################################
 install(
     FILES
+    numpy.i
     bokehgui_swig.i
     ${CMAKE_CURRENT_BINARY_DIR}/bokehgui_swig_doc.i
     DESTINATION ${GR_INCLUDE_DIR}/bokehgui/swig
