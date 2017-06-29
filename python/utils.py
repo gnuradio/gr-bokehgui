@@ -24,6 +24,7 @@ def default_tools():
          'ywheel_zoom',
          'save',
          'reset',
+         'resize'
         ]
 
 default_labels_f = ["Data {0}".format(i) for i in range(10)]
