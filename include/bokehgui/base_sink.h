@@ -101,7 +101,7 @@ namespace gr {
        * \param size Pointer to integer value representing number of elements
        *             in a row. Generally \p d_size
        */
-      void get_plot_data (U** output_items, int* nrows, int*size) {
+      void get_plot_data (U** output_items, int* nrows, int* size) {
         gr::thread::scoped_lock lock(d_setlock);
         if (!d_buffers.size()) {
           *size = 0;
@@ -112,7 +112,7 @@ namespace gr {
         *nrows = d_nconnections + 1;
         *size = d_buffers.front()[0].size();
 
-        U* arr = (U*)volk_malloc((*nrows)*(*size)*sizeof(T), volk_get_alignment());
+        U* arr = (U*)volk_malloc((*nrows)*(*size)*sizeof(U), volk_get_alignment());
 
         process_plot(arr, *nrows, *size);
 
@@ -257,7 +257,6 @@ namespace gr {
       int d_trigger_channel;
       pmt::pmt_t d_trigger_tag_key;
     };
-    template class base_sink<float, float>;
   }
 }
 
