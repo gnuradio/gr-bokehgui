@@ -97,7 +97,7 @@ def main(top_block_cls=top_block, options=None):
     # Define a blank application
     app = Application()
     # Starting server at port 5006
-    srv = Server({'/':app},io_loop=loop)
+    srv = Server({'/':app},io_loop=loop, allow_websocket_origin=['*'])
     # Start server process
     srv.start()
     # Define the document instance
