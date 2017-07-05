@@ -1,5 +1,6 @@
+/* -*- c++ -*- */
 /*
- * Copyright 2011 Free Software Foundation, Inc.
+ * Copyright 2008-2012 Free Software Foundation, Inc.
  *
  * This file is part of GNU Radio
  *
@@ -19,17 +20,26 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef INCLUDED_BOKEHGUI_API_H
-#define INCLUDED_BOKEHGUI_API_H
+#ifndef INCLUDED_BOKEHGUI_TRIGGER_MODE_H
+#define INCLUDED_BOKEHGUI_TRIGGER_MODE_H
 
-#include <gnuradio/attributes.h>
+namespace gr {
+  namespace bokehgui {
 
-#ifdef gnuradio_bokehgui_EXPORTS
-#  define BOKEHGUI_API __GR_ATTR_EXPORT
-#else
-#  define BOKEHGUI_API __GR_ATTR_IMPORT
-#endif
+    enum trigger_mode {
+      TRIG_MODE_FREE,
+      TRIG_MODE_AUTO,
+      TRIG_MODE_NORM,
+      TRIG_MODE_TAG,
+    };
 
-#define BOKEH_BUFFER_QUEUE_SIZE 3
+    enum trigger_slope {
+      TRIG_SLOPE_POS,
+      TRIG_SLOPE_NEG,
+    };
 
-#endif /* INCLUDED_BOKEHGUI_API_H */
+  } /* namespace bokehgui */
+} /* namespace gr */
+
+#endif /* INCLUDED_BOKEHGUI_TRIGGER_MODE_H */
+

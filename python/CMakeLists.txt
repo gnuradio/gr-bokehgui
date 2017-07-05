@@ -31,7 +31,10 @@ endif()
 GR_PYTHON_INSTALL(
     FILES
     __init__.py
-    DESTINATION ${GR_PYTHON_DIR}/bokehgui
+    bokeh_plot_config.py
+    time_sink_f.py
+    time_sink_c.py
+    utils.py DESTINATION ${GR_PYTHON_DIR}/bokehgui
 )
 
 ########################################################################
@@ -41,3 +44,5 @@ include(GrTest)
 
 set(GR_TEST_TARGET_DEPS gnuradio-bokehgui)
 set(GR_TEST_PYTHON_DIRS ${CMAKE_BINARY_DIR}/swig)
+GR_ADD_TEST(qa_time_sink_f ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_time_sink_f.py)
+GR_ADD_TEST(qa_time_sink_c ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_time_sink_c.py)
