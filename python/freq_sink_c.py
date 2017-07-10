@@ -35,7 +35,7 @@ class freq_sink_c(bokeh_plot_config):
         self.doc = doc
         self.process = proc
 
-        self.size = self.process.get_fft_size()
+        self.size = self.process.get_size()
         self.wintype = self.process.get_wintype()
         self.name = self.process.get_name()
         self.nconnections = self.process.get_nconnections()
@@ -103,7 +103,7 @@ class freq_sink_c(bokeh_plot_config):
         if len(output_items[0]) != 0:
             fc = self.process.get_center_freq()
             bw = self.process.get_bandwidth()
-            fftsize = self.process.get_fft_size()
+            fftsize = self.process.get_size()
             if self.fc != fc or self.bw != bw or self.size != fftsize:
                 self.size = fftsize
                 self.set_frequency_range(fc, bw, notify_process = False)

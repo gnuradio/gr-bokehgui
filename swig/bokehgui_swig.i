@@ -49,6 +49,7 @@ if(PyArray_API == NULL)
 
 %include "bokehgui/base_sink.h"
 %template(baseSinkFF) gr::bokehgui::base_sink<float, float>;
+%template(baseSinkCF) gr::bokehgui::base_sink<gr_complex, float>;
 %template(baseSinkCC) gr::bokehgui::base_sink<gr_complex, gr_complex>;
 
 %template(tagVector) std::vector<gr::tag_t>;

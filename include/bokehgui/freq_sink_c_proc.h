@@ -1,16 +1,16 @@
 /* -*- c++ -*- */
 /* Copyright 2011-2013,2015 Free Software Foundation, Inc.
- * 
+ *
  * GNU Radio is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 3, or (at your option)
  * any later version.
- * 
+ *
  * GNU Radio is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with GNU Radio; see the file COPYING.  If not, write to
  * the Free Software Foundation, Inc., 51 Franklin Street,
@@ -22,7 +22,7 @@
 #define INCLUDED_BOKEHGUI_FREQ_SINK_C_PROC_H
 
 #include <bokehgui/api.h>
-#include <gnuradio/sync_block.h>
+#include <bokehgui/base_sink.h>
 #include <bokehgui/trigger_mode.h>
 #include <gnuradio/filter/firdes.h>
 
@@ -36,17 +36,17 @@ namespace gr {
      * \details
      * This block is part of Bokeh based frequency sink for complex values.
      *
-     * This is a buffer store that takes set of a complex point streams 
-     * and stores the PSD. The corresponding Python class retrieve the 
+     * This is a buffer store that takes set of a complex point streams
+     * and stores the PSD. The corresponding Python class retrieve the
      * buffer data and plot the signals using Bokeh library.
      *
-     * A queue of 2D array is maintained. Each 2D array is of size 
-     * \p nconnection \p x \p d_size. For each call to get the data from 
+     * A queue of 2D array is maintained. Each 2D array is of size
+     * \p nconnection \p x \p d_size. For each call to get the data from
      * Python, first element of queue is sent.
      *
-     * The sink supports storing complex data or messages. The message port 
-     * is named "in". When using message port, \p nconnections should be 
-     * set to 0. An option for "Float Message" is provided in GRC to use 
+     * The sink supports storing complex data or messages. The message port
+     * is named "in". When using message port, \p nconnections should be
+     * set to 0. An option for "Float Message" is provided in GRC to use
      * message mode.
      *
      * This sink can plot messages that contain either uniform vectors
@@ -54,7 +54,7 @@ namespace gr {
      * is a uniform vector of float 32 values.
      *
      */
-    class BOKEHGUI_API freq_sink_c_proc : virtual public gr::sync_block
+    class BOKEHGUI_API freq_sink_c_proc : virtual public base_sink<gr_complex, float>
     {
      public:
       typedef boost::shared_ptr<freq_sink_c_proc> sptr;
@@ -76,44 +76,17 @@ namespace gr {
         */
       static sptr make(int fftsize, int wintype, double fc, double bw, const std::string &name, int nconnections);
 
-      /*!
-       * \brief Called from Python to get the first element of queue. 
-       *
-       * The function takes no argument when called from Python. Using
-       * a beautiful combination of SWIG and Numpy, the 2D array \p output_items
-       * is returned to Python interface.
-       *
-       * After each call, first element of Queue is popped to allow further 
-       * data to be stored.
-       *
-       * \param output_items Pointer to 2D array to be sent to Python
-       * \param nrows Pointer to integer value representing number of rows
-       *              Generally, \p nconnection+1
-       * \param size Pointer to integer value representing number of elements 
-       *             in a row. Generally \p d_size
-       */
-      virtual void get_plot_data(float** output_items, int* nrows, int* size) = 0;
-      
       virtual void reset() = 0;
-      
+
       virtual double get_center_freq() = 0;
       virtual double get_bandwidth() = 0;
-      virtual int get_fft_size() = 0;
       virtual int get_wintype() = 0;
-      virtual std::string get_name() = 0;
-      virtual int get_nconnections() = 0;
       virtual bool set_fft_window(filter::firdes::win_type newwintype) = 0;
       virtual void buildwindow() = 0;
       virtual void set_fft_avg(float) = 0;
-      virtual bool fftresize(const int) = 0;
       virtual void set_frequency_range(double, double) = 0;
       virtual void handle_set_freq(pmt::pmt_t) = 0;
-      
-      virtual int work(int noutput_items,
-         gr_vector_const_void_star &input_items,
-         gr_vector_void_star &output_items) = 0;
-      virtual void handle_pdus(pmt::pmt_t) = 0;
-      
+
       /*!
        * Set up a trigger for the sink to know when to start
        * plotting. Useful to isolate events and avoid noise.
