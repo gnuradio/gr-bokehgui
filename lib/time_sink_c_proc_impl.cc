@@ -74,6 +74,7 @@ namespace gr {
         throw std::runtime_error(d_name + "unknown data type "
                                  "of samples; must be float");
       }
+      set_size(len);
     }
 
     std::vector<std::vector<gr::tag_t> >

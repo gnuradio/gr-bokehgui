@@ -196,11 +196,10 @@ namespace gr {
         len = pmt::length(samples);
 
         const T *in;
-        verify_datatype_PDU(in, samples, len);
-
-        // Copy data to buffer
-        set_size(len);
         gr::thread::scoped_lock lock(d_setlock);
+        verify_datatype_PDU(in, samples, len);
+        d_len.push(len);
+        // Copy data to buffer
         if(d_buffers.size() == d_queue_size)
           d_buffers.pop();
 
@@ -209,9 +208,9 @@ namespace gr {
         d_buffers.push(data_buff);
 
         for(int n = 0; n < d_nconnections + 1; n++) {
-          d_buffers.back().push_back(std::vector<T> (len, 0));
+          d_buffers.back().push_back(std::vector<T> (d_size, 0));
         }
-        memcpy(&d_buffers.back()[d_nconnections][0], in, len*sizeof(T));
+        memcpy(&d_buffers.back()[d_nconnections][0], in, d_size*sizeof(T));
       }
 
       bool check_topology(int ninputs, int noutputs) {
@@ -249,6 +248,10 @@ namespace gr {
       // Use output from this index
       int d_index;
       int d_queue_size;
+
+      // Only used for handle pdu. saves the PDU length corresponding to each item in d_buffers queue.
+      // Will be used in process_plot_data
+      std::queue<float> d_len;
 
       // Members used for triggering scope
       bool d_triggered;

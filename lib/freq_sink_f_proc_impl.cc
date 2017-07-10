@@ -102,14 +102,43 @@ namespace gr {
 
     void
     freq_sink_f_proc_impl::process_plot(float* arr, int nrows, int size) {
-      if (d_nconnections != 0) {
+      if (d_nconnections != 0) { // Not message input. Ignore nconnections+1-th row!
         nrows -= 1;
-      }
-      for(int n = 0; n < nrows; n++) {
-        fft(&d_fbuf[0], &d_buffers.front()[n][0], size);
-        for(int x = 0; x < size; x++) {
-          arr[n*size + x] = (1.0 - d_fftavg)*arr[n*size+x] + (d_fftavg)*d_fbuf[x];
+        for(int n = 0; n < nrows; n++) {
+          fft(&d_fbuf[0], &d_buffers.front()[n][0], size);
+          for(int x = 0; x < size; x++) {
+            arr[n*size + x] = (1.0 - d_fftavg)*arr[n*size+x] + (d_fftavg)*d_fbuf[x];
+          }
         }
+      }
+      else { // Message input. Calculate FFT using handle_pdu way
+        int winoverlap = 4;
+        int fftoverlap = d_size / winoverlap;
+        float num = static_cast<float>(winoverlap*d_len.front())/static_cast<float>(d_size);
+        int nffts = static_cast<int>(ceilf(num));
+
+        size_t min = 0;
+        size_t max = std::min(d_size, static_cast<int>(d_len.front()));
+        std::vector<float> temp_zero_vec = std::vector<float> (d_size, 0);
+        for(int n = 0; n < nffts; n++) {
+          // Clear in case (max-min) < d_size
+          memset(&temp_zero_vec[0], 0, d_size*sizeof(float));
+          //Copy as much possible samples as we can
+          memcpy(&temp_zero_vec[0], &d_buffers.front()[0][min], (max-min)*sizeof(float));
+          // Apply the window and FFT; copy data into the PDU magnitude buffer
+          fft(&d_fbuf[0], &temp_zero_vec[0], d_size);
+          for(int x = 0; x < d_size; x++) {
+            arr[x] += d_fbuf[x];
+          }
+
+          // Increment our indices; set max up to number of samples in the input PDU.
+          min += fftoverlap;
+          max = std::min(max+fftoverlap, static_cast<size_t>(d_len.front()));
+        }
+        for(int x = 0; x<d_size; x++) {
+          arr[x] /= static_cast<float>(nffts);
+        }
+        d_len.pop();
       }
     }
 
@@ -278,54 +307,6 @@ namespace gr {
     void
     freq_sink_f_proc_impl::work_process_other_queues(int start, int nitems) {
     }
-
-    // TODO: handle_PDUs FFT implementation in base_sink structure!
-    // {
-    //  fftresize(len);
-
-    //  int winoverlap = 4; // Defined in QT freq_sink
-    //  int fftoverlap = d_size / winoverlap;
-    //  float num = static_cast<float>(winoverlap * len) / static_cast<float>(d_size);
-    //  int nffts = static_cast<int>(ceilf(num));
-
-    //  std::vector<std::vector<float> > data_buff;
-    //  data_buff.reserve(d_nconnections + 1);
-
-    //  if(d_magbufs.size() == d_queue_size)
-    //    d_magbufs.pop();
-
-    //  d_magbufs.push(data_buff);
-
-    //  for (int n = 0; n < d_nconnections + 1; n++) {
-    //    d_magbufs.back().push_back(std::vector<float> (d_size, 0));
-    //  }
-
-    //  size_t min = 0;
-    //  size_t max = std::min(d_size, static_cast<int>(len));
-    //  for(int n= 0; n < nffts; n++) {
-    //    // Clear in case (max - min) < d_size
-    //    memset(&d_residbufs[d_nconnections][0], 0, d_size*sizeof(float));
-
-    //    // Copy in as much of the input samples as we can
-    //    memcpy(&d_residbufs[d_nconnections][0], &in[min], (max-min)*sizeof(float));
-
-    //    // Apply the window and FFT; copy data into the PDU
-    //    // magnitude buffer
-    //    fft(&d_fbuf[0], &d_residbufs[d_nconnections][0], d_size);
-    //    for(int x = 0; x < d_size; x++) {
-    //      d_magbufs.back()[d_nconnections][x] += d_fbuf[x];
-    //    }
-
-    //    // Increment our indices; set max up to the number of
-    //    // samples in the inputPDU.
-    //    min += fftoverlap;
-    //    max = std::min(max + fftoverlap, len);
-    //  }
-
-    //  // Perform the averaging
-    //  for(int x = 0; x < d_size; x++)
-    //    d_magbufs.back()[d_nconnections][x] /= static_cast<float>(nffts);
-    //}
 
     double
     freq_sink_f_proc_impl::get_center_freq()
