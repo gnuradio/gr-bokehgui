@@ -112,7 +112,8 @@ namespace gr {
         *nrows = d_nconnections + 1;
         *size = d_buffers.front()[0].size();
 
-        U* arr = (U*)volk_malloc((*nrows)*(*size)*sizeof(U), volk_get_alignment());
+        U* arr = (U*) malloc((*nrows)*(*size)*sizeof(U));
+        memset(arr, 0, (*nrows)*(*size)*sizeof(U));
 
         process_plot(arr, *nrows, *size);
 
@@ -161,9 +162,7 @@ namespace gr {
                 continue;
               }
               in = (const T*) input_items[n];
-              memcpy(&d_buffers.back()[n][0], &in[d_index + 1], nitems*sizeof(T));
-              for(int i = 0; i < nitems; i++) {
-              }
+              memcpy(&d_buffers.back()[n][0], &in[d_index], nitems*sizeof(T));
             }
 
             work_process_other_queues(d_index, nitems);
