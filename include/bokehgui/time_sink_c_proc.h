@@ -57,7 +57,7 @@ namespace gr {
      * uniform vector of complex32 values.
      *
      */
-    class BOKEHGUI_API time_sink_c_proc : virtual public base_sink<gr_complex, gr_complex>
+    class BOKEHGUI_API time_sink_c_proc : virtual public base_sink<gr_complex, float>
     {
      public:
       typedef boost::shared_ptr<time_sink_c_proc> sptr;

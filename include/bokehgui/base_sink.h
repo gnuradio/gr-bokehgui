@@ -112,10 +112,10 @@ namespace gr {
         *nrows = d_nconnections + 1;
         *size = d_buffers.front()[0].size();
 
-        U* arr = (U*) malloc((*nrows)*(*size)*sizeof(U));
-        memset(arr, 0, (*nrows)*(*size)*sizeof(U));
+        U* arr = (U*) malloc(2*(*nrows)*(*size)*sizeof(U));
+        memset(arr, 0, 2*(*nrows)*(*size)*sizeof(U));
 
-        process_plot(arr, *nrows, *size);
+        process_plot(arr, nrows, size);
 
         *output_items = arr;
 
@@ -232,7 +232,7 @@ namespace gr {
       virtual void _test_trigger_tags(int, int) = 0;
       virtual void pop_other_queues() = 0;
       virtual void verify_datatype_PDU(const T*, pmt::pmt_t, size_t) = 0;
-      virtual void process_plot(U* arr, int nrows, int size) = 0;
+      virtual void process_plot(U* arr, int* nrows, int* size) = 0;
       virtual void work_process_other_queues(int, int) = 0;
       virtual void set_size(int) = 0;
      protected:

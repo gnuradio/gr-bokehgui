@@ -141,8 +141,8 @@ class time_sink_c(bokeh_plot_config):
             nconnection = self.nconnections
 
         for i in range(nconnection):
-            new_data['y'+str(2*i+0)] = output_items[i].real
-            new_data['y'+str(2*i+1)] = output_items[i].imag
+            new_data['y'+str(2*i+0)] = output_items[2*i]
+            new_data['y'+str(2*i+1)] = output_items[2*i+1]
 
         if self.is_message:
             self.size = len(new_data['y0'])

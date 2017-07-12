@@ -102,13 +102,12 @@ namespace gr {
     }
 
     void
-    freq_sink_c_proc_impl::process_plot(float* arr, int nrows, int size) {
+    freq_sink_c_proc_impl::process_plot(float* arr, int* nrows, int* size) {
       if(d_nconnections != 0) {
-        nrows -= 1;
-        for(int n = 0; n < nrows; n++) {
-          fft(&d_fbuf[0], &d_buffers.front()[n][0], size);
-          for(int x = 0; x < size; x++) {
-            arr[n*size + x] = (1.0 - d_fftavg)*arr[n*size + x] + (d_fftavg)*d_fbuf[x];
+        for(int n = 0; n < (*nrows - 1); n++) {
+          fft(&d_fbuf[0], &d_buffers.front()[n][0], *size);
+          for(int x = 0; x < *size; x++) {
+            arr[n*(*size) + x] = (1.0 - d_fftavg)*arr[n*(*size) + x] + (d_fftavg)*d_fbuf[x];
           }
         }
       }

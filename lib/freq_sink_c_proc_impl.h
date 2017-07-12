@@ -69,7 +69,7 @@ namespace gr {
       void set_fft_avg(float);
 
       // Virtual functions inherited from base_sink
-      void process_plot(float* arr, int nrows, int size);
+      void process_plot(float* arr, int* nrows, int* size);
       void pop_other_queues();
       void verify_datatype_PDU(const gr_complex*, pmt::pmt_t, size_t);
       void work_process_other_queues(int start, int nitems);

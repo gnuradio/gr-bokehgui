@@ -50,13 +50,13 @@ if(PyArray_API == NULL)
 %include "bokehgui/base_sink.h"
 %template(baseSinkFF) gr::bokehgui::base_sink<float, float>;
 %template(baseSinkCF) gr::bokehgui::base_sink<gr_complex, float>;
-%template(baseSinkCC) gr::bokehgui::base_sink<gr_complex, gr_complex>;
+// %template(baseSinkCC) gr::bokehgui::base_sink<gr_complex, gr_complex>;
 
 %template(tagVector) std::vector<gr::tag_t>;
 %template(tagDoubleVector) std::vector<std::vector<gr::tag_t> >;
 
 %apply (float** ARGOUTVIEW_ARRAY2, int* DIM1, int* DIM2) {(float** output_items, int* nrows, int* size)};
-%apply (gr_complex** ARGOUTVIEW_ARRAY2, int* DIM1, int* DIM2) {(gr_complex** output_items, int* nrows, int* size)};
+// %apply (gr_complex** ARGOUTVIEW_ARRAY2, int* DIM1, int* DIM2) {(gr_complex** output_items, int* nrows, int* size)};
 
 %include "bokehgui/time_sink_f_proc.h"
 GR_SWIG_BLOCK_MAGIC2(bokehgui, time_sink_f_proc);

@@ -38,7 +38,7 @@ namespace gr {
     }
 
     time_sink_c_proc_impl::time_sink_c_proc_impl(int size, double samp_rate, const std::string &name, int nconnections)
-      : base_sink<gr_complex, gr_complex>("time_sink_c_proc", size, name, nconnections),
+      : base_sink<gr_complex, float>("time_sink_c_proc", size, name, nconnections),
       d_samp_rate(samp_rate)
     {
       set_trigger_mode(TRIG_MODE_FREE, TRIG_SLOPE_POS, 0.0, 0.0, 0, "");
@@ -54,10 +54,13 @@ namespace gr {
     }
 
     void
-    time_sink_c_proc_impl::process_plot(gr_complex* arr, int nrows, int size) {
-      for(int n = 0; n < nrows; n++) {
-        memcpy(&arr[n*size], &d_buffers.front()[n][0], size*sizeof(gr_complex));
+    time_sink_c_proc_impl::process_plot(float* arr, int* nrows, int* size) {
+      for(int n = 0; n < *nrows; n++) {
+        volk_32fc_deinterleave_32f_x2(&arr[(2*n+0)*(*size)],
+                                      &arr[(2*n+1)*(*size)],
+                                      &d_buffers.front()[n][0], *size);
       }
+      *nrows = 2*(*nrows);
     }
 
     void

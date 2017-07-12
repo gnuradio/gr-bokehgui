@@ -59,9 +59,9 @@ namespace gr {
     }
 
     void
-    time_sink_f_proc_impl::process_plot(float* arr, int nrows, int size) {
-      for(int n = 0; n < nrows; n++) {
-        memcpy(&arr[n*size], &d_buffers.front()[n][0], size*sizeof(float));
+    time_sink_f_proc_impl::process_plot(float* arr, int* nrows, int* size) {
+      for(int n = 0; n < *nrows; n++) {
+        memcpy(&arr[n*(*size)], &d_buffers.front()[n][0], (*size)*sizeof(float));
       }
     }
 
