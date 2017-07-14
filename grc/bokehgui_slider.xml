@@ -1,13 +1,13 @@
 <?xml version="1.0"?>
 <!--
 ###################################################
-##Variable Textbox:
+##Variable Text Entry:
 ##	a gui text box form
 ###################################################
  -->
 <block>
-	<name>Bokeh GUI Label</name>
-  <key>variable_bokehgui_label</key>
+	<name>Bokeh GUI Slider</name>
+  <key>variable_bokehgui_slider</key>
   <category>[Bokeh GUI]</category>
 	<import>from gnuradio import eng_notation</import>
   <import>import bokehgui</import>
@@ -16,10 +16,11 @@
 #if not $label()
 	#set $label = '"%s"'%$id
 #end if
-self.$(id)_label = bokehgui.label(self.widget_lst, str($(id)), $label+": ")
+self.$(id)_slider = bokehgui.slider(self.widget_lst, $label+":", $start, $end, $step, $throttle, $value)
+self.$(id)_slider.add_callback(lambda attr, old, new: self.set_$(id)(new))
   </make>
-	<callback>self.set_$(id)($value)</callback>
-	<callback>self.$(id)_label.set_value(str($value))</callback>
+  <callback>self.set_$(id)($value)</callback>
+  <callback>self.$(id)_slider.set_value($value)</callback>
 	<param>
 		<name>Label</name>
 		<key>label</key>
@@ -45,30 +46,37 @@ self.$(id)_label = bokehgui.label(self.widget_lst, str($(id)), $label+": ")
       <opt>conv:int</opt>
       <opt>str:str</opt>
     </option>
-    <option>
-      <name>String</name>
-      <key>string</key>
-      <opt>conv:str</opt>
-      <opt>str:str</opt>
-    </option>
-    <option>
-      <name>Boolean</name>
-      <key>bool</key>
-      <opt>conv:bool</opt>
-      <opt>str:str</opt>
-    </option>
-    <option>
-      <name>Any</name>
-      <key>raw</key>
-      <opt>conv:eval</opt>
-      <opt>str:repr</opt>
-    </option>
+	</param>
+	<param>
+		<name>Start</name>
+		<key>start</key>
+		<value>0</value>
+		<type>$type</type>
+	</param>
+	<param>
+		<name>End</name>
+		<key>end</key>
+		<value>10</value>
+		<type>$type</type>
+	</param>
+	<param>
+		<name>Step</name>
+		<key>step</key>
+		<value>1</value>
+    <type>$type</type>
+    <hide>#if $type() = 'int' then 'all' else 'part'#</hide>
 	</param>
 	<param>
 		<name>Default Value</name>
 		<key>value</key>
 		<value>0</value>
 		<type>$type</type>
+	</param>
+	<param>
+		<name>Throttle</name>
+		<key>throttle</key>
+		<value>1</value>
+		<type>real</type>
 	</param>
 
   <param>
@@ -79,7 +87,7 @@ self.$(id)_label = bokehgui.label(self.widget_lst, str($(id)), $label+": ")
     <hide>part</hide>
   </param>
 	<doc>
-This block creates a variable with a label widget for text. \
+This block creates a variable with a text entry box. \
 Leave the label blank to use the variable id as the label.
 
 The GUI hint can be used to position the widget within the application. \

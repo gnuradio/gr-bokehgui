@@ -38,6 +38,7 @@ GR_PYTHON_INSTALL(
     freq_sink_c.py
     textbox.py
     label.py
+    slider.py
     utils.py DESTINATION ${GR_PYTHON_DIR}/bokehgui
 )
 

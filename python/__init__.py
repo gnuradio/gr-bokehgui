@@ -38,4 +38,5 @@ from freq_sink_f import freq_sink_f
 from freq_sink_c import freq_sink_c
 from textbox import textbox
 from label import label
+from slider import slider
 #

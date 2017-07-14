@@ -16,11 +16,12 @@
 #if not $label()
 	#set $label = '"%s"'%$id
 #end if
-self.$(id) = bokehgui.textbox(self.widget_lst, str($value), $label+": ")
-self.$(id).add_callback(
+self.$(id)_textbox = bokehgui.textbox(self.widget_lst, str($value), $label+": ")
+self.$(id)_textbox.add_callback(
 	lambda attr, old, new: self.set_$(id)($(type.conv)(new)))
   </make>
-	<callback>self.set_$(id)($value)</callback>
+  <callback>self.set_$(id)($value)</callback>
+  <callback>self.$(id)_textbox.set_value($value)</callback>
 	<param>
 		<name>Label</name>
 		<key>label</key>

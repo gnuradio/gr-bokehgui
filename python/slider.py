@@ -16,19 +16,19 @@
 # the Free Software Foundation, Inc., 51 Franklin Street,
 # Boston, MA 02110-1301, USA.
 
-from bokeh.models.widgets import TextInput
+from bokeh.models.widgets import Slider
 
-class textbox():
-    def __init__(self, widget_lst, default_value, label):
+class slider():
+    def __init__(self, widget_lst, label, start, end, step, callback_throttle, default):
         self.widget_lst = widget_lst
-        self.initialize(default_value, label)
+        self.initialize(label, start, end, step, callback_throttle, default)
 
-    def initialize(self, default_value, label):
-        self.textinput = TextInput(value = default_value, title = label)
-        self.widget_lst.append(self.textinput)
+    def initialize(self, label, start, end, step, callback_throttle, default):
+        self.slider = Slider(start = start, end = end, value = default, step = step, title = label, callback_throttle = callback_throttle)
+        self.widget_lst.append(self.slider)
 
     def add_callback(self, callback):
-        self.textinput.on_change('value', callback)
+        self.slider.on_change('value', callback)
 
     def set_value(self, value):
-        self.textinput.value = str(value)
+        self.slider.value = value
