@@ -4,12 +4,11 @@
   <key>bokehgui_frequency_sink_x</key>
   <category>[Bokeh GUI]</category>
   <import>import bokehgui</import>
-  <make>#set $win = 'self._%s_win'%$id
-bokehgui.$(type.fcn)($fftsize,
+  <make>bokehgui.$(type.fcn)($fftsize,
                      $wintype,
                      $fc, $bw,
                      $name, #if $type.t == 'message' then 0 else $nconnections#)
-self.$(id)_plot = bokehgui.$(type.plot)(self.doc, self.$(id), is_message = #if $type.t == 'message' then True else False#)
+self.$(id)_plot = bokehgui.$(type.plot)(self.doc, self.plot_lst, self.$(id), is_message = #if $type.t == 'message' then True else False#)
 
 labels = [$label1, $label2, $label3, $label4, $label5,
           $label6, $label7, $label8, $label9, $label10]

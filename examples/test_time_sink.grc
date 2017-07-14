@@ -49,6 +49,10 @@
       <value>test_time_sink</value>
     </param>
     <param>
+      <key>manual_layout</key>
+      <value>True</value>
+    </param>
+    <param>
       <key>max_nouts</key>
       <value>0</value>
     </param>
