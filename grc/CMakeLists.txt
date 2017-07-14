@@ -19,4 +19,5 @@
 
 install(FILES
     bokehgui_time_sink_x.xml 
-    bokehgui_freq_sink_x.xml DESTINATION share/gnuradio/grc/blocks)
+    bokehgui_freq_sink_x.xml 
+    bokehgui_textbox.xml     DESTINATION share/gnuradio/grc/blocks)
