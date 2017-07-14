@@ -52,6 +52,7 @@ class top_block(gr.top_block):
 
         self.text_input = bokehgui.textbox(self.widget_lst, str(self.freq), "Frequency")
         self.text_input.add_callback(lambda attr,old,new: self.set_freq(float(new)))
+        self.label = bokehgui.label(self.widget_lst, str(self.freq), "Current Frequency")
 
         ##################################################
         # Customizing the plot
@@ -71,7 +72,7 @@ class top_block(gr.top_block):
         self.bokehgui_time_sink_f_0.set_line_width(1, 2)
 
         input_t = widgetbox(self.widget_lst)
-        layout_t = layout([[input_t],self.plot_lst])
+        layout_t = gridplot([input_t]+self.plot_lst, ncols=2)
         self.doc.add_root(layout_t)
 
         ##################################################
@@ -94,6 +95,7 @@ class top_block(gr.top_block):
     def set_freq(self, freq):
         self.analog_sig_source_x_0.set_frequency(freq)
         self.analog_sig_source_x_1.set_frequency(freq)
+        self.label.set_value(str(freq))
 
     def get_freq(self):
         return self.freq

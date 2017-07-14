@@ -1,13 +1,13 @@
 <?xml version="1.0"?>
 <!--
 ###################################################
-##Variable Text Entry:
+##Variable Textbox:
 ##	a gui text box form
 ###################################################
  -->
 <block>
-	<name>Bokeh GUI Textbox</name>
-  <key>variable_bokehgui_textbox</key>
+	<name>Bokeh GUI Label</name>
+  <key>variable_bokehgui_label</key>
   <category>[Bokeh GUI]</category>
 	<import>from gnuradio import eng_notation</import>
   <import>import bokehgui</import>
@@ -16,11 +16,9 @@
 #if not $label()
 	#set $label = '"%s"'%$id
 #end if
-self.$(id) = bokehgui.textbox(self.widget_lst, str($value), $label+": ")
-self.$(id).add_callback(
-	lambda attr, old, new: self.set_$(id)($(type.conv)(new)))
+self.$(id)_label = bokehgui.label(self.widget_lst, str($(id)), $label+": ")
   </make>
-	<callback>self.set_$(id)($value)</callback>
+	<callback>self.$(id)_label.set_value(str($value))</callback>
 	<param>
 		<name>Label</name>
 		<key>label</key>
@@ -80,7 +78,7 @@ self.$(id).add_callback(
     <hide>part</hide>
   </param>
 	<doc>
-This block creates a variable with a text entry box. \
+This block creates a variable with a label widget for text. \
 Leave the label blank to use the variable id as the label.
 
 The GUI hint can be used to position the widget within the application. \

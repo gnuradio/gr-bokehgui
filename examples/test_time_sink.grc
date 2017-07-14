@@ -97,6 +97,33 @@
     </param>
     <param>
       <key>_coordinate</key>
+      <value>(40, 228)</value>
+    </param>
+    <param>
+      <key>_rotation</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>id</key>
+      <value>noise_amp</value>
+    </param>
+    <param>
+      <key>value</key>
+      <value>0.2</value>
+    </param>
+  </block>
+  <block>
+    <key>variable</key>
+    <param>
+      <key>comment</key>
+      <value></value>
+    </param>
+    <param>
+      <key>_enabled</key>
+      <value>True</value>
+    </param>
+    <param>
+      <key>_coordinate</key>
       <value>(40, 156)</value>
     </param>
     <param>
@@ -116,7 +143,7 @@
     <key>analog_noise_source_x</key>
     <param>
       <key>amp</key>
-      <value>0.2</value>
+      <value>noise_amp</value>
     </param>
     <param>
       <key>alias</key>
@@ -171,7 +198,7 @@
     <key>analog_noise_source_x</key>
     <param>
       <key>amp</key>
-      <value>0.2</value>
+      <value>noise_amp</value>
     </param>
     <param>
       <key>alias</key>
