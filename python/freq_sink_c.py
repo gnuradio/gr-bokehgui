@@ -28,12 +28,13 @@ class freq_sink_c(bokeh_plot_config):
     """
     docstring for block freq_sink_f
     """
-    def __init__(self, doc, proc,
+    def __init__(self, doc, plot_lst, proc,
                  is_message = False):
         super(freq_sink_c, self).__init__()
 
         self.doc = doc
         self.process = proc
+        self.plot_lst = plot_lst
 
         self.size = self.process.get_fft_size()
         self.wintype = self.process.get_wintype()
@@ -87,7 +88,8 @@ class freq_sink_c(bokeh_plot_config):
         self.max_hold = None
         self.enable_max_hold(False)
         # max-hold plot done
-        self.doc.add_root(self.plot)
+
+        self.plot_lst.append(self.plot)
 
         if self.name:
             self.set_title(self.name)

@@ -28,12 +28,13 @@ class time_sink_c(bokeh_plot_config):
     """
     docstring for block time_sink_c
     """
-    def __init__(self, doc, proc,
+    def __init__(self, doc, plot_lst, proc,
                  is_message = False):
         super(time_sink_c, self).__init__()
 
         self.doc = doc
         self.process = proc
+        self.plot_lst = plot_lst
 
         self.size = self.process.nsamps()
 	self.samp_rate = self.process.get_samp_rate()
@@ -114,7 +115,7 @@ class time_sink_c(bokeh_plot_config):
                 self.plot.add_layout(self.tags[i])
 
         self.add_custom_tools()
-        self.doc.add_root(self.plot)
+        self.plot_lst.append(self.plot)
 
         if self.name:
             self.set_title(self.name)
