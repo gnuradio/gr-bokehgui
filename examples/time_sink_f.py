@@ -86,7 +86,7 @@ class top_block(gr.top_block):
         self.bokehgui_time_sink_f_0.set_sample_rate(self.samp_rate)
 
 def main(top_block_cls=top_block, options=None):
-    serverProc = subprocess.Popen(["bokeh", "serve"])
+    serverProc = subprocess.Popen(["bokeh", "serve", "--allow-websocket-origin=*"])
     time.sleep(1)
     try:
         # Define the document instance

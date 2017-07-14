@@ -99,7 +99,7 @@ class top_block(gr.top_block):
         return self.freq
 
 def main(top_block_cls=top_block, options=None):
-    serverProc = subprocess.Popen(["bokeh", "serve"])
+    serverProc = subprocess.Popen(["bokeh", "serve", "--allow-websocket-origin=*"])
     time.sleep(1)
     try:
         # Define the document instance

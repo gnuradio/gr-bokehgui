@@ -74,7 +74,7 @@ class top_block(gr.top_block):
         self.bokehgui_freq_sink_f_0.set_frequency_range([0, self.samp_rate/2])
 
 def main(top_block_cls=top_block, options=None):
-    serverProc = subprocess.Popen(["bokeh", "serve"])
+    serverProc = subprocess.Popen(["bokeh", "serve", "--allow-websocket-origin=*"])
     time.sleep(1)
     try:
         # Define the document instance
