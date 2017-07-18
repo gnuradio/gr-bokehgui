@@ -46,9 +46,6 @@ class freq_sink_f(bokeh_plot_config):
         self.is_message = is_message
         self.half_plot = False
 
-        self.stream = None
-        self.plot = None
-
         self.set_frequency_range(self.fc, self.bw, set_x_axis = False, notify_process = False)
 
     def set_trigger_mode(self, trigger_mode, level, channel, tag_key):
@@ -90,7 +87,7 @@ class freq_sink_f(bokeh_plot_config):
         self.enable_max_hold(False)
         # max-hold plot done
 
-        self.plot_lst.append(self.plot)
+        self.plot_lst.append(self)
 
         if self.name:
             self.set_title(self.name)

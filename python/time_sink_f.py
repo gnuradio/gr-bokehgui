@@ -42,9 +42,7 @@ class time_sink_f(bokeh_plot_config):
 	self.nconnections = self.process.get_nconnections()
         self.is_message = is_message
 
-        self.stream = None
         self.tag_stream = None
-        self.plot = None
 
     def set_trigger_mode(self, trigger_mode, trigger_slope,
                          level, delay, channel, tag_key):
@@ -113,7 +111,7 @@ class time_sink_f(bokeh_plot_config):
                 self.plot.add_layout(self.tags[i])
 
         self.add_custom_tools()
-        self.plot_lst.append(self.plot)
+        self.plot_lst.append(self)
 
         if self.name:
             self.set_title(self.name)

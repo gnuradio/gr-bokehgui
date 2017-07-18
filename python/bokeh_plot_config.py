@@ -17,15 +17,18 @@
 # Boston, MA 02110-1301, USA.
 
 from bokeh.models import LabelSet, Legend
-from bokehgui.Layout import Rectangle
+from .bokeh_layout import Rectangle
 
 class bokeh_plot_config(object):
     def __init__(self):
-        # Nothing to do here
-        pass
+        self.plot = None
+        self.stream = None
+
+    def get_figure(self):
+        return self.plot
 
     def set_layout(self, row, col, rowspan, colspan):
-        return Rectangle(row, col, rowspan, colspan)
+        self.layout = Rectangle(row, col, rowspan, colspan)
 
     def add_custom_tools(self):
         from bokeh.models import HoverTool, CrosshairTool

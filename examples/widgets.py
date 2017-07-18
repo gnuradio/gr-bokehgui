@@ -24,7 +24,6 @@ from gnuradio.filter import firdes
 
 from bokeh.client import push_session
 from bokeh.plotting import curdoc
-from bokeh.layouts import row, widgetbox, column, gridplot, layout
 import bokehgui
 
 class top_block(gr.top_block):
@@ -70,9 +69,14 @@ class top_block(gr.top_block):
         self.bokehgui_time_sink_f_0.set_line_style(1, 'dashed')
         self.bokehgui_time_sink_f_0.set_line_marker(0, '^')
         self.bokehgui_time_sink_f_0.set_line_width(1, 2)
+        self.bokehgui_time_sink_f_0.set_layout(1,1,2,2)
 
-        input_t = widgetbox(self.widget_lst)
-        layout_t = gridplot([input_t]+self.plot_lst, ncols=2)
+        input_t = bokehgui.BokehLayout.widgetbox(self.widget_lst)
+        widgetbox = bokehgui.BokehLayout.WidgetLayout(input_t)
+        widgetbox.set_layout(3,3,2,2)
+
+        list_obj = [widgetbox] + self.plot_lst
+        layout_t = bokehgui.BokehLayout.create_layout(list_obj)
         self.doc.add_root(layout_t)
 
         ##################################################

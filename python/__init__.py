@@ -31,6 +31,7 @@ except ImportError:
 	pass
 
 # import any pure python here
+import bokeh_layout as BokehLayout
 from bokeh_plot_config import bokeh_plot_config
 from time_sink_f import time_sink_f
 from time_sink_c import time_sink_c
@@ -39,5 +40,4 @@ from freq_sink_c import freq_sink_c
 from textbox import textbox
 from label import label
 from slider import slider
-import bokeh_layout as Layout
 #
