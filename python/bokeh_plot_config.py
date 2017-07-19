@@ -45,12 +45,10 @@ class bokeh_plot_config(object):
         return self.plot.title.text
     def set_y_axis(self, lst):
         assert (lst[0]<lst[1])
-        self.plot.y_range.start = lst[0]
-        self.plot.y_range.end = lst[1]
+        self.plot.yaxis[0].bounds = lst
     def set_x_axis(self, lst):
         assert (lst[0]<lst[1])
-        self.plot.x_range.start = lst[0]
-        self.plot.x_range.end = lst[1]
+        self.plot.xaxis[0].bounds = lst
     def set_x_label(self, xlabel):
         self.plot.xaxis[0].axis_label = xlabel
     def set_y_label(self, ylabel):

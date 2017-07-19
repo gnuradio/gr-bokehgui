@@ -1,25 +1,19 @@
 <?xml version="1.0"?>
-<!--
-###################################################
-##Variable Textbox:
-##	a gui text box form
-###################################################
- -->
 <block>
 	<name>Bokeh GUI Label</name>
   <key>variable_bokehgui_label</key>
   <category>[Bokeh GUI]</category>
 	<import>from gnuradio import eng_notation</import>
   <import>import bokehgui</import>
-  <var_make>self.$(id) = $(id) = $value</var_make>
+  <var_make>self.$(id)_val = $(id) = $value</var_make>
 	<make>
 #if not $label()
 	#set $label = '"%s"'%$id
 #end if
-self.$(id)_label = bokehgui.label(self.widget_lst, str($(id)), $label+": ")
+self.$(id) = bokehgui.label(self.widget_lst, str($(id)), $label+": ")
   </make>
-	<callback>self.set_$(id)($value)</callback>
-	<callback>self.$(id)_label.set_value(str($value))</callback>
+	<callback>self.set_$(id)_val($value)</callback>
+	<callback>self.$(id).set_value(str($value))</callback>
 	<param>
 		<name>Label</name>
 		<key>label</key>

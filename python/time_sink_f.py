@@ -130,6 +130,9 @@ class time_sink_f(bokeh_plot_config):
                     temp_stream_tags[tags[i][j].offset] = str(tags[i][j].key) + ":" + str(tags[i][j].value)
                 stream_tags.append(temp_stream_tags)
 
+        if len(output_items[0]) == 0: # No output to send
+            return
+
         new_data = dict()
         if self.is_message:
             nconnection = 1

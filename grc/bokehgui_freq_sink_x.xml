@@ -66,7 +66,7 @@ for i in xrange(#if $type.t == 'message' then 1 else $nconnections#):
   <callback>set_frequency_range($fc, $bw)</callback>
   <callback>set_title($which, $title)</callback>
   <callback>set_color($which, $color)</callback>
-  <callback>set_y_axis([$ymin, $ymax])</callback>
+  <callback>self.$(id)_plot.set_y_axis([$ymin, $ymax])</callback>
   <callback>self.$(id)_plot.set_trigger_mode($tr_mode, $tr_level, $tr_chan, $tr_tag)</callback>
 
   <param_tab_order>

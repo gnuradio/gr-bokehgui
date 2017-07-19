@@ -28,4 +28,4 @@ class label():
         self.widget_lst.append(self.textinput)
 
     def set_value(self, value):
-        self.textinput.value = value
+        self.textinput.value = str(value)
