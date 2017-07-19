@@ -16,7 +16,7 @@ if __name__ == '__main__':
         except:
             print "Warning: failed to XInitThreads()"
 
-import subprocess, time
+import subprocess, time, signal
 
 import pmt
 from gnuradio import analog
@@ -26,7 +26,6 @@ from gnuradio.filter import firdes
 
 from bokeh.client import push_session
 from bokeh.plotting import curdoc
-from bokeh.layouts import column
 import bokehgui
 
 class top_block(gr.top_block):
@@ -52,6 +51,7 @@ class top_block(gr.top_block):
                                                            self.bokehgui_time_sink_f_proc_0)
         self.bokehgui_time_sink_f_0.set_trigger_mode(bokehgui.TRIG_MODE_FREE,bokehgui.TRIG_SLOPE_POS,0,0,0,"")
         self.bokehgui_time_sink_f_0.initialize(legend_list=['data0','data1'])
+        self.bokehgui_time_sink_f_0.set_layout(1,1,1,1)
 
         self.blocks_throttle_0 = blocks.throttle(gr.sizeof_float*1, samp_rate,True)
         self.blocks_throttle_1 = blocks.throttle(gr.sizeof_float*1, samp_rate,True)
@@ -62,12 +62,12 @@ class top_block(gr.top_block):
         self.analog_sig_source_x_0 = analog.sig_source_f(samp_rate, analog.GR_COS_WAVE, 500, 3, 0)
         self.analog_sig_source_x_1 = analog.sig_source_f(samp_rate, analog.GR_COS_WAVE, 100, 1, 0)
 
-
         self.bokehgui_time_sink_f_0.set_line_color(0, 'black')
         self.bokehgui_time_sink_f_0.set_line_color(1, 'red')
         self.bokehgui_time_sink_f_0.set_line_marker(0, '^')
 
-        self.doc.add_root(column(self.plot_lst))
+        layout_t = bokehgui.BokehLayout.create_layout(self.plot_lst)
+        self.doc.add_root(layout_t)
         ##################################################
         # Connections
         ##################################################
@@ -91,6 +91,9 @@ class top_block(gr.top_block):
 
 def main(top_block_cls=top_block, options=None):
     serverProc = subprocess.Popen(["bokeh", "serve", "--allow-websocket-origin=*"])
+    def killProc(signum, frame):
+        serverProc.kill()
+    signal.signal(signal.SIGTERM, killProc)
     time.sleep(1)
     try:
         # Define the document instance
@@ -111,4 +114,3 @@ def main(top_block_cls=top_block, options=None):
 
 if __name__ == '__main__':
     main()
-

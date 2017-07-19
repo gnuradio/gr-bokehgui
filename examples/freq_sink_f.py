@@ -15,7 +15,7 @@ if __name__ == '__main__':
         except:
             print "Warning: failed to XInitThreads()"
 
-import subprocess, time
+import subprocess, time, signal
 
 from gnuradio import analog
 from gnuradio import blocks
@@ -24,7 +24,6 @@ from gnuradio.filter import firdes
 
 from bokeh.client import push_session
 from bokeh.plotting import curdoc
-from bokeh.layouts import column
 import bokehgui
 
 class top_block(gr.top_block):
@@ -70,8 +69,9 @@ class top_block(gr.top_block):
         self.bokehgui_freq_sink_f_0.set_line_style(1, 'dashed')
         self.bokehgui_freq_sink_f_0.set_line_width(1, 1)
         self.bokehgui_freq_sink_f_0.enable_max_hold()
+        self.bokehgui_freq_sink_f_0.set_layout(1,1,1,1)
 
-        self.doc.add_root(column(self.plot_lst))
+        self.doc.add_root(bokehgui.BokehLayout.create_layout(self.plot_lst))
         ##################################################
         # Connections
         ##################################################
@@ -95,6 +95,9 @@ class top_block(gr.top_block):
 
 def main(top_block_cls=top_block, options=None):
     serverProc = subprocess.Popen(["bokeh", "serve", "--allow-websocket-origin=*"])
+    def killProc(signum, frame):
+        serverProc.kill()
+    signal.signal(signal.SIGTERM, killProc)
     time.sleep(1)
     try:
         # Define the document instance

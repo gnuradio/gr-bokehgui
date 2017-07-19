@@ -40,8 +40,8 @@ class Rectangle:
         self.end_col = self.col + colspan - 1
 
     def is_overlap(self, rect):
-        if (self.row < rect.end_row) and (self.end_row > rect.row):
-            if (self.col < rect.end_col) and (self.end_col > rect.col):
+        if (self.row <= rect.end_row) and (self.end_row >= rect.row):
+            if (self.col <= rect.end_col) and (self.end_col >= rect.col):
                 return True
         return False
 
