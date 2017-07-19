@@ -78,7 +78,7 @@ class Layout:
                         return False
         return True
 
-    def evaluate(self):
+    def evaluate(self, sizing_mode = "stretch_both"):
         if self.list == []:
             return Spacer()
         if len(self.list) == 1:
@@ -123,7 +123,7 @@ class Layout:
                     list2.append(j)
             layout1 = Layout(list1, False, min_row = self.min_row, min_col = self.min_col, max_row = i, max_col = self.max_col)
             layout2 = Layout(list2, False, min_row = i+1, min_col = self.min_col, max_row = self.max_row, max_col = self.max_col)
-            return bk_layouts.column(layout1.evaluate(), layout2.evaluate(), sizing_mode='stretch_both')
+            return bk_layouts.column(layout1.evaluate(), layout2.evaluate(), sizing_mode=sizing_mode)
 
         def if_vert_line_cut(i, max_val, lst):
             for j in lst:
@@ -156,11 +156,11 @@ class Layout:
                     list2.append(j)
             layout1 = Layout(list1, False, min_row = self.min_row, min_col = self.min_col, max_row = self.max_row, max_col = i)
             layout2 = Layout(list2, False, min_row = self.min_row, min_col = i+1, max_row = self.max_row, max_col = self.max_col)
-            return bk_layouts.row(layout1.evaluate(), layout2.evaluate(), sizing_mode='stretch_both')
+            return bk_layouts.row(layout1.evaluate(), layout2.evaluate(), sizing_mode=sizing_mode)
 
         raise Exception("In valid position of plots. Can't define Circular arrangements of plots")
 
-def create_layout(lst):
+def create_layout(lst, sizing_mode = "stretch_both"):
     # lst -> [obj] having obj.layout
     layout = Layout(lst)
-    return layout.evaluate()
+    return layout.evaluate(sizing_mode = sizing_mode)

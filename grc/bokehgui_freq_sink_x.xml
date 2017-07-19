@@ -46,6 +46,7 @@ self.$(id)_plot.set_fft_avg($average)
 #if ($type() == 'float' or $type() == 'msg_float')
 self.$(id)_plot.set_plot_pos_half($freqhalf)
 #end if
+self.$(id)_plot.set_layout(*($placement))
 
 colors = [$color1, $color2, $color3, $color4, $color5,
           $color6, $color7, $color8, $color9, $color10]
@@ -292,6 +293,13 @@ for i in xrange(#if $type.t == 'message' then 1 else $nconnections#):
     <key>update_time</key>
     <value>100</value>
     <type>int</type>
+    <hide>part</hide>
+  </param>
+
+  <param>
+    <name>Placement</name>
+    <key>placement</key>
+    <type>raw</type>
     <hide>part</hide>
   </param>
 

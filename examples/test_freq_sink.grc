@@ -49,10 +49,6 @@
       <value>test_freq_sink</value>
     </param>
     <param>
-      <key>manual_layout</key>
-      <value>True</value>
-    </param>
-    <param>
       <key>max_nouts</key>
       <value>0</value>
     </param>
@@ -77,12 +73,20 @@
       <value>True</value>
     </param>
     <param>
+      <key>sizing_mode</key>
+      <value>stretch_both</value>
+    </param>
+    <param>
       <key>thread_safe_setters</key>
       <value></value>
     </param>
     <param>
       <key>title</key>
       <value>Test GRC for Frequency Sink</value>
+    </param>
+    <param>
+      <key>placement</key>
+      <value>(1,1,1,1)</value>
     </param>
   </block>
   <block>
@@ -922,6 +926,10 @@
       <value>1</value>
     </param>
     <param>
+      <key>placement</key>
+      <value>(1,2,1,1)</value>
+    </param>
+    <param>
       <key>freqhalf</key>
       <value>False</value>
     </param>
@@ -1283,6 +1291,10 @@
     <param>
       <key>nconnections</key>
       <value>1</value>
+    </param>
+    <param>
+      <key>placement</key>
+      <value>(2,2,1,1)</value>
     </param>
     <param>
       <key>freqhalf</key>
