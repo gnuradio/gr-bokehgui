@@ -30,7 +30,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(536, 288)</value>
+      <value>(528, 344)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -46,7 +46,7 @@
     </param>
     <param>
       <key>id</key>
-      <value>test_freq_sink</value>
+      <value>test_bokehgui</value>
     </param>
     <param>
       <key>max_nouts</key>
@@ -74,7 +74,7 @@
     </param>
     <param>
       <key>sizing_mode</key>
-      <value>stretch_both</value>
+      <value>fixed</value>
     </param>
     <param>
       <key>thread_safe_setters</key>
@@ -82,7 +82,7 @@
     </param>
     <param>
       <key>title</key>
-      <value>Test GRC for Frequency Sink</value>
+      <value>Test GRC for Bokeh GUI</value>
     </param>
     <param>
       <key>placement</key>
@@ -183,7 +183,7 @@
     </param>
     <param>
       <key>function_args</key>
-      <value>str(signal_amp/noise_amp)</value>
+      <value>"str(self.signal_amp/self.noise_amp)"</value>
     </param>
     <param>
       <key>function_name</key>
@@ -207,7 +207,7 @@
     </param>
     <param>
       <key>poll_rate</key>
-      <value>10</value>
+      <value>1</value>
     </param>
   </block>
   <block>
@@ -226,7 +226,7 @@
     </param>
     <param>
       <key>end</key>
-      <value>200</value>
+      <value>10</value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -254,7 +254,7 @@
     </param>
     <param>
       <key>throttle</key>
-      <value>1</value>
+      <value>10</value>
     </param>
     <param>
       <key>type</key>
@@ -273,7 +273,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(424, 300)</value>
+      <value>(432, 316)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -304,7 +304,7 @@
     </param>
     <param>
       <key>end</key>
-      <value>200</value>
+      <value>10</value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -332,7 +332,7 @@
     </param>
     <param>
       <key>throttle</key>
-      <value>1</value>
+      <value>10</value>
     </param>
     <param>
       <key>type</key>
@@ -1086,8 +1086,12 @@
       <value>1</value>
     </param>
     <param>
+      <key>maxhold</key>
+      <value>True</value>
+    </param>
+    <param>
       <key>name</key>
-      <value>""</value>
+      <value>Complex Frequency Sink</value>
     </param>
     <param>
       <key>nconnections</key>
@@ -1095,7 +1099,7 @@
     </param>
     <param>
       <key>placement</key>
-      <value>(6,2,5,2)</value>
+      <value>(4,1,2,1)</value>
     </param>
     <param>
       <key>freqhalf</key>
@@ -1127,7 +1131,7 @@
     </param>
     <param>
       <key>wintype</key>
-      <value>firdes.WIN_BLACKMAN_hARRIS</value>
+      <value>firdes.WIN_RECTANGULAR</value>
     </param>
     <param>
       <key>xlabel</key>
@@ -1453,8 +1457,12 @@
       <value>1</value>
     </param>
     <param>
+      <key>maxhold</key>
+      <value>True</value>
+    </param>
+    <param>
       <key>name</key>
-      <value>""</value>
+      <value>Float Frequency Sink</value>
     </param>
     <param>
       <key>nconnections</key>
@@ -1462,7 +1470,7 @@
     </param>
     <param>
       <key>placement</key>
-      <value>(1,2,5,2)</value>
+      <value>(2,1,2,1)</value>
     </param>
     <param>
       <key>freqhalf</key>
@@ -1494,7 +1502,7 @@
     </param>
     <param>
       <key>wintype</key>
-      <value>firdes.WIN_BLACKMAN_hARRIS</value>
+      <value>firdes.WIN_RECTANGULAR</value>
     </param>
     <param>
       <key>xlabel</key>
@@ -1821,7 +1829,7 @@
     </param>
     <param>
       <key>placement</key>
-      <value>(6,1,5,1)</value>
+      <value>(1,2,3,2)</value>
     </param>
     <param>
       <key>srate</key>
@@ -2192,7 +2200,7 @@
     </param>
     <param>
       <key>placement</key>
-      <value>(2,1,4,1)</value>
+      <value>(4,2,2,2)</value>
     </param>
     <param>
       <key>srate</key>

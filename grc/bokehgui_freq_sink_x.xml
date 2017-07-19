@@ -47,7 +47,9 @@ self.$(id)_plot.set_fft_avg($average)
 self.$(id)_plot.set_plot_pos_half($freqhalf)
 #end if
 self.$(id)_plot.set_layout(*($placement))
-
+#if $maxhold() == 'True'
+self.$(id)_plot.enable_max_hold()
+#end if
 colors = [$color1, $color2, $color3, $color4, $color5,
           $color6, $color7, $color8, $color9, $color10]
 widths = [$width1, $width2, $width3, $width4, $width5,
@@ -196,6 +198,21 @@ for i in xrange(#if $type.t == 'message' then 1 else $nconnections#):
     <name>Grid</name>
     <key>grid</key>
     <value>False</value>
+    <type>enum</type>
+    <hide>part</hide>
+    <option>
+      <name>Yes</name>
+      <key>True</key>
+    </option>
+    <option>
+      <name>No</name>
+      <key>False</key>
+    </option>
+  </param>
+  <param>
+    <name>Max Hold</name>
+    <key>maxhold</key>
+    <value>True</value>
     <type>enum</type>
     <hide>part</hide>
     <option>

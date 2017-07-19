@@ -19,7 +19,7 @@
 from bokeh.layouts import column, row
 
 import bokeh.layouts as bk_layouts
-from bokeh.layouts import widgetbox, Spacer
+from bokeh.layouts import widgetbox, Spacer, WidgetBox
 
 class WidgetLayout:
     def __init__(self, widgetbox):
@@ -78,15 +78,21 @@ class Layout:
                         return False
         return True
 
-    def evaluate(self, sizing_mode = "stretch_both"):
+    def evaluate(self, sizing_mode = "fixed", height=1000, width=1000):
         if self.list == []:
-            return Spacer()
+            return Spacer(int(height), int(width))
         if len(self.list) == 1:
             figure = self.list[0].get_figure()
             if self.min_row == self.list[0].layout.row \
               and self.max_row == self.list[0].layout.end_row \
               and self.min_col == self.list[0].layout.col \
               and self.max_col == self.list[0].layout.end_col:
+                  if isinstance(figure, WidgetBox):
+                      figure.height = int(height)
+                      figure.width = int(width)
+                  else:
+                      figure.plot_height = int(height)
+                      figure.plot_width = int(width)
                   return figure
 
         list1 = []
@@ -123,7 +129,9 @@ class Layout:
                     list2.append(j)
             layout1 = Layout(list1, False, min_row = self.min_row, min_col = self.min_col, max_row = i, max_col = self.max_col)
             layout2 = Layout(list2, False, min_row = i+1, min_col = self.min_col, max_row = self.max_row, max_col = self.max_col)
-            return bk_layouts.column(layout1.evaluate(), layout2.evaluate(), sizing_mode=sizing_mode)
+            return bk_layouts.column(layout1.evaluate(sizing_mode = sizing_mode, height=float(height*(i - self.min_row + 1))/(self.max_row - self.min_row + 1), width = width),
+                                     layout2.evaluate(sizing_mode = sizing_mode, height=float(height*(self.max_row - i))/(self.max_row - self.min_row + 1), width = width),
+                                     sizing_mode=sizing_mode, height = int(height), width = int(width))
 
         def if_vert_line_cut(i, max_val, lst):
             for j in lst:
@@ -156,11 +164,13 @@ class Layout:
                     list2.append(j)
             layout1 = Layout(list1, False, min_row = self.min_row, min_col = self.min_col, max_row = self.max_row, max_col = i)
             layout2 = Layout(list2, False, min_row = self.min_row, min_col = i+1, max_row = self.max_row, max_col = self.max_col)
-            return bk_layouts.row(layout1.evaluate(), layout2.evaluate(), sizing_mode=sizing_mode)
+            return bk_layouts.row(layout1.evaluate(sizing_mode = sizing_mode, height = height, width = float(width*(i - self.min_col + 1))/(self.max_col - self.min_col + 1)),
+                                  layout2.evaluate(sizing_mode = sizing_mode, height = height, width = float(width*(self.max_col - i))/(self.max_col - self.min_col + 1)),
+                                  sizing_mode=sizing_mode, height = int(height), width = int(width))
 
         raise Exception("In valid position of plots. Can't define Circular arrangements of plots")
 
-def create_layout(lst, sizing_mode = "stretch_both"):
+def create_layout(lst, sizing_mode = "fixed"):
     # lst -> [obj] having obj.layout
     layout = Layout(lst)
-    return layout.evaluate(sizing_mode = sizing_mode)
+    return layout.evaluate(sizing_mode = sizing_mode, height = 700.0, width = 1210.0)
