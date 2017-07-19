@@ -299,7 +299,7 @@ for i in xrange(#if $type.t == 'message' then 1 else $nconnections#):
   <param>
     <name>Placement</name>
     <key>placement</key>
-    <type>raw</type>
+    <type>int_vector</type>
     <hide>part</hide>
   </param>
 
@@ -1005,6 +1005,7 @@ for i in xrange(#if $type.t == 'message' then 1 else $nconnections#):
     <optional>1</optional>
     <hide>$showports</hide>
   </source>-->
+  <check>len($placement) == 4 and $(placement)[0] &gt; 0 and $(placement)[1] &gt; 0 and $(placement)[2] &gt; 0 and $(placement)[3] &gt; 0</check>
 
   <doc>
 The GUI hint can be used to position the widget within the application. \
