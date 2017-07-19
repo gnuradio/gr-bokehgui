@@ -112,10 +112,6 @@
       <value>(728, 264)</value>
     </param>
     <param>
-      <key>gui_hint</key>
-      <value></value>
-    </param>
-    <param>
       <key>_rotation</key>
       <value>0</value>
     </param>
@@ -165,10 +161,6 @@
     <param>
       <key>_coordinate</key>
       <value>(728, 104)</value>
-    </param>
-    <param>
-      <key>gui_hint</key>
-      <value></value>
     </param>
     <param>
       <key>_rotation</key>
@@ -224,6 +216,57 @@
     <param>
       <key>value</key>
       <value>32000</value>
+    </param>
+  </block>
+  <block>
+    <key>variable_bokehgui_range_slider</key>
+    <param>
+      <key>comment</key>
+      <value></value>
+    </param>
+    <param>
+      <key>value</key>
+      <value>(-140,10)</value>
+    </param>
+    <param>
+      <key>_enabled</key>
+      <value>True</value>
+    </param>
+    <param>
+      <key>end</key>
+      <value>100</value>
+    </param>
+    <param>
+      <key>_coordinate</key>
+      <value>(872, 112)</value>
+    </param>
+    <param>
+      <key>_rotation</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>id</key>
+      <value>yrange</value>
+    </param>
+    <param>
+      <key>label</key>
+      <value>Y Range</value>
+    </param>
+    <param>
+      <key>start</key>
+      <value>-200</value>
+    </param>
+    <param>
+      <key>step</key>
+      <value>1</value>
+    </param>
+    <param>
+      <key>throttle</key>
+      <value>1</value>
+    </param>
+    <param>
+      <key>type</key>
+      <value>real_vector</value>
     </param>
   </block>
   <block>
@@ -1030,11 +1073,11 @@
     </param>
     <param>
       <key>ymax</key>
-      <value>10</value>
+      <value>yrange[1]</value>
     </param>
     <param>
       <key>ymin</key>
-      <value>-140</value>
+      <value>yrange[0]</value>
     </param>
     <param>
       <key>yunit</key>
@@ -1397,11 +1440,11 @@
     </param>
     <param>
       <key>ymax</key>
-      <value>10</value>
+      <value>yrange[1]</value>
     </param>
     <param>
       <key>ymin</key>
-      <value>-140</value>
+      <value>yrange[0]</value>
     </param>
     <param>
       <key>yunit</key>

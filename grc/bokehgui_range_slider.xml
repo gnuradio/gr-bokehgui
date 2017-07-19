@@ -1,22 +1,16 @@
 <?xml version="1.0"?>
-<!--
-###################################################
-##Variable Text Entry:
-##	a gui text box form
-###################################################
- -->
 <block>
-	<name>Bokeh GUI Slider</name>
-  <key>variable_bokehgui_slider</key>
+	<name>Bokeh GUI Range Slider</name>
+  <key>variable_bokehgui_range_slider</key>
   <category>[Bokeh GUI]</category>
 	<import>from gnuradio import eng_notation</import>
   <import>import bokehgui</import>
-  <var_make>self.$(id) = $(id) = $value</var_make>
+  <var_make>self.$(id) = $(id) = $(value)</var_make>
 	<make>
 #if not $label()
 	#set $label = '"%s"'%$id
 #end if
-self.$(id)_slider = bokehgui.slider(self.widget_lst, $label+":", $start, $end, $step, $throttle, $value)
+self.$(id)_slider = bokehgui.range_slider(self.widget_lst, $label+":", $start, $end, $step, $throttle, $(value))
 self.$(id)_slider.add_callback(lambda attr, old, new: self.set_$(id)(new))
   </make>
   <callback>self.set_$(id)($value)</callback>
@@ -31,45 +25,47 @@ self.$(id)_slider.add_callback(lambda attr, old, new: self.set_$(id)(new))
 	<param>
 		<name>Type</name>
 		<key>type</key>
-		<value>int</value>
+		<value>int_vector</value>
 		<type>enum</type>
 		<hide>part</hide>
     <option>
       <name>Float</name>
-      <key>real</key>
+      <key>real_vector</key>
       <opt>conv:eng_notation.str_to_num</opt>
       <opt>str:eng_notation.num_to_str</opt>
+      <opt>base_type:real</opt>
     </option>
     <option>
       <name>Integer</name>
-      <key>int</key>
+      <key>int_vector</key>
       <opt>conv:int</opt>
       <opt>str:str</opt>
+      <opt>base_type:int</opt>
     </option>
 	</param>
 	<param>
 		<name>Start</name>
 		<key>start</key>
 		<value>0</value>
-		<type>$type</type>
+		<type>$type.base_type</type>
 	</param>
 	<param>
 		<name>End</name>
 		<key>end</key>
 		<value>10</value>
-		<type>$type</type>
+		<type>$type.base_type</type>
 	</param>
 	<param>
 		<name>Step</name>
 		<key>step</key>
 		<value>1</value>
-    <type>$type</type>
-    <hide>#if $type() = 'int' then 'all' else 'part'#</hide>
+    <type>$type.base_type</type>
+    <hide>#if $type() = 'int_vector' then 'all' else 'part'#</hide>
 	</param>
 	<param>
-		<name>Default Value</name>
+		<name>Default Range</name>
 		<key>value</key>
-		<value>0</value>
+		<value>(0, 10)</value>
 		<type>$type</type>
 	</param>
 	<param>
@@ -77,7 +73,12 @@ self.$(id)_slider.add_callback(lambda attr, old, new: self.set_$(id)(new))
 		<key>throttle</key>
 		<value>1</value>
 		<type>real</type>
-	</param>
+  </param>
+  <check>len($value) == 2</check>
   <check>$start &lt; $end</check>
+  <check>$(value)[0] &lt; $(value)[1]</check>
+  <check>$start &lt;= $(value)[0]</check>
+  <check>$(value)[1] &lt;= $end</check>
 </block>
+
 

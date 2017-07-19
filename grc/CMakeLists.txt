@@ -22,4 +22,5 @@ install(FILES
     bokehgui_freq_sink_x.xml 
     bokehgui_label.xml
     bokehgui_slider.xml
+    bokehgui_range_slider.xml
     bokehgui_textbox.xml     DESTINATION share/gnuradio/grc/blocks)
