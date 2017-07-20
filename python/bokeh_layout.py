@@ -80,7 +80,10 @@ class Layout:
 
     def evaluate(self, sizing_mode = "fixed", height=1000, width=1000):
         if self.list == []:
-            return Spacer(int(height), int(width))
+            a = Spacer()
+            a.height = int(height)
+            a.width = int(width)
+            return a
         if len(self.list) == 1:
             figure = self.list[0].get_figure()
             if self.min_row == self.list[0].layout.row \
