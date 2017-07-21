@@ -48,19 +48,17 @@ class Rectangle:
 
 class Layout:
     # Kind of Tree
-    def __init__(self, lst, is_root = True, min_row = 1, min_col = 1, max_row = float('Inf'), max_col = float('Inf')):
+    def __init__(self, lst, is_root = True, min_row = 0, min_col = 0, max_row = float('Inf'), max_col = float('Inf')):
         self.list = lst # List of objects
 
         if is_root:
-            self.min_row = float('Inf')
-            self.min_col = float('Inf')
+            self.min_row = 0
+            self.min_col = 0
             self.max_row = 0
             self.max_col = 0
             for i in self.list:
                 if self.max_row < i.layout.end_row: self.max_row = i.layout.end_row
                 if self.max_col < i.layout.end_col: self.max_col = i.layout.end_col
-                if self.min_row > i.layout.row: self.min_row = i.layout.row
-                if self.min_col > i.layout.row: self.min_col = i.layout.col
 
             if not self.check():
                 raise Exception("Overlapping placements of widgets are not allowed")
@@ -102,7 +100,7 @@ class Layout:
         list1 = []
         list2 = []
         # Return an object of "Row/Column" of Bokeh with 2 children of Layout object
-        def if_hori_line_cut(i, max_val, lst):
+        def if_hori_line_cut(i, lst):
             for j in lst:
                 if (j.layout.row <= i) and (j.layout.end_row > i):
                     return True
@@ -124,7 +122,7 @@ class Layout:
                 return False
 
         for i in xrange(self.min_row, self.max_row):
-            if if_hori_line_cut(i, self.max_row, self.list):
+            if if_hori_line_cut(i, self.list):
                 continue
             for j in self.list:
                 if(j.layout.end_row <= i):
@@ -137,7 +135,7 @@ class Layout:
                                      layout2.evaluate(sizing_mode = sizing_mode, height=float(height*(self.max_row - i))/(self.max_row - self.min_row + 1), width = width),
                                      sizing_mode=sizing_mode, height = int(height), width = int(width))
 
-        def if_vert_line_cut(i, max_val, lst):
+        def if_vert_line_cut(i, lst):
             for j in lst:
                 if (j.layout.col <= i) and (j.layout.end_col > i):
                     return True
@@ -159,7 +157,7 @@ class Layout:
                 return False
 
         for i in xrange(self.min_col, self.max_col):
-            if if_vert_line_cut(i, self.max_col, self.list):
+            if if_vert_line_cut(i, self.list):
                 continue
             for j in self.list:
                 if(j.layout.end_col <= i):

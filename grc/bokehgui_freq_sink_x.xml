@@ -1001,7 +1001,7 @@ for i in xrange(#if $type.t == 'message' then 1 else $nconnections#):
     <hide>#if int($nconnections()) >= 10 then 'part' else 'all'#</hide>
   </param>
   <check>len($placement) == 4 or len($placement) == 2</check>
-  <check>all([i &gt; 0 for i in $(placement)])</check>
+  <check>all([i &gt;= 0 for i in $(placement)])</check>
 
   <sink>
     <name>in</name>
