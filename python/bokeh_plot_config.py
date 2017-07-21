@@ -27,7 +27,7 @@ class bokeh_plot_config(object):
     def get_figure(self):
         return self.plot
 
-    def set_layout(self, row, col, rowspan, colspan):
+    def set_layout(self, row, col, rowspan = 1, colspan = 1):
         self.layout = Rectangle(row, col, rowspan, colspan)
 
     def add_custom_tools(self):

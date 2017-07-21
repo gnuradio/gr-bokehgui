@@ -25,8 +25,9 @@ class WidgetLayout:
     def __init__(self, widgetbox):
         self.widgetbox = widgetbox
 
-    def set_layout(self, row, col, rowspan, colspan):
+    def set_layout(self, row, col, rowspan = 1, colspan = 1):
         self.layout = Rectangle(row, col, rowspan, colspan)
+
     def get_figure(self):
         return self.widgetbox
 
