@@ -77,7 +77,7 @@ class Layout:
                         return False
         return True
 
-    def evaluate(self, sizing_mode = "fixed", height=1000, width=1000):
+    def evaluate(self, sizing_mode = "fixed", height=1000, width=1000, do_horizontal_cut = True, do_vertical_cut = True):
         if self.list == []:
             a = Spacer()
             a.height = int(height)
@@ -97,79 +97,91 @@ class Layout:
                       figure.plot_width = int(width)
                   return figure
 
-        list1 = []
-        list2 = []
-        # Return an object of "Row/Column" of Bokeh with 2 children of Layout object
-        def if_hori_line_cut(i, lst):
-            for j in lst:
-                if (j.layout.row <= i) and (j.layout.end_row > i):
+        if do_vertical_cut:
+            def if_vert_line_cut(i, lst):
+                for j in lst:
+                    if (j.layout.col <= i) and (j.layout.end_col > i):
+                        return True
+                for j in lst:
+                    if (j.layout.col <= i+1 and j.layout.end_col > i+1):
+                        return False
+                # Line can be passed from i and also from i+1
+                temp_list = []
+                for j in lst:
+                    if(j.layout.end_col <= i):
+                        temp_list.append(j)
+                temp_list1 = []
+                for j in lst:
+                    if(j.layout.end_col <= (i+1)):
+                        temp_list1.append(j)
+                if temp_list == temp_list1 and temp_list == []:
                     return True
-            for j in lst:
-                if (j.layout.row <= (i+1) and j.layout.end_row > (i+1)):
-                    return False
-            # Line can be passed from i and also from i+1
-            temp_list = []
-            for j in lst:
-                if(j.layout.end_row <= i):
-                    temp_list.append(j)
-            temp_list1 = []
-            for j in lst:
-                if(j.layout.end_row <= (i+1)):
-                    temp_list1.append(j)
-            if temp_list == temp_list1 and temp_list == []:
-                return True
-            else:
-                return False
-
-        for i in xrange(self.min_row, self.max_row):
-            if if_hori_line_cut(i, self.list):
-                continue
-            for j in self.list:
-                if(j.layout.end_row <= i):
-                    list1.append(j)
                 else:
-                    list2.append(j)
-            layout1 = Layout(list1, False, min_row = self.min_row, min_col = self.min_col, max_row = i, max_col = self.max_col)
-            layout2 = Layout(list2, False, min_row = i+1, min_col = self.min_col, max_row = self.max_row, max_col = self.max_col)
-            return bk_layouts.column(layout1.evaluate(sizing_mode = sizing_mode, height=float(height*(i - self.min_row + 1))/(self.max_row - self.min_row + 1), width = width),
-                                     layout2.evaluate(sizing_mode = sizing_mode, height=float(height*(self.max_row - i))/(self.max_row - self.min_row + 1), width = width),
-                                     sizing_mode=sizing_mode, height = int(height), width = int(width))
+                    return False
+            vertical_cuts = [-1]
+            for i in xrange(self.min_col, self.max_col):
+                if if_vert_line_cut(i, self.list):
+                    continue
+                vertical_cuts.append(i)
+            vertical_cuts.append(self.max_col)
+            if len(vertical_cuts) != 0:
+                layouti = []
+                widthi = []
+                listi = []
+                for i in range(1, len(vertical_cuts)):
+                    listi.append([])
+                    for j in self.list:
+                        if (j.layout.end_col <= vertical_cuts[i]) \
+                                and j.layout.col > vertical_cuts[i-1]:
+                            listi[i-1].append(j)
+                    if len(listi[i-1]):
+                        layouti.append(Layout(listi[i-1], False, min_row = self.min_row, min_col = vertical_cuts[i-1] + 1, max_row = self.max_row, max_col = vertical_cuts[i]))
+                        widthi.append(float(width*(vertical_cuts[i] - vertical_cuts[i-1]))/(self.max_col - self.min_col + 1))
+                return bk_layouts.row(children = [layouti[k].evaluate(sizing_mode = sizing_mode, height = height, width = widthi[k], do_horizontal_cut = True, do_vertical_cut = False) for k in range(len(layouti))],
+                                      sizing_mode=sizing_mode, height = int(height), width = int(width))
 
-        def if_vert_line_cut(i, lst):
-            for j in lst:
-                if (j.layout.col <= i) and (j.layout.end_col > i):
+        if do_horizontal_cut:
+            def if_hori_line_cut(i, lst):
+                for j in lst:
+                    if (j.layout.row <= i) and (j.layout.end_row > i):
+                        return True
+                for j in lst:
+                    if (j.layout.row <= (i+1) and j.layout.end_row > (i+1)):
+                        return False
+                # Line can be passed from i and also from i+1
+                temp_list = []
+                for j in lst:
+                    if(j.layout.end_row <= i):
+                        temp_list.append(j)
+                temp_list1 = []
+                for j in lst:
+                    if(j.layout.end_row <= (i+1)):
+                        temp_list1.append(j)
+                if temp_list == temp_list1 and temp_list == []:
                     return True
-            for j in lst:
-                if (j.layout.col <= i+1 and j.layout.end_col > i+1):
-                    return False
-            # Line can be passed from i and also from i+1
-            temp_list = []
-            for j in lst:
-                if(j.layout.end_col <= i):
-                    temp_list.append(j)
-            temp_list1 = []
-            for j in lst:
-                if(j.layout.end_col <= (i+1)):
-                    temp_list1.append(j)
-            if temp_list == temp_list1 and temp_list == []:
-                return True
-            else:
-                return False
-
-        for i in xrange(self.min_col, self.max_col):
-            if if_vert_line_cut(i, self.list):
-                continue
-            for j in self.list:
-                if(j.layout.end_col <= i):
-                    list1.append(j)
                 else:
-                    list2.append(j)
-            layout1 = Layout(list1, False, min_row = self.min_row, min_col = self.min_col, max_row = self.max_row, max_col = i)
-            layout2 = Layout(list2, False, min_row = self.min_row, min_col = i+1, max_row = self.max_row, max_col = self.max_col)
-            return bk_layouts.row(layout1.evaluate(sizing_mode = sizing_mode, height = height, width = float(width*(i - self.min_col + 1))/(self.max_col - self.min_col + 1)),
-                                  layout2.evaluate(sizing_mode = sizing_mode, height = height, width = float(width*(self.max_col - i))/(self.max_col - self.min_col + 1)),
-                                  sizing_mode=sizing_mode, height = int(height), width = int(width))
-
+                    return False
+            horizontal_cuts = [-1]
+            for i in xrange(self.min_row, self.max_row):
+                if if_hori_line_cut(i, self.list):
+                    continue
+                horizontal_cuts.append(i)
+            horizontal_cuts.append(self.max_row)
+            if len(horizontal_cuts) != 0:
+                layouti = []
+                heighti = []
+                listi = []
+                for i in range(1, len(horizontal_cuts)):
+                    listi.append([])
+                    for j in self.list:
+                        if (j.layout.end_row <= horizontal_cuts[i]) \
+                                and j.layout.row > horizontal_cuts[i-1]:
+                            listi[i-1].append(j)
+                    if len(listi[i-1]):
+                        layouti.append(Layout(listi[i-1], False, min_row = horizontal_cuts[i-1] + 1, min_col = self.min_col, max_row = horizontal_cuts[i], max_col = self.max_col))
+                        heighti.append(float(height*(horizontal_cuts[i] - horizontal_cuts[i-1]))/(self.max_row - self.min_row + 1))
+                return bk_layouts.column(children = [layouti[k].evaluate(sizing_mode = sizing_mode, height=heighti[k], width = width, do_horizontal_cut = False, do_vertical_cut = True) for k in range(len(layouti))],
+                                         sizing_mode=sizing_mode, height = int(height), width = int(width))
         raise Exception("In valid position of plots. Can't define Circular arrangements of plots")
 
 def create_layout(lst, sizing_mode = "fixed"):
