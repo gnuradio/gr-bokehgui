@@ -15,7 +15,7 @@ if __name__ == '__main__':
         except:
             print "Warning: failed to XInitThreads()"
 
-import subprocess, time
+import time, signal, functools
 
 from gnuradio import analog
 from gnuradio import blocks
@@ -105,23 +105,29 @@ class top_block(gr.top_block):
         return self.freq
 
 def main(top_block_cls=top_block, options=None):
-    serverProc = subprocess.Popen(["bokeh", "serve", "--allow-websocket-origin=*"])
+    serverProc = bokehgui.utils.create_server()
+    def killProc(signum, frame, tb):
+        tb.stop()
+        tb.wait()
+        serverProc.terminate()
+        serverProc.kill()
     time.sleep(1)
     try:
         # Define the document instance
         doc = curdoc()
-        session = push_session(doc, session_id="test", url='http://localhost:5006/')
+        session = push_session(doc, session_id="test")
         # Create Top Block instance
         tb = top_block_cls(doc)
         try:
             tb.start()
+            signal.signal(signal.SIGTERM, functools.partial(killProc, tb = tb))
             session.loop_until_closed()
-        except KeyboardInterrupt:
-            print "Exiting the simulation. Stopping Bokeh Server"
         finally:
+            print "Exiting the simulation. Stopping Bokeh Server"
             tb.stop()
 	    tb.wait()
     finally:
+        serverProc.terminate()
         serverProc.kill()
 
 if __name__ == '__main__':

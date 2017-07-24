@@ -44,6 +44,10 @@ GR_PYTHON_INSTALL(
     utils.py DESTINATION ${GR_PYTHON_DIR}/bokehgui
 )
 
+install(FILES scripts/check-port.sh
+  DESTINATION ${GR_PYTHON_DIR}/bokehgui/scripts
+  PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
+
 ########################################################################
 # Handle the unit tests
 ########################################################################

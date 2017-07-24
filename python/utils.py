@@ -16,6 +16,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street,
 # Boston, MA 02110-1301, USA.
 
+import subprocess, os
 
 def default_tools():
     return [
@@ -29,3 +30,8 @@ def default_tools():
 
 default_labels_f = ["Data {0}".format(i) for i in range(10)]
 default_labels_c = ["Re{{Data {0}}}".format(i/2) if i%2 == 0 else "Im{{Data {0}}}".format(i/2) for i in range(10)]
+
+def create_server():
+    port = subprocess.check_output([os.path.abspath(os.path.dirname(__file__)) + "/scripts/start-server.sh"])
+    server_proc = subprocess.Popen(["bokeh", "serve", "--port", str(port[:-1]), "--allow-websocket-origin=*"])
+    return server_proc
