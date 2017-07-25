@@ -152,16 +152,26 @@ if(NOT CPPUNIT_FOUND)
 endif()
 
 if(NOT PYTHONLIBS_FOUND)
-    message(FATAL_ERROR "Python required to compile gr-ieee802-15-4")
+    message(FATAL_ERROR "Python required to compile gr-bokehgui")
 endif()
 
 if(NOT VOLK_FOUND)
-    message(FATAL_ERROR "Volk required to compile gr-ieee802-15-4")
+    message(FATAL_ERROR "Volk required to compile gr-bokehgui")
 endif()
 
 if(NOT SWIG_FOUND)
-    message(FATAL_ERROR "SWIG required to compile gr-ieee802-15-4")
+    message(FATAL_ERROR "SWIG required to compile gr-bokehgui")
 endif()
+
+########################################################################
+# Check if boheh module exists
+########################################################################
+include(GrPython)
+GR_PYTHON_CHECK_MODULE("bokeh" bokeh True BOKEH_FOUND)
+if(NOT BOKEH_FOUND)
+    message(FATAL_ERROR "Bokeh library required to compile gr-bokehgui")
+endif()
+
 
 ########################################################################
 # Setup doxygen option
