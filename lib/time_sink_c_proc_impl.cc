@@ -24,8 +24,6 @@
 #include "config.h"
 #endif
 
-#include <gnuradio/io_signature.h>
-#include <gnuradio/block_detail.h>
 #include <volk/volk.h>
 #include "time_sink_c_proc_impl.h"
 
@@ -33,33 +31,16 @@ namespace gr {
   namespace bokehgui {
 
     time_sink_c_proc::sptr
-    time_sink_c_proc::make(int size, double sample_rate, const std::string &name, int nconnections)
+    time_sink_c_proc::make(int size, double samp_rate, const std::string &name, int nconnections)
     {
       return gnuradio::get_initial_sptr
-        (new time_sink_c_proc_impl(size, sample_rate, name, nconnections));
+        (new time_sink_c_proc_impl(size, samp_rate, name, nconnections));
     }
 
     time_sink_c_proc_impl::time_sink_c_proc_impl(int size, double samp_rate, const std::string &name, int nconnections)
-      : gr::sync_block("time_sink_c_proc",
-              gr::io_signature::make(0, nconnections, sizeof(gr_complex)),
-              gr::io_signature::make(0, 0, 0)),
-      d_size(size), d_samp_rate(samp_rate), d_name(name),
-      d_nconnections(nconnections)
+      : base_sink<gr_complex, float>("time_sink_c_proc", size, name, nconnections),
+      d_samp_rate(samp_rate)
     {
-      d_queue_size = BOKEH_BUFFER_QUEUE_SIZE;
-      d_index = 0;
-
-      // setup PDU handling input port
-      message_port_register_in(pmt::mp("in"));
-      set_msg_handler(pmt::mp("in"),
-                      boost::bind(&time_sink_c_proc_impl::handle_pdus, this, _1));
-
-      // Set alignment properties for VOLK
-      const int alignment_multiple = volk_get_alignment() / sizeof(gr_complex);
-      set_alignment(std::max(1, alignment_multiple));
-
-      set_output_multiple(d_size);
-
       set_trigger_mode(TRIG_MODE_FREE, TRIG_SLOPE_POS, 0.0, 0.0, 0, "");
 
       set_history(2);          // so we can look ahead for the trigger slope
@@ -68,39 +49,35 @@ namespace gr {
 
     time_sink_c_proc_impl::~time_sink_c_proc_impl()
     {
-      while(!d_buffers.empty())
-        d_buffers.pop();
       while(!d_tags.empty())
         d_tags.pop();
     }
 
-    bool
-    time_sink_c_proc_impl::check_topology(int ninputs, int noutputs)
-    {
-      return ninputs == d_nconnections;
+    void
+    time_sink_c_proc_impl::process_plot(float* arr, int* nrows, int* size) {
+      for(int n = 0; n < *nrows; n++) {
+        volk_32fc_deinterleave_32f_x2(&arr[(2*n+0)*(*size)],
+                                      &arr[(2*n+1)*(*size)],
+                                      &d_buffers.front()[n][0], *size);
+      }
+      *nrows = 2*(*nrows);
     }
 
     void
-    time_sink_c_proc_impl::get_plot_data(gr_complex** output_items, int* nrows, int* size) {
-      gr::thread::scoped_lock lock(d_setlock);
-      if(!d_buffers.size()) {
-        *size = 0;
-        *nrows = d_nconnections + 1;
-        return;
+    time_sink_c_proc_impl::pop_other_queues() {
+      d_tags.pop();
+    }
+
+    void
+    time_sink_c_proc_impl::verify_datatype_PDU(const gr_complex* in, pmt::pmt_t samples, size_t len) {
+      if (pmt::is_c32vector(samples)) {
+        in = (const gr_complex*)pmt::c32vector_elements(samples,len);
       }
-      *nrows = d_nconnections + 1;
-      *size = d_buffers.front()[0].size();
-
-      gr_complex* arr = (gr_complex*)volk_malloc((*nrows)*(*size)*sizeof(gr_complex), volk_get_alignment());
-
-      for(int n = 0; n < *nrows; n++) {
-        memcpy(&arr[n*(*size)], &d_buffers.front()[n][0], (*size)*sizeof(gr_complex));
+      else {
+        throw std::runtime_error(d_name + "unknown data type "
+                                 "of samples; must be float");
       }
-      *output_items = arr;
-
-      d_buffers.pop();
-
-      return;
+      set_size(len);
     }
 
     std::vector<std::vector<gr::tag_t> >
@@ -117,72 +94,21 @@ namespace gr {
       return tags;
     }
 
-    int
-    time_sink_c_proc_impl::work(int noutput_items,
-        gr_vector_const_void_star &input_items,
-        gr_vector_void_star &output_items)
-    {
-      gr::thread::scoped_lock lock(d_setlock);
-      const gr_complex *in;
+    void
+    time_sink_c_proc_impl::work_process_other_queues(int start, int nitems) {
+      std::vector<std::vector<gr::tag_t> > tag_buff;
+      tag_buff.reserve(d_nconnections);
 
-      // Consume all possible set of data. Each with nitems
-      for(int d_index = 0; d_index < noutput_items;) {
-        int nitems = std::min(d_size, noutput_items);
-        // If auto, normal, or tag trigger, look for the trigger
-        if ((d_trigger_mode != TRIG_MODE_FREE) && !d_triggered) {
-          // trigger off a tag key (first one found)
-          if (d_trigger_mode == TRIG_MODE_TAG) {
-            _test_trigger_tags(d_index, nitems);
-          }
-          // Normal or Auto trigger
-          else {
-            _test_trigger_norm(d_index, nitems, input_items);
-          }
+      d_tags.push(tag_buff);
+
+      for(int n = 0; n < d_nconnections; n++) {
+        d_tags.back().push_back(std::vector<gr::tag_t> ());
+        uint64_t nr = nitems_read(n);
+        get_tags_in_range(d_tags.back()[n], n, nr + d_index, nr + d_index + nitems);
+        for(size_t t = 0; t < d_tags.back()[n].size(); t++) {
+          d_tags.back()[n][t].offset = d_tags.back()[n][t].offset - nr - d_index - 1;
         }
-        // The d_triggered and d_index is set.
-        // We will now check if triggered.
-        // If it is triggered then we check the trigger index = d_index
-        // We will start looking from d_index to the end of input_items
-        // First check if d_index+d_size < noutput_items
-        if(d_triggered) {
-          if (d_index + nitems > noutput_items) {
-            nitems = noutput_items - d_index;
-          }
-          if (d_buffers.size() == d_queue_size) {
-            d_buffers.pop();
-            d_tags.pop();
-          }
-
-          std::vector<std::vector<gr_complex> > data_buff;
-          data_buff.reserve(d_nconnections + 1);
-          d_buffers.push(data_buff);
-
-          std::vector<std::vector<gr::tag_t> > tag_buff;
-          tag_buff.reserve(d_nconnections);
-          d_tags.push(tag_buff);
-
-          for(int n = 0; n < d_nconnections + 1; n++) {
-            d_buffers.back().push_back(std::vector<gr_complex>(nitems, 0));
-            if (n == d_nconnections) {
-              continue;
-            }
-            in = (const gr_complex*) input_items[n];
-            memcpy(&d_buffers.back()[n][0], &in[d_index + 1], nitems*sizeof(gr_complex));
-
-            uint64_t nr = nitems_read(n);
-            std::vector<gr::tag_t> tags;
-            get_tags_in_range(tags, n, nr + d_index, nr + d_index + nitems);
-            for(size_t t = 0; t < tags.size(); t++) {
-              tags[t].offset = tags[t].offset - nr - d_index - 1;
-            }
-            d_tags.back().push_back(tags);
-          }
-          if(d_trigger_mode != TRIG_MODE_FREE)
-            d_triggered = false;
-        }
-        d_index += nitems;
       }
-      return noutput_items;
     }
 
     void
@@ -211,7 +137,7 @@ namespace gr {
     }
 
     void
-    time_sink_c_proc_impl::set_nsamps(const int newsize)
+    time_sink_c_proc_impl::set_size(const int newsize)
     {
       if(newsize != d_size) {
         gr::thread::scoped_lock lock(d_setlock);
@@ -221,8 +147,7 @@ namespace gr {
         set_output_multiple(d_size);
 
         // Resize buffers and replace data
-        while(!d_buffers.empty())
-          d_buffers.pop();
+        clear_queue();
 
         // If delay was set beyond the new boundary, pull it back.
         if(d_trigger_delay >= d_size) {
@@ -254,8 +179,7 @@ namespace gr {
       while(!d_tags.empty())
         d_tags.pop();
 
-      while(!d_buffers.empty())
-        d_buffers.pop();
+      clear_queue();
 
       // Reset the trigger. If in free running mode,
       // always set trigger to true
@@ -332,73 +256,10 @@ namespace gr {
       }
     }
 
-    void
-    time_sink_c_proc_impl::handle_pdus(pmt::pmt_t msg) {
-      size_t len;
-      pmt::pmt_t dict, samples;
-
-      // Test to make sure this is either a PDU or a uniform vector of
-      // samples. Get the samples PMT and the dictionary if it's a PDU.
-      // If not, we throw an error and exit.
-      if(pmt::is_pair(msg)) {
-        dict = pmt::car(msg);
-        samples = pmt::cdr(msg);
-      }
-      else if(pmt::is_uniform_vector(msg)) {
-        samples = msg;
-      }
-      else {
-        throw std::runtime_error("time_sink_c_proc: message must be either "
-                                 "a PDU or a uniform vector of samples.");
-      }
-
-      len = pmt::length(samples);
-      const gr_complex *in;
-      if(pmt::is_c32vector(samples)) {
-        in = (const gr_complex*)pmt::c32vector_elements(samples, len);
-      }
-      else {
-        throw std::runtime_error("time_sink_c_proc: unknown data type "
-                                 "of samples; must be complex.");
-      }
-
-      // Copy data to buffer
-      set_nsamps(len);
-      if(d_buffers.size() == d_queue_size)
-        d_buffers.pop();
-
-      std::vector<std::vector<gr_complex> > data_buff;
-      data_buff.reserve(d_nconnections + 1);
-      d_buffers.push(data_buff);
-
-      for(int n = 0; n < d_nconnections+1; n++) {
-        d_buffers.back().push_back(std::vector<gr_complex> (len, 0));
-      }
-      memcpy(&d_buffers.back()[d_nconnections][0], &in[0], len*sizeof(gr_complex));
-    }
-
-    int
-    time_sink_c_proc_impl::nsamps() const
-    {
-      return d_size;
-    }
-
     double
     time_sink_c_proc_impl::get_samp_rate()
     {
       return d_samp_rate;
-    }
-
-    std::string
-    time_sink_c_proc_impl::get_name()
-    {
-      return d_name;
-    }
-
-    int
-    time_sink_c_proc_impl::get_nconnections()
-    {
-      return d_nconnections;
     }
   } /* namespace bokehgui */
 } /* namespace gr */

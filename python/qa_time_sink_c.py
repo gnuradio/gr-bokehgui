@@ -38,7 +38,7 @@ class qa_time_sink_c (gr_unittest.TestCase):
         original = (1+1j,2+2j,3, 4+3j, 5+4j,6,
                     7+1j, 8+9j, 1-1j, -1+1j, -2-1j, -3+10j,
                    )
-        expected_result = original
+        expected_result = (0+0j,) + original
 
         src = blocks.vector_source_c(original, False, 1, [])
         dst = time_sink_c_proc(6, 32000, 'Test', 1)
@@ -49,8 +49,10 @@ class qa_time_sink_c (gr_unittest.TestCase):
         result_data = dst.get_plot_data()
         result_data1 = dst.get_plot_data()
 
-        self.assertEqual(tuple(expected_result[0:6]), tuple(result_data[0]))
-        self.assertEqual(tuple(expected_result[6:12]), tuple(result_data1[0]))
+        self.assertEqual(tuple([i.real for i in expected_result[0:6]]), tuple(result_data[0]))
+        self.assertEqual(tuple([i.imag for i in expected_result[0:6]]), tuple(result_data[1]))
+        self.assertEqual(tuple([i.real for i in expected_result[6:12]]), tuple(result_data1[0]))
+        self.assertEqual(tuple([i.imag for i in expected_result[6:12]]), tuple(result_data1[1]))
 
         self.tb.stop()
         self.tb.wait()

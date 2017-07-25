@@ -36,7 +36,7 @@ class time_sink_c(bokeh_plot_config):
         self.process = proc
         self.plot_lst = plot_lst
 
-        self.size = self.process.nsamps()
+        self.size = self.process.get_size()
 	self.samp_rate = self.process.get_samp_rate()
         self.name = self.process.get_name()
 	self.nconnections = self.process.get_nconnections()
@@ -143,8 +143,8 @@ class time_sink_c(bokeh_plot_config):
             nconnection = self.nconnections
 
         for i in range(nconnection):
-            new_data['y'+str(2*i+0)] = output_items[i].real
-            new_data['y'+str(2*i+1)] = output_items[i].imag
+            new_data['y'+str(2*i+0)] = output_items[2*i]
+            new_data['y'+str(2*i+1)] = output_items[2*i+1]
 
         if self.is_message:
             self.size = len(new_data['y0'])

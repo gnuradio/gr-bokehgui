@@ -39,7 +39,7 @@ class qa_time_sink_f (gr_unittest.TestCase):
                     7,8,9,10,11,12,
                     13,14,15,16,17,
                     18,)
-        expected_result = original
+        expected_result = (0,)+original
 
         src = blocks.vector_source_f(original, False, 1, [])
 
