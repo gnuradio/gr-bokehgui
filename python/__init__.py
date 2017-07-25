@@ -40,5 +40,6 @@ from freq_sink_c import freq_sink_c
 from textbox import textbox
 from label import label
 from slider import slider
+from checkbox import checkbox
 from range_slider import range_slider
 #

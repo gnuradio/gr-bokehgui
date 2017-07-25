@@ -40,6 +40,7 @@ GR_PYTHON_INSTALL(
     label.py
     slider.py
     range_slider.py
+    checkbox.py
     bokeh_layout.py
     utils.py DESTINATION ${GR_PYTHON_DIR}/bokehgui
 )
