@@ -1,0 +1,224 @@
+<?xml version="1.0"?>
+<block>
+	<name>Bokeh GUI Radio buttons</name>
+  <key>variable_bokehgui_radiobutton</key>
+  <category>[Bokeh GUI]</category>
+  <import>import bokehgui</import>
+  <var_make>self.$(id) = $(id) = $value</var_make>
+  <make>#slurp
+#set $all_options = [$option0, $option1, $option2, $option3, $option4][:int($num_opts())]
+#set $all_labels = [$label0, $label1, $label2, $label3, $label4][:int($num_opts())]
+########################################################################
+## Create the options list
+########################################################################
+#if int($num_opts())
+self._$(id)_options = [#slurp
+	#for $ch in $all_options
+$ch, #slurp
+	#end for
+]
+#else
+self._$(id)_options = $options
+#end if
+########################################################################
+## Create the labels list
+########################################################################
+#if int($num_opts())
+self._$(id)_labels = [#slurp
+	#for i, $lbl in enumerate($all_labels)
+	#if $lbl()
+$lbl, #slurp
+	#else
+str(self._$(id)_options[$i]), #slurp
+	#end if
+	#end for
+]
+#elif $labels()
+self._$(id)_labels = $labels
+#else
+self._$(id)_labels = map(str, self._$(id)_options)
+#end if
+
+self.$(id)_radiobutton = bokehgui.radiobutton(self.widget_lst, None, self._$(id)_labels, inline = $inline)
+self.$(id)_radiobutton.add_callback(
+	lambda new: self.set_$(id)($(type.conv)(self._$(id)_options[new])))
+</make>
+  <callback>self.set_$(id)($value)</callback>
+
+	<param>
+		<name>Type</name>
+		<key>type</key>
+		<value>bool</value>
+		<type>enum</type>
+		<hide>part</hide>
+    <option>
+      <name>Float</name>
+      <key>real</key>
+      <opt>conv:float</opt>
+      <opt>str:str</opt>
+    </option>
+    <option>
+      <name>Integer</name>
+      <key>int</key>
+      <opt>conv:int</opt>
+      <opt>str:str</opt>
+    </option>
+    <option>
+      <name>String</name>
+      <key>string</key>
+      <opt>conv:str</opt>
+      <opt>str:str</opt>
+    </option>
+    <option>
+      <name>Boolean</name>
+      <key>bool</key>
+      <opt>conv:bool</opt>
+      <opt>str:str</opt>
+    </option>
+    <option>
+      <name>Any</name>
+      <key>raw</key>
+      <opt>conv:eval</opt>
+      <opt>str:repr</opt>
+    </option>
+	</param>
+	<param>
+		<name>Number of options</name>
+		<key>num_opts</key>
+		<value>3</value>
+    <type>enum</type>
+    <option>
+      <name>List</name>
+      <key>0</key>
+    </option>
+    <option>
+      <name>1</name>
+       <key>1</key>
+    </option>
+    <option>
+      <name>2</name>
+       <key>2</key>
+    </option>
+    <option>
+      <name>3</name>
+      <key>3</key>
+    </option>
+    <option>
+      <name>4</name>
+       <key>4</key>
+    </option>
+    <option>
+      <name>5</name>
+       <key>5</key>
+    </option>
+	</param>
+	<param>
+		<name>Default Value</name>
+		<key>value</key>
+		<value>True</value>
+		<type>$type</type>
+	</param>
+	<param>
+		<name>Orientation</name>
+		<key>inline</key>
+		<value>True</value>
+		<type>enum</type>
+		<hide>part</hide>
+    <option>
+      <name>Horizontal</name>
+      <key>True</key>
+    </option>
+    <option>
+      <name>Vertical</name>
+      <key>False</key>
+    </option>
+	</param>
+
+	<param>
+		<name>Options</name>
+		<key>options</key>
+		<value>[0, 1, 2]</value>
+		<type>raw</type>
+		<hide>#if int($num_opts()) then 'all' else 'none'#</hide>
+	</param>
+	<param>
+		<name>Labels</name>
+		<key>labels</key>
+		<value>[]</value>
+		<type>raw</type>
+		<hide>#if int($num_opts()) then 'all' else 'none'#</hide>
+	</param>
+	<param>
+		<name>Option 0</name>
+		<key>option0</key>
+		<value>0</value>
+		<type>$type</type>
+		<hide>#if int($num_opts()) > 0 then 'none' else 'all'#</hide>
+	</param>
+	<param>
+		<name>Label 0</name>
+		<key>label0</key>
+		<value></value>
+		<type>string</type>
+		<hide>$((int($num_opts()) > 0) and ($label0() and 'none' or 'part') or 'all')</hide>
+	</param>
+	<param>
+		<name>Option 1</name>
+		<key>option1</key>
+		<value>1</value>
+		<type>$type</type>
+		<hide>#if int($num_opts()) > 1 then 'none' else 'all'#</hide>
+	</param>
+	<param>
+		<name>Label 1</name>
+		<key>label1</key>
+		<value></value>
+		<type>string</type>
+		<hide>$((int($num_opts()) > 1) and ($label1() and 'none' or 'part') or 'all')</hide>
+	</param>
+	<param>
+		<name>Option 2</name>
+		<key>option2</key>
+		<value>2</value>
+		<type>$type</type>
+		<hide>#if int($num_opts()) > 2 then 'none' else 'all'#</hide>
+	</param>
+	<param>
+		<name>Label 2</name>
+		<key>label2</key>
+		<value></value>
+		<type>string</type>
+		<hide>$((int($num_opts()) > 2) and ($label2() and 'none' or 'part') or 'all')</hide>
+	</param>
+	<param>
+		<name>Option 3</name>
+		<key>option3</key>
+		<value>3</value>
+		<type>$type</type>
+		<hide>#if int($num_opts()) > 3 then 'none' else 'all'#</hide>
+	</param>
+	<param>
+		<name>Label 3</name>
+		<key>label3</key>
+		<value></value>
+		<type>string</type>
+		<hide>$((int($num_opts()) > 3) and ($label3() and 'none' or 'part') or 'all')</hide>
+	</param>
+	<param>
+		<name>Option 4</name>
+		<key>option4</key>
+		<value>4</value>
+		<type>$type</type>
+		<hide>#if int($num_opts()) > 4 then 'none' else 'all'#</hide>
+	</param>
+	<param>
+		<name>Label 4</name>
+		<key>label4</key>
+		<value></value>
+		<type>string</type>
+		<hide>$((int($num_opts()) > 4) and ($label4() and 'none' or 'part') or 'all')</hide>
+	</param>
+
+</block>
+
+
