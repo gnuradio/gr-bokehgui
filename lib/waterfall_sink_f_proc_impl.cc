@@ -51,6 +51,7 @@ namespace gr {
       buildwindow();
       set_output_multiple(d_size);
       d_triggered = true;
+      d_trigger_mode = TRIG_MODE_FREE;
     }
 
     waterfall_sink_f_proc_impl::~waterfall_sink_f_proc_impl()
@@ -69,35 +70,50 @@ namespace gr {
             arr[n*(*size) + x] = (1.0 - d_fftavg)*arr[n*(*size)+x] + d_fftavg*d_fbuf[x];
           }
         }
-      }
-      else { // Message input
-				// TODO: IMPLEMENT IT in better way. We need to send 2D array if it is from message port
-				*nrows = d_nrows;
-        int stride = std::max(0, (int)(d_len.front() - d_size)/(int)(d_nrows));
-
-        int j = 0;
-        size_t min = 0;
-        size_t max = std::min(d_size, static_cast<int>(d_len.front()));
-
-        std::vector<float> temp_zero_vec = std::vector<float> (d_size, 0);
-        for(size_t i=0; j < d_nrows; i+=stride) {
-          // Clear in case (max -min) < d_size
-          memset(&temp_zero_vec[0], 0, d_size*sizeof(float));
-          // Copy as much as possible samples as we can
-          memcpy(&temp_zero_vec[0], &d_buffers.front()[0][min], (max-min)*sizeof(float));
-          // Apply the window and FFT; copy data into the PDU magnitude buffer
-          fft(&d_fbuf[0], &temp_zero_vec[0], d_size);
-          for(int x = 0; x < d_size; x++) {
-            arr[x] += d_fbuf[x];
+        std::cout << "Should be original value" <<std::endl;
+        for(int n = 0; n < *nrows; n++) {
+          for(int i = 0; i < *size; i++) {
+            std::cout << d_buffers.front()[n][i] << " ";
           }
-
-          // Increment our indices; set max up to number of samples in the input PDU.
-          min += stride;
-          max = std::min(max + stride, static_cast<size_t>(d_len.front()));
-					j++;
+          std::cout << std::endl;
         }
-        d_len.pop();
+        std::cout << "Should be updated" <<std::endl;
+        for(int n = 0; n < *nrows; n++) {
+          for(int i = 0; i < *size; i++) {
+            std::cout << arr[n*(*size) + i] << " ";
+          }
+          std::cout << std::endl;
+        }
       }
+//      else { // Message input
+//				// TODO: IMPLEMENT IT in better way. We need to send 2D array if it is from message port
+//        // This doesn't work like QT
+//				*nrows = d_nrows;
+//        int stride = std::max(0, (int)(d_len.front() - d_size)/(int)(d_nrows));
+//
+//        int j = 0;
+//        size_t min = 0;
+//        size_t max = std::min(d_size, static_cast<int>(d_len.front()));
+//
+//        std::vector<float> temp_zero_vec = std::vector<float> (d_size, 0);
+//        for(size_t i=0; j < d_nrows; i+=stride) {
+//          // Clear in case (max -min) < d_size
+//          memset(&temp_zero_vec[0], 0, d_size*sizeof(float));
+//          // Copy as much as possible samples as we can
+//          memcpy(&temp_zero_vec[0], &d_buffers.front()[0][min], (max-min)*sizeof(float));
+//          // Apply the window and FFT; copy data into the PDU magnitude buffer
+//          fft(&d_fbuf[0], &temp_zero_vec[0], d_size);
+//          for(int x = 0; x < d_size; x++) {
+//            arr[x] += d_fbuf[x];
+//          }
+//
+//          // Increment our indices; set max up to number of samples in the input PDU.
+//          min += stride;
+//          max = std::min(max + stride, static_cast<size_t>(d_len.front()));
+//					j++;
+//        }
+//        d_len.pop();
+//      }
     }
 
     void
@@ -137,7 +153,7 @@ namespace gr {
 
       // Perform shift operation
       int tmpbuflen = (unsigned int)(floor(d_size/2.0));
-      std::vector<float> tmpbuf = std::vector<float> (tmpbuflen, 0);
+      std::vector<float> tmpbuf = std::vector<float> (tmpbuflen + 1, 0);
       memcpy(&tmpbuf[0], &data_out[0], sizeof(float)*(tmpbuflen + 1));
       memcpy(&data_out[0], &data_out[size - tmpbuflen], sizeof(float)*tmpbuflen);
       memcpy(&data_out[tmpbuflen], &tmpbuf[0], (tmpbuflen + 1)*sizeof(float));
@@ -229,7 +245,7 @@ namespace gr {
       return d_bandwidth;
     }
 
-    int
+    gr::filter::firdes::win_type
     waterfall_sink_f_proc_impl::get_wintype()
     {
       return d_wintype;

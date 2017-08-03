@@ -37,10 +37,10 @@ namespace gr {
       virtual void reset() = 0;
 
       virtual void set_size(int) = 0;
-      virtual void set_time_per_fft(const double t) = 0;
+      // TODO: virtual void set_time_per_fft(const double t) = 0;
       virtual void set_fft_avg(const float fftavg) = 0;
       virtual void set_fft_window(const gr::filter::firdes::win_type win) = 0;
-      virtual gr::filter::firdes::win_type fft_window() = 0;
+      virtual gr::filter::firdes::win_type get_wintype() = 0;
 
       virtual void set_frequency_range(double, double) = 0;
     };

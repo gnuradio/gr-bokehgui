@@ -114,8 +114,21 @@ namespace gr {
 
         U* arr = (U*) malloc(2*(*nrows)*(*size)*sizeof(U));
         memset(arr, 0, 2*(*nrows)*(*size)*sizeof(U));
-
+        std::cout << "Should be 0" <<std::endl;
+        for(int n = 0; n < *nrows; n++) {
+          for(int i = 0; i < *size; i++) {
+            std::cout << arr[n*(*size) + i] << " ";
+          }
+          std::cout << std::endl;
+        }
         process_plot(arr, nrows, size);
+        std::cout << "Finally" << std::endl;
+        for(int n = 0; n < *nrows; n++) {
+          for(int i = 0; i < *size; i++) {
+            std::cout << arr[n*(*size) + i] << " ";
+          }
+          std::cout << std::endl;
+        }
 
         *output_items = arr;
 

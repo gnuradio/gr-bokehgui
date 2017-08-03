@@ -50,14 +50,13 @@ namespace gr {
       void handle_set_freq(pmt::pmt_t);
 
       void set_fft_window(gr::filter::firdes::win_type win);
-      gr::filter::firdes::win_type fft_window();
+      gr::filter::firdes::win_type get_wintype();
 
       void set_frequency_range(double, double);
-      void set_time_per_fft(const double t);
+      // TODO: void set_time_per_fft(const double t);
       void _test_trigger_tags(int, int);
       double get_center_freq();
       double get_bandwidth();
-      int get_wintype();
       void set_fft_avg(float);
       void set_size(int);
       void buildwindow();
