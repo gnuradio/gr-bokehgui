@@ -61,3 +61,4 @@ GR_ADD_TEST(qa_time_sink_f ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_t
 GR_ADD_TEST(qa_time_sink_c ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_time_sink_c.py)
 GR_ADD_TEST(qa_freq_sink_f ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_freq_sink_f.py)
 GR_ADD_TEST(qa_freq_sink_c ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_freq_sink_c.py)
+GR_ADD_TEST(qa_waterfall_sink_f ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_waterfall_sink_f.py)
