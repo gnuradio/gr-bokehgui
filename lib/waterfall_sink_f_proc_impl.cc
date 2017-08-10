@@ -67,22 +67,8 @@ namespace gr {
         for (int n = 0; n < *nrows - 1; n++) {
           fft(&d_fbuf[0], &d_buffers.front()[n][0], *size);
           for(int x = 0; x < *size; x++) {
-            arr[n*(*size) + x] = (1.0 - d_fftavg)*arr[n*(*size)+x] + d_fftavg*d_fbuf[x];
+            arr[n*(*size) + x] = d_fbuf[x];
           }
-        }
-        std::cout << "Should be original value" <<std::endl;
-        for(int n = 0; n < *nrows; n++) {
-          for(int i = 0; i < *size; i++) {
-            std::cout << d_buffers.front()[n][i] << " ";
-          }
-          std::cout << std::endl;
-        }
-        std::cout << "Should be updated" <<std::endl;
-        for(int n = 0; n < *nrows; n++) {
-          for(int i = 0; i < *size; i++) {
-            std::cout << arr[n*(*size) + i] << " ";
-          }
-          std::cout << std::endl;
         }
       }
 //      else { // Message input
@@ -142,6 +128,8 @@ namespace gr {
       gr_complex *dst = d_fft->get_inbuf();
 
       std::vector<float> temp_zeros = std::vector<float> (size, 0);
+
+      volk_32f_x2_interleave_32fc(dst, data_in, &temp_zeros[0], size);
 
       if(d_window.size()) {
         volk_32fc_32f_multiply_32fc(d_fft->get_inbuf(), dst, &d_window.front(), size);
