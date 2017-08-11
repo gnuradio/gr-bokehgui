@@ -43,6 +43,7 @@ namespace gr {
       virtual gr::filter::firdes::win_type get_wintype() = 0;
 
       virtual void set_frequency_range(double, double) = 0;
+      virtual void get_plot_data (float** output_items, int* nrows, int* size) = 0;
     };
   }
 }

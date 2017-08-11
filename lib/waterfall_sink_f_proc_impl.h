@@ -61,6 +61,7 @@ namespace gr {
       void set_size(int);
       void buildwindow();
 			// Virtual functions inherited from base_sink
+      void get_plot_data (float** output_items, int* nrows, int* size);
       void process_plot(float* arr, int* nrows, int* size);
       void pop_other_queues();
       void verify_datatype_PDU(const float*, pmt::pmt_t, size_t);

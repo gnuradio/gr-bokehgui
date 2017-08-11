@@ -62,6 +62,35 @@ namespace gr {
     }
 
     void
+    waterfall_sink_f_proc_impl::get_plot_data (float** output_items, int* nrows, int* size) {
+      gr::thread::scoped_lock lock(d_setlock);
+      if (!d_buffers.size()) {
+        *size = 0;
+        *nrows = d_nconnections + 1;
+        return;
+      }
+      if (d_nconnections != 0) {
+        *nrows = d_nconnections + 1;
+        *size = d_buffers.front()[0].size();
+      }
+      else {
+        *size = d_buffers.front()[0].size();
+        *nrows = d_nrows;
+      }
+
+      float* arr = (float*) malloc(2*(*nrows)*(*size)*sizeof(float));
+      memset(arr, 0, 2*(*nrows)*(*size)*sizeof(float));
+
+      process_plot(arr, nrows, size);
+
+      *output_items = arr;
+
+      d_buffers.pop();
+
+      return;
+    }
+
+    void
     waterfall_sink_f_proc_impl::process_plot(float* arr, int* nrows, int* size) {
       if (d_nconnections != 0) { // Not message input. Ignore nconnections+1-th row!
         for (int n = 0; n < *nrows - 1; n++) {
@@ -71,35 +100,32 @@ namespace gr {
           }
         }
       }
-//      else { // Message input
-//				// TODO: IMPLEMENT IT in better way. We need to send 2D array if it is from message port
-//        // This doesn't work like QT
-//				*nrows = d_nrows;
-//        int stride = std::max(0, (int)(d_len.front() - d_size)/(int)(d_nrows));
-//
-//        int j = 0;
-//        size_t min = 0;
-//        size_t max = std::min(d_size, static_cast<int>(d_len.front()));
-//
-//        std::vector<float> temp_zero_vec = std::vector<float> (d_size, 0);
-//        for(size_t i=0; j < d_nrows; i+=stride) {
-//          // Clear in case (max -min) < d_size
-//          memset(&temp_zero_vec[0], 0, d_size*sizeof(float));
-//          // Copy as much as possible samples as we can
-//          memcpy(&temp_zero_vec[0], &d_buffers.front()[0][min], (max-min)*sizeof(float));
-//          // Apply the window and FFT; copy data into the PDU magnitude buffer
-//          fft(&d_fbuf[0], &temp_zero_vec[0], d_size);
-//          for(int x = 0; x < d_size; x++) {
-//            arr[x] += d_fbuf[x];
-//          }
-//
-//          // Increment our indices; set max up to number of samples in the input PDU.
-//          min += stride;
-//          max = std::min(max + stride, static_cast<size_t>(d_len.front()));
-//					j++;
-//        }
-//        d_len.pop();
-//      }
+      else { // Message input
+        int stride = std::max(0, (int)(d_len.front() - (*size))/(int)(d_nrows));
+
+        int j = 0;
+        size_t min = 0;
+        size_t max = std::min((*size), static_cast<int>(d_len.front()));
+
+        std::vector<float> temp_zero_vec = std::vector<float> ((*size), 0);
+        for(size_t i=0; j < d_nrows; i+=stride) {
+          // Clear in case (max -min) < (*size)
+          memset(&temp_zero_vec[0], 0, (*size)*sizeof(float));
+          // Copy as much as possible samples as we can
+          memcpy(&temp_zero_vec[0], &d_buffers.front()[0][min], (max-min)*sizeof(float));
+          // Apply the window and FFT; copy data into the PDU magnitude buffer
+          fft(&d_fbuf[0], &temp_zero_vec[0], (*size));
+          for(int x = 0; x < (*size); x++) {
+            arr[x] += (float)d_fbuf[x];
+          }
+
+          // Increment our indices; set max up to number of samples in the input PDU.
+          min += stride;
+          max = std::min(max + stride, static_cast<size_t>(d_len.front()));
+					j++;
+        }
+        d_len.pop();
+      }
     }
 
     void
