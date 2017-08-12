@@ -35,3 +35,7 @@ def create_server():
     port = subprocess.check_output([os.path.abspath(os.path.dirname(__file__)) + "/scripts/start-server.sh"])
     server_proc = subprocess.Popen(["bokeh", "serve", "--port", str(port[:-1]), "--allow-websocket-origin=*"])
     return server_proc
+
+
+PALETTE = ['#081d58', '#253494', '#225ea8', '#1d91c0', '#41b6c4', '#7fcdbb', '#c7e9b4', '#edf8b1', '#ffffd9']
+

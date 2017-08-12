@@ -15,6 +15,4 @@ class WaterfallRenderer(Renderer):
 
     fft_length = Int()
 
-    tile_width = Int()
-
     level = Override(default="glyph")

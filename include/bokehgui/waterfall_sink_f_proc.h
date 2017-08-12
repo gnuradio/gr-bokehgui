@@ -37,6 +37,9 @@ namespace gr {
       virtual void reset() = 0;
 
       virtual void set_size(int) = 0;
+      virtual double get_center_freq() = 0;
+      virtual double get_bandwidth() = 0;
+      virtual void buildwindow() = 0;
       // TODO: virtual void set_time_per_fft(const double t) = 0;
       virtual void set_fft_avg(const float fftavg) = 0;
       virtual void set_fft_window(const gr::filter::firdes::win_type win) = 0;

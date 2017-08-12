@@ -43,8 +43,19 @@ GR_PYTHON_INSTALL(
     checkbox.py
     radio_button.py
     bokeh_layout.py
-    utils.py DESTINATION ${GR_PYTHON_DIR}/bokehgui
+    utils.py 
+    waterfall_sink_f.py DESTINATION ${GR_PYTHON_DIR}/bokehgui
 )
+GR_PYTHON_INSTALL(
+    FILES
+    plots/__init__.py
+    plots/waterfall.py
+    DESTINATION ${GR_PYTHON_DIR}/bokehgui/plots
+)
+
+install(FILES plots/waterfall.coffee
+  DESTINATION ${GR_PYTHON_DIR}/bokehgui/plots
+  PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
 
 install(FILES scripts/check-port.sh
   DESTINATION ${GR_PYTHON_DIR}/bokehgui/scripts
