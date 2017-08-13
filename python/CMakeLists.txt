@@ -50,6 +50,7 @@ GR_PYTHON_INSTALL(
     FILES
     plots/__init__.py
     plots/waterfall.py
+    plots/import_waterfall.py
     DESTINATION ${GR_PYTHON_DIR}/bokehgui/plots
 )
 

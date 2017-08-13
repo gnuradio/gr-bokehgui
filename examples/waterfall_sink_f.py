@@ -104,7 +104,7 @@ def main(top_block_cls=top_block, options=None):
     try:
         # Define the document instance
         doc = curdoc()
-        session = push_session(doc, session_id="test")
+        session = push_session(doc, session_id="test", url = "http://localhost:5006/import_waterfall")
         # Create Top Block instance
         tb = top_block_cls(doc)
         try:

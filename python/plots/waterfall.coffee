@@ -23,7 +23,7 @@ export class WaterfallRendererView extends RendererView
       @x[i] = -@model.time_length + @model.tile_width*(i-1)
 
     [@col, @tile] = [0, 0]
-    @cmap = new LinearColorMapper({'palette': @model.palette, low: 0, high: 5})
+    @cmap = new LinearColorMapper({'palette': @model.palette, low: -200, high: 100})
     @xscale = @plot_view.frame.xscales['default']
     @yscale = @plot_view.frame.yscales['default']
     @max_freq = @plot_view.frame.y_range.end
@@ -45,6 +45,8 @@ export class WaterfallRendererView extends RendererView
       @x[@tile] = -@model.tile_width
 
     buf32 = new Uint32Array(@cmap.v_map_screen(@model.latest))
+    console.log(buf32)
+    console.log(@model.latest)
     for i in [0...@model.fft_length]
       @image[@tile][i*@model.tile_width+@col] = buf32[i]
 
