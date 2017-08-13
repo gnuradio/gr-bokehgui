@@ -23,14 +23,16 @@ export class WaterfallRendererView extends RendererView
       @x[i] = -@model.time_length + @model.tile_width*(i-1)
 
     [@col, @tile] = [0, 0]
-    @cmap = new LinearColorMapper({'palette': @model.palette, low: -200, high: 100})
+    @cmap = new LinearColorMapper({'palette': @model.palette, low: @model.min_value, high: @model.max_value})
     @xscale = @plot_view.frame.xscales['default']
     @yscale = @plot_view.frame.yscales['default']
     @max_freq = @plot_view.frame.y_range.end
+    @min_freq = @plot_view.frame.y_range.start
 
     @connect(@model.change, @request_render)
 
   render: () ->
+    @cmap = new LinearColorMapper({'palette': @model.palette, low: @model.min_value, high: @model.max_value})
     ctx = @plot_view.canvas_view.ctx
 
     for i in [0...@x.length]
@@ -45,15 +47,13 @@ export class WaterfallRendererView extends RendererView
       @x[@tile] = -@model.tile_width
 
     buf32 = new Uint32Array(@cmap.v_map_screen(@model.latest))
-    console.log(buf32)
-    console.log(@model.latest)
     for i in [0...@model.fft_length]
       @image[@tile][i*@model.tile_width+@col] = buf32[i]
 
     sx = @plot_view.canvas.v_vx_to_sx(@xscale.v_map_to_target(@x))
-    sy = @plot_view.canvas.vy_to_sy(@yscale.map_to_target(0))
+    sy = @plot_view.canvas.vy_to_sy(@yscale.map_to_target(@min_freq))
     sw = Math.ceil(@xscale.map_to_target(@model.tile_width) - @xscale.map_to_target(0))
-    sh = Math.ceil(@yscale.map_to_target(@max_freq))
+    sh = Math.ceil(@yscale.map_to_target(@max_freq) - @yscale.map_to_target(@min_freq))
 
     ctx.save()
 
@@ -88,6 +88,8 @@ export class WaterfallRenderer extends Renderer
     palette:     [ p.Any ]
     time_length: [ p.Int ]
     fft_length: [ p.Int ]
+    min_value: [ p.Any ]
+    max_value: [ p.Any ]
   }
   @override { level: "glyph" }
 

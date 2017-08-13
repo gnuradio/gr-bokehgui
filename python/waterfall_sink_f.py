@@ -19,7 +19,7 @@
 import numpy
 
 from bokeh.plotting import figure
-from bokeh.models import ColumnDataSource, LabelSet
+from bokeh.models import ColumnDataSource, LabelSet, FuncTickFormatter
 from bokehgui.plots import WaterfallRenderer
 from gnuradio import gr
 from bokehgui import waterfall_sink_f_proc, utils, bokeh_plot_config
@@ -42,16 +42,30 @@ class waterfall_sink_f(bokeh_plot_config):
 
         self.is_message = is_message
         self.nrows = 200
-
+        self.time_per_sample = 0.1
         self.set_frequency_range(self.fc, self.bw, set_y_axis = False, notify_process = False)
 
-    def initialize(self, legend_list = utils.default_labels_f, update_time = 100):
+    def initialize(self, legend_list = utils.default_labels_f, update_time = 100,
+                   values_range = [-200, 10],
+                   time_per_sample = 0.1, number_of_samples = 200,
+                   palette = 'Inferno'):
+        self.nrows = number_of_samples
+        self.time_per_sample = time_per_sample
+
         self.plot = figure(tools = ['save', 'reset'],
-                           x_range = [0, self.nrows], y_range = [0, self.frequency_range[-1] - self.frequency_range[0] + 1])
+                           x_range = [0, self.nrows], y_range = [self.frequency_range[0], self.frequency_range[-1]])
+        self.plot.xaxis.formatter = FuncTickFormatter(code = """
+                           return tick*%s
+                           """ % time_per_sample)
 
         self.waterfall_renderer = []
         for i in range(self.nconnections):
-            self.waterfall_renderer.append(WaterfallRenderer(palette=utils.PALETTE, time_length = self.nrows, fft_length=self.size))
+            self.waterfall_renderer.append(WaterfallRenderer(palette=utils.PALETTES[palette],
+                                                             time_length = self.nrows,
+                                                             fft_length=self.size,
+                                                             min_value = values_range[0],
+                                                             max_value = values_range[-1]
+                                                            ))
             self.plot.renderers.append(self.waterfall_renderer[i])
 
         self.plot_lst.append(self)
@@ -62,9 +76,6 @@ class waterfall_sink_f(bokeh_plot_config):
         self.doc.add_periodic_callback(self.update, update_time)
 
     def update(self):
-        ## Call to receive from buffers
-        ## First call to check if BW and FC is not changed
-        ## Through some direct message port to the block
         output_items = self.process.get_plot_data()
         if len(output_items[0]) != 0:
             fc = self.process.get_center_freq()
@@ -74,10 +85,17 @@ class waterfall_sink_f(bokeh_plot_config):
                 self.size = fftsize
                 self.set_frequency_range(fc, bw, notify_process = False)
 
-            for i in range(self.nconnections + 1):
-                if(not self.is_message) and i == self.nconnections:
-                    continue
-                self.waterfall_renderer[i].latest = list(output_items[i])
+            if(not self.is_message):
+                for i in range(self.nconnections):
+                    self.waterfall_renderer[i].latest = list(output_items[i])
+            else:
+                self.time_per_sample = self.process.get_time_per_fft()
+                self.plot.xaxis.formatter = FuncTickFormatter(code = """
+                                   return tick*%s
+                                   """ % self.time_per_sample)
+
+                for i in range(self.nrows):
+                    self.waterfall_renderer[0].latest = output_items[i]
         return
 
     def set_frequency_range(self, fc, bw, set_y_axis = True, notify_process = True):

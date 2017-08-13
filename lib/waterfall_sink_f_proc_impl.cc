@@ -28,10 +28,10 @@
 namespace gr {
   namespace bokehgui {
     waterfall_sink_f_proc::sptr
-    waterfall_sink_f_proc::make(int fftsize, int wintype, double fc, double bw, const std::string &name, int nconnections)
+    waterfall_sink_f_proc::make(int fftsize, int wintype, double fc, double bw, const std::string &name)
     {
       return gnuradio::get_initial_sptr
-        (new waterfall_sink_f_proc_impl(fftsize, wintype, fc, bw, name, nconnections));
+        (new waterfall_sink_f_proc_impl(fftsize, wintype, fc, bw, name, 1));
     }
 
     waterfall_sink_f_proc_impl::waterfall_sink_f_proc_impl(int fftsize, int wintype, double fc, double bw, const std::string &name, int nconnections)
@@ -103,10 +103,11 @@ namespace gr {
       else { // Message input
         int stride = std::max(0, (int)(d_len.front() - (*size))/(int)(d_nrows));
 
+        set_time_per_fft(1.0/d_bandwidth * stride);
+
         int j = 0;
         size_t min = 0;
         size_t max = std::min((*size), static_cast<int>(d_len.front()));
-
         std::vector<float> temp_zero_vec = std::vector<float> ((*size), 0);
         for(size_t i=0; j < d_nrows; i+=stride) {
           // Clear in case (max -min) < (*size)
@@ -269,6 +270,16 @@ namespace gr {
     waterfall_sink_f_proc_impl::set_fft_avg(float newavg)
     {
       d_fftavg = newavg;
+    }
+
+    void
+    waterfall_sink_f_proc_impl::set_time_per_fft(double val) {
+      d_time_per_fft = val;
+    }
+
+    double
+    waterfall_sink_f_proc_impl::get_time_per_fft() {
+      return d_time_per_fft;
     }
   } /* namespace bokehgui */
 } /* namespace gr */

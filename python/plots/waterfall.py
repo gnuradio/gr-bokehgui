@@ -15,4 +15,8 @@ class WaterfallRenderer(Renderer):
 
     fft_length = Int()
 
+    min_value = Float()
+
+    max_value = Float()
+
     level = Override(default="glyph")

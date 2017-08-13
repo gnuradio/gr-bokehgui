@@ -37,6 +37,7 @@ namespace gr {
       fft::fft_complex* d_fft;
       std::vector<float> d_fbuf;
       std::vector<std::vector<float> > d_residbufs;
+      double d_time_per_fft;
 
      public:
       waterfall_sink_f_proc_impl(int fftsize, int wintype, double fc, double bw, const std::string &name, int nconnections);
@@ -57,6 +58,8 @@ namespace gr {
       void _test_trigger_tags(int, int);
       double get_center_freq();
       double get_bandwidth();
+      double get_time_per_fft();
+      void set_time_per_fft(double);
       void set_fft_avg(float);
       void set_size(int);
       void buildwindow();

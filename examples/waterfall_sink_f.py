@@ -41,16 +41,12 @@ class top_block(gr.top_block):
         ##################################################
         # Blocks
         ##################################################
-        self.bokehgui_waterfall_sink_f_proc_0 = bokehgui.waterfall_sink_f_proc(1024, firdes.WIN_BLACKMAN_hARRIS, 0, samp_rate/2, "Waterfall Sink", 1)
+        self.bokehgui_waterfall_sink_f_proc_0 = bokehgui.waterfall_sink_f_proc(1024, firdes.WIN_BLACKMAN_hARRIS, 0, samp_rate/2, "Waterfall Sink")
         self.bokehgui_waterfall_sink_f_0 = bokehgui.waterfall_sink_f(self.doc, self.plot_lst, self.bokehgui_waterfall_sink_f_proc_0)
         self.blocks_throttle_0 = blocks.throttle(gr.sizeof_float*1, samp_rate,True)
-#        self.blocks_throttle_1 = blocks.throttle(gr.sizeof_float*1, samp_rate,True)
         self.analog_sig_source_x_0 = analog.sig_source_f(samp_rate, analog.GR_COS_WAVE, 5000, 3, 0)
-#        self.analog_sig_source_x_1 = analog.sig_source_f(samp_rate, analog.GR_COS_WAVE, 1000, 1, 0)
         self.analog_noise_source_x_0 = analog.noise_source_f(analog.GR_GAUSSIAN, 0.001, 0)
-#        self.analog_noise_source_x_1 = analog.noise_source_f(analog.GR_GAUSSIAN, 0.01, 0)
         self.blocks_add_xx_0 = blocks.add_vff(1)
-#        self.blocks_add_xx_1 = blocks.add_vff(1)
 
         ##################################################
         # Customizing the plot
@@ -61,14 +57,8 @@ class top_block(gr.top_block):
                                                     update_time = 100
                                                     )
 
-#        self.bokehgui_freq_sink_f_0.set_x_label('Frequency (Hz)')
-#        self.bokehgui_freq_sink_f_0.set_y_label('Relative Gain (dB)')
-#        self.bokehgui_freq_sink_f_0.set_y_axis([-150, 10])
-#        self.bokehgui_freq_sink_f_0.set_line_color(0, 'blue')
-#        self.bokehgui_freq_sink_f_0.set_line_color(1, 'red')
-#        self.bokehgui_freq_sink_f_0.set_line_style(1, 'dashed')
-#        self.bokehgui_freq_sink_f_0.set_line_width(1, 1)
-#        self.bokehgui_freq_sink_f_0.enable_max_hold()
+        self.bokehgui_waterfall_sink_f_0.set_y_label('Frequency (Hz)')
+        self.bokehgui_waterfall_sink_f_0.set_x_label('Time')
         self.bokehgui_waterfall_sink_f_0.set_layout(1,1,1,1)
 
         self.doc.add_root(bokehgui.BokehLayout.create_layout(self.plot_lst))

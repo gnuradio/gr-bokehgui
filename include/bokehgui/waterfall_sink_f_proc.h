@@ -32,15 +32,16 @@ namespace gr {
     {
     public:
       typedef boost::shared_ptr <waterfall_sink_f_proc> sptr;
-      static sptr make(int size, int wintype, double fc, double bw, const std::string &name, int nconnections);
+      static sptr make(int size, int wintype, double fc, double bw, const std::string &name);
 
       virtual void reset() = 0;
 
       virtual void set_size(int) = 0;
       virtual double get_center_freq() = 0;
       virtual double get_bandwidth() = 0;
+      virtual double get_time_per_fft() = 0;
       virtual void buildwindow() = 0;
-      // TODO: virtual void set_time_per_fft(const double t) = 0;
+      virtual void set_time_per_fft(double) = 0;
       virtual void set_fft_avg(const float fftavg) = 0;
       virtual void set_fft_window(const gr::filter::firdes::win_type win) = 0;
       virtual gr::filter::firdes::win_type get_wintype() = 0;

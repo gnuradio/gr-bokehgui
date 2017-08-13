@@ -36,6 +36,12 @@ def create_server():
     server_proc = subprocess.Popen(["bokeh", "serve", "--port", str(port[:-1]), "--allow-websocket-origin=*", os.path.abspath(os.path.dirname(__file__))+"/plots/bokehgui.py"])
     return server_proc
 
-
-PALETTE = ['#081d58', '#253494', '#225ea8', '#1d91c0', '#41b6c4', '#7fcdbb', '#c7e9b4', '#edf8b1', '#ffffd9']
+import bokeh.palettes as bp
+PALETTES = {
+            'Inferno': bp.all_palettes['Inferno'][256],
+            'Magma': bp.all_palettes['Magma'][256],
+            'Plasma': bp.all_palettes['Plasma'][256],
+            'Viridis': bp.all_palettes['Viridis'][256],
+            'Greys': bp.all_palettes['Greys'][256]
+            }
 
