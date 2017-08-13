@@ -41,7 +41,7 @@ class top_block(gr.top_block):
         ##################################################
         # Blocks
         ##################################################
-        self.bokehgui_waterfall_sink_f_proc_0 = bokehgui.waterfall_sink_f_proc(1024, firdes.WIN_BLACKMAN_hARRIS, 0, samp_rate/2, "Frequency Sink", 1)
+        self.bokehgui_waterfall_sink_f_proc_0 = bokehgui.waterfall_sink_f_proc(1024, firdes.WIN_BLACKMAN_hARRIS, 0, samp_rate/2, "Waterfall Sink", 1)
         self.bokehgui_waterfall_sink_f_0 = bokehgui.waterfall_sink_f(self.doc, self.plot_lst, self.bokehgui_waterfall_sink_f_proc_0)
         self.blocks_throttle_0 = blocks.throttle(gr.sizeof_float*1, samp_rate,True)
 #        self.blocks_throttle_1 = blocks.throttle(gr.sizeof_float*1, samp_rate,True)
@@ -104,7 +104,7 @@ def main(top_block_cls=top_block, options=None):
     try:
         # Define the document instance
         doc = curdoc()
-        session = push_session(doc, session_id="test", url = "http://localhost:5006/import_waterfall")
+        session = push_session(doc, session_id="test", url = "http://localhost:5006/bokehgui")
         # Create Top Block instance
         tb = top_block_cls(doc)
         try:

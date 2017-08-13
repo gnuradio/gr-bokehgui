@@ -33,7 +33,7 @@ default_labels_c = ["Re{{Data {0}}}".format(i/2) if i%2 == 0 else "Im{{Data {0}}
 
 def create_server():
     port = subprocess.check_output([os.path.abspath(os.path.dirname(__file__)) + "/scripts/start-server.sh"])
-    server_proc = subprocess.Popen(["bokeh", "serve", "--port", str(port[:-1]), "--allow-websocket-origin=*", os.path.abspath(os.path.dirname(__file__))+"/plots/import_waterfall.py"])
+    server_proc = subprocess.Popen(["bokeh", "serve", "--port", str(port[:-1]), "--allow-websocket-origin=*", os.path.abspath(os.path.dirname(__file__))+"/plots/bokehgui.py"])
     return server_proc
 
 

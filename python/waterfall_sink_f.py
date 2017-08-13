@@ -46,16 +46,13 @@ class waterfall_sink_f(bokeh_plot_config):
         self.set_frequency_range(self.fc, self.bw, set_y_axis = False, notify_process = False)
 
     def initialize(self, legend_list = utils.default_labels_f, update_time = 100):
-        self.plot = figure(tools = utils.default_tools(),
-                            active_drag = 'ypan',
-                            active_scroll = 'ywheel_zoom',x_range = [0, self.nrows], y_range = [self.frequency_range[0], self.frequency_range[-1]])
+        self.plot = figure(tools = ['save', 'reset'],
+                           x_range = [0, self.nrows], y_range = [0, self.frequency_range[-1] - self.frequency_range[0] + 1])
 
         self.waterfall_renderer = []
         for i in range(self.nconnections):
             self.waterfall_renderer.append(WaterfallRenderer(palette=utils.PALETTE, time_length = self.nrows, fft_length=self.size))
             self.plot.renderers.append(self.waterfall_renderer[i])
-
-        self.add_custom_tools()
 
         self.plot_lst.append(self)
 
