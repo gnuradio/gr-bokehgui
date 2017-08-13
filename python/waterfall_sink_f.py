@@ -66,7 +66,6 @@ class waterfall_sink_f(bokeh_plot_config):
 
     def update(self):
         ## Call to receive from buffers
-
         ## First call to check if BW and FC is not changed
         ## Through some direct message port to the block
         output_items = self.process.get_plot_data()
@@ -81,7 +80,7 @@ class waterfall_sink_f(bokeh_plot_config):
             for i in range(self.nconnections + 1):
                 if(not self.is_message) and i == self.nconnections:
                     continue
-                self.waterfall_renderer[i].latest = output_items[i]
+                self.waterfall_renderer[i].latest = list(output_items[i])
         return
 
     def set_frequency_range(self, fc, bw, set_y_axis = True, notify_process = True):
