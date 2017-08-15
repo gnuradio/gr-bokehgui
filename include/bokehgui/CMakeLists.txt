@@ -28,4 +28,6 @@ install(FILES
     time_sink_f_proc.h
     freq_sink_f_proc.h
     freq_sink_c_proc.h 
-    waterfall_sink_f_proc.h DESTINATION include/bokehgui)
+    waterfall_sink_f_proc.h 
+    waterfall_sink_c_proc.h
+    DESTINATION include/bokehgui)

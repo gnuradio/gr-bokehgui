@@ -40,7 +40,7 @@ class qa_waterfall_sink_f (gr_unittest.TestCase):
 
         src = blocks.vector_source_f(original, False, 1, [])
 
-        dst = waterfall_sink_f_proc(100, filter.firdes.WIN_RECTANGULAR, 0, 15000, 'Test', 1)
+        dst = waterfall_sink_f_proc(100, filter.firdes.WIN_RECTANGULAR, 0, 15000, 'Test')
 
         self.tb.connect(src, dst)
         self.tb.run()

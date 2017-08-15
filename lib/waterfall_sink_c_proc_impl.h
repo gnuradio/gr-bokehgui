@@ -17,15 +17,15 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef INCLUDED_BOKEHGUI_WATERFALL_SINK_F_PROC_IMPL_H
-#define INCLUDED_BOKEHGUI_WATERFALL_SINK_F_PROC_IMPL_H
+#ifndef INCLUDED_BOKEHGUI_WATERFALL_SINK_C_PROC_IMPL_H
+#define INCLUDED_BOKEHGUI_WATERFALL_SINK_C_PROC_IMPL_H
 
-#include <bokehgui/waterfall_sink_f_proc.h>
+#include <bokehgui/waterfall_sink_c_proc.h>
 #include <gnuradio/fft/fft.h>
 
 namespace gr {
   namespace bokehgui {
-    class BOKEHGUI_API waterfall_sink_f_proc_impl : public waterfall_sink_f_proc
+    class BOKEHGUI_API waterfall_sink_c_proc_impl : public waterfall_sink_c_proc
     {
      private:
       int d_nrows;
@@ -36,16 +36,15 @@ namespace gr {
       bool d_shift;
       fft::fft_complex* d_fft;
       std::vector<float> d_fbuf;
-      std::vector<std::vector<float> > d_residbufs;
       double d_time_per_fft;
 
      public:
-      waterfall_sink_f_proc_impl(int fftsize, int wintype, double fc, double bw, const std::string &name, int nconnections);
-      ~waterfall_sink_f_proc_impl();
+      waterfall_sink_c_proc_impl(int fftsize, int wintype, double fc, double bw, const std::string &name, int nconnections);
+      ~waterfall_sink_c_proc_impl();
 
       void reset();
       void _reset();
-      void fft(float *data_out, const float *data_in, int size);
+      void fft(float *data_out, const gr_complex *data_in, int size);
 
       // Handles messages input port
       void handle_set_freq(pmt::pmt_t);
@@ -66,7 +65,7 @@ namespace gr {
       void get_plot_data (float** output_items, int* nrows, int* size);
       void process_plot(float* arr, int* nrows, int* size);
       void pop_other_queues();
-      void verify_datatype_PDU(const float*, pmt::pmt_t, size_t);
+      void verify_datatype_PDU(const gr_complex*, pmt::pmt_t, size_t);
       void work_process_other_queues(int start, int nitems);
     };
   }

@@ -23,19 +23,19 @@
 
 #include <string.h>
 #include <volk/volk.h>
-#include "waterfall_sink_f_proc_impl.h"
+#include "waterfall_sink_c_proc_impl.h"
 
 namespace gr {
   namespace bokehgui {
-    waterfall_sink_f_proc::sptr
-    waterfall_sink_f_proc::make(int fftsize, int wintype, double fc, double bw, const std::string &name)
+    waterfall_sink_c_proc::sptr
+    waterfall_sink_c_proc::make(int fftsize, int wintype, double fc, double bw, const std::string &name)
     {
       return gnuradio::get_initial_sptr
-        (new waterfall_sink_f_proc_impl(fftsize, wintype, fc, bw, name, 1));
+        (new waterfall_sink_c_proc_impl(fftsize, wintype, fc, bw, name, 1));
     }
 
-    waterfall_sink_f_proc_impl::waterfall_sink_f_proc_impl(int fftsize, int wintype, double fc, double bw, const std::string &name, int nconnections)
-      : base_sink<float, float>("waterfall_sink_f_proc", fftsize, name, nconnections),
+    waterfall_sink_c_proc_impl::waterfall_sink_c_proc_impl(int fftsize, int wintype, double fc, double bw, const std::string &name, int nconnections)
+      : base_sink<gr_complex, float>("waterfall_sink_c_proc", fftsize, name, nconnections),
       d_fftavg(1.0), d_wintype((filter::firdes::win_type)(wintype)),
       d_center_freq(fc), d_bandwidth(bw), d_nrows(200)
     {
@@ -50,14 +50,14 @@ namespace gr {
       d_trigger_mode = TRIG_MODE_FREE;
     }
 
-    waterfall_sink_f_proc_impl::~waterfall_sink_f_proc_impl()
+    waterfall_sink_c_proc_impl::~waterfall_sink_c_proc_impl()
     {
       delete d_fft;
       d_fbuf = std::vector<float>();
     }
 
     void
-    waterfall_sink_f_proc_impl::get_plot_data (float** output_items, int* nrows, int* size) {
+    waterfall_sink_c_proc_impl::get_plot_data (float** output_items, int* nrows, int* size) {
       gr::thread::scoped_lock lock(d_setlock);
       if (!d_buffers.size()) {
         *size = 0;
@@ -86,7 +86,7 @@ namespace gr {
     }
 
     void
-    waterfall_sink_f_proc_impl::process_plot(float* arr, int* nrows, int* size) {
+    waterfall_sink_c_proc_impl::process_plot(float* arr, int* nrows, int* size) {
       if (d_nconnections != 0) { // Not message input. Ignore nconnections+1-th row!
         for (int n = 0; n < *nrows - 1; n++) {
           fft(&d_fbuf[0], &d_buffers.front()[n][0], *size);
@@ -103,12 +103,12 @@ namespace gr {
         int j = 0;
         size_t min = 0;
         size_t max = std::min((*size), static_cast<int>(d_len.front()));
-        std::vector<float> temp_zero_vec = std::vector<float> ((*size), 0);
+        std::vector<gr_complex> temp_zero_vec = std::vector<gr_complex> ((*size), 0);
         for(size_t i=0; j < d_nrows; i+=stride) {
           // Clear in case (max -min) < (*size)
-          memset(&temp_zero_vec[0], 0, (*size)*sizeof(float));
+          memset(&temp_zero_vec[0], 0, (*size)*sizeof(gr_complex));
           // Copy as much as possible samples as we can
-          memcpy(&temp_zero_vec[0], &d_buffers.front()[0][min], (max-min)*sizeof(float));
+          memcpy(&temp_zero_vec[0], &d_buffers.front()[0][min], (max-min)*sizeof(gr_complex));
           // Apply the window and FFT; copy data into the PDU magnitude buffer
           fft(&d_fbuf[0], &temp_zero_vec[0], (*size));
           for(int x = 0; x < (*size); x++) {
@@ -125,36 +125,33 @@ namespace gr {
     }
 
     void
-    waterfall_sink_f_proc_impl::set_frequency_range(double centerfreq, double bw) {
+    waterfall_sink_c_proc_impl::set_frequency_range(double centerfreq, double bw) {
       d_center_freq = centerfreq;
       d_bandwidth = bw;
     }
 
     void
-    waterfall_sink_f_proc_impl::reset()
+    waterfall_sink_c_proc_impl::reset()
     {
       gr::thread::scoped_lock lock(d_setlock);
       _reset();
     }
 
     void
-    waterfall_sink_f_proc_impl::_reset()
+    waterfall_sink_c_proc_impl::_reset()
     {
       d_triggered = true;
     }
 
     void
-    waterfall_sink_f_proc_impl::fft(float *data_out, const float *data_in, int size)
+    waterfall_sink_c_proc_impl::fft(float *data_out, const gr_complex *data_in, int size)
     {
-      // float to complex conversion
-      gr_complex *dst = d_fft->get_inbuf();
-
-      std::vector<float> temp_zeros = std::vector<float> (size, 0);
-
-      volk_32f_x2_interleave_32fc(dst, data_in, &temp_zeros[0], size);
-
       if(d_window.size()) {
-        volk_32fc_32f_multiply_32fc(d_fft->get_inbuf(), dst, &d_window.front(), size);
+        volk_32fc_32f_multiply_32fc(d_fft->get_inbuf(), data_in,
+                                    &d_window.front(), size);
+      }
+      else {
+        memcpy(d_fft->get_inbuf(), data_in, sizeof(gr_complex)*size);
       }
 
       d_fft->execute(); // Compute the fft
@@ -170,7 +167,7 @@ namespace gr {
     }
 
     void
-    waterfall_sink_f_proc_impl::set_fft_window(filter::firdes::win_type newwintype)
+    waterfall_sink_c_proc_impl::set_fft_window(filter::firdes::win_type newwintype)
     {
       gr::thread::scoped_lock lock(d_setlock);
       if (d_wintype != newwintype) {
@@ -180,7 +177,7 @@ namespace gr {
     }
 
     void
-    waterfall_sink_f_proc_impl::buildwindow()
+    waterfall_sink_c_proc_impl::buildwindow()
     {
       if(d_wintype != filter::firdes::WIN_NONE) {
         d_window = filter::firdes::window(d_wintype, d_size, 6.76);
@@ -188,7 +185,7 @@ namespace gr {
     }
 
     void
-    waterfall_sink_f_proc_impl::set_size(int newsize)
+    waterfall_sink_c_proc_impl::set_size(int newsize)
     {
       gr::thread::scoped_lock lock(d_setlock);
       if(newsize != d_size) {
@@ -208,7 +205,7 @@ namespace gr {
     }
 
     void
-    waterfall_sink_f_proc_impl::handle_set_freq(pmt::pmt_t msg)
+    waterfall_sink_c_proc_impl::handle_set_freq(pmt::pmt_t msg)
     {
       if(pmt::is_pair(msg)) {
         pmt::pmt_t x = pmt::cdr(msg);
@@ -219,61 +216,61 @@ namespace gr {
     }
 
     void
-    waterfall_sink_f_proc_impl::_test_trigger_tags(int start, int nitems)
+    waterfall_sink_c_proc_impl::_test_trigger_tags(int start, int nitems)
     {
       d_triggered = true;
     }
 
     void
-    waterfall_sink_f_proc_impl::pop_other_queues() {
+    waterfall_sink_c_proc_impl::pop_other_queues() {
     }
 
     void
-    waterfall_sink_f_proc_impl::verify_datatype_PDU(const float *in, pmt::pmt_t samples, size_t len) {
-      if (pmt::is_f32vector(samples)) {
-        in = (const float*) pmt::f32vector_elements(samples, len);
+    waterfall_sink_c_proc_impl::verify_datatype_PDU(const gr_complex *in, pmt::pmt_t samples, size_t len) {
+      if (pmt::is_c32vector(samples)) {
+        in = (const gr_complex*) pmt::c32vector_elements(samples, len);
       }
       else {
         throw std::runtime_error(d_name + "unknown data type "
-                                 "of samples; must be float");
+                                 "of samples; must be gr_complex");
       }
     }
 
 		void
-    waterfall_sink_f_proc_impl::work_process_other_queues(int start, int nitems) {
+    waterfall_sink_c_proc_impl::work_process_other_queues(int start, int nitems) {
     }
 
     double
-    waterfall_sink_f_proc_impl::get_center_freq()
+    waterfall_sink_c_proc_impl::get_center_freq()
     {
       return d_center_freq;
     }
 
     double
-    waterfall_sink_f_proc_impl::get_bandwidth()
+    waterfall_sink_c_proc_impl::get_bandwidth()
     {
       return d_bandwidth;
     }
 
     gr::filter::firdes::win_type
-    waterfall_sink_f_proc_impl::get_wintype()
+    waterfall_sink_c_proc_impl::get_wintype()
     {
       return d_wintype;
     }
 
     void
-    waterfall_sink_f_proc_impl::set_fft_avg(float newavg)
+    waterfall_sink_c_proc_impl::set_fft_avg(float newavg)
     {
       d_fftavg = newavg;
     }
 
     void
-    waterfall_sink_f_proc_impl::set_time_per_fft(double val) {
+    waterfall_sink_c_proc_impl::set_time_per_fft(double val) {
       d_time_per_fft = val;
     }
 
     double
-    waterfall_sink_f_proc_impl::get_time_per_fft() {
+    waterfall_sink_c_proc_impl::get_time_per_fft() {
       return d_time_per_fft;
     }
   } /* namespace bokehgui */
