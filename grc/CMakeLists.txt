@@ -25,4 +25,6 @@ install(FILES
     bokehgui_range_slider.xml
     bokehgui_checkbox.xml
     bokehgui_radio_button.xml
-    bokehgui_textbox.xml     DESTINATION share/gnuradio/grc/blocks)
+    bokehgui_textbox.xml     
+    bokehgui_waterfall_sink_x.xml
+    DESTINATION share/gnuradio/grc/blocks)

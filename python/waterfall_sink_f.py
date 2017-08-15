@@ -144,3 +144,6 @@ class waterfall_sink_f(bokeh_plot_config):
         crosshair = CrosshairTool()
         self.plot.add_tools(hover, crosshair)
 
+    def set_color(self, palette_name):
+        self.waterfall_renderers[0].palette = utils.PALETTES[palette]
+

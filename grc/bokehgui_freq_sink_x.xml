@@ -42,7 +42,6 @@ self.$(id)_plot.enable_axis_labels($axislabels)
 #if $legend() == 'False'
 self.$(id)_plot.disable_legend()
 #end if
-self.$(id)_plot.set_fft_avg($average)
 #if ($type() == 'float' or $type() == 'msg_float')
 self.$(id)_plot.set_plot_pos_half($freqhalf)
 #end if
