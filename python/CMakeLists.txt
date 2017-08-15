@@ -44,7 +44,8 @@ GR_PYTHON_INSTALL(
     radio_button.py
     bokeh_layout.py
     utils.py 
-    waterfall_sink_f.py DESTINATION ${GR_PYTHON_DIR}/bokehgui
+    waterfall_sink_f.py 
+    waterfall_sink_c.py DESTINATION ${GR_PYTHON_DIR}/bokehgui
 )
 GR_PYTHON_INSTALL(
     FILES
