@@ -81,6 +81,7 @@ class bokeh_plot_config(object):
             return
         # solid, dashed, dotted, dotdash, dashdot
         return self.lines[i].glyph.line_dash
+
     def set_line_marker(self, i, marker):
         if marker == 'None':
             self.lines_markers[i] = (None, None)
