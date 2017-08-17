@@ -494,26 +494,14 @@
     </param>
   </block>
   <block>
-    <key>bokehgui_frequency_sink_x</key>
-    <param>
-      <key>average</key>
-      <value>1.0</value>
-    </param>
+    <key>bokehgui_time_const_x</key>
     <param>
       <key>axislabels</key>
       <value>True</value>
     </param>
     <param>
-      <key>bw</key>
-      <value>samp_rate/2</value>
-    </param>
-    <param>
       <key>alias</key>
       <value></value>
-    </param>
-    <param>
-      <key>fc</key>
-      <value>0</value>
     </param>
     <param>
       <key>comment</key>
@@ -524,16 +512,16 @@
       <value></value>
     </param>
     <param>
+      <key>entags</key>
+      <value>True</value>
+    </param>
+    <param>
       <key>_enabled</key>
       <value>True</value>
     </param>
     <param>
-      <key>fftsize</key>
-      <value>1024</value>
-    </param>
-    <param>
       <key>_coordinate</key>
-      <value>(688, 60)</value>
+      <value>(672, 28)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -545,7 +533,7 @@
     </param>
     <param>
       <key>id</key>
-      <value>bokehgui_frequency_sink_x_0</value>
+      <value>bokehgui_time_const_x_0</value>
     </param>
     <param>
       <key>legend</key>
@@ -568,10 +556,6 @@
       <value>None</value>
     </param>
     <param>
-      <key>style1</key>
-      <value>"solid"</value>
-    </param>
-    <param>
       <key>width1</key>
       <value>1</value>
     </param>
@@ -581,7 +565,7 @@
     </param>
     <param>
       <key>color10</key>
-      <value>"dark blue"</value>
+      <value>"blue"</value>
     </param>
     <param>
       <key>label10</key>
@@ -590,10 +574,6 @@
     <param>
       <key>marker10</key>
       <value>None</value>
-    </param>
-    <param>
-      <key>style10</key>
-      <value>"solid"</value>
     </param>
     <param>
       <key>width10</key>
@@ -616,10 +596,6 @@
       <value>None</value>
     </param>
     <param>
-      <key>style2</key>
-      <value>"solid"</value>
-    </param>
-    <param>
       <key>width2</key>
       <value>1</value>
     </param>
@@ -638,10 +614,6 @@
     <param>
       <key>marker3</key>
       <value>None</value>
-    </param>
-    <param>
-      <key>style3</key>
-      <value>"solid"</value>
     </param>
     <param>
       <key>width3</key>
@@ -664,10 +636,6 @@
       <value>None</value>
     </param>
     <param>
-      <key>style4</key>
-      <value>"solid"</value>
-    </param>
-    <param>
       <key>width4</key>
       <value>1</value>
     </param>
@@ -686,10 +654,6 @@
     <param>
       <key>marker5</key>
       <value>None</value>
-    </param>
-    <param>
-      <key>style5</key>
-      <value>"solid"</value>
     </param>
     <param>
       <key>width5</key>
@@ -712,10 +676,6 @@
       <value>None</value>
     </param>
     <param>
-      <key>style6</key>
-      <value>"solid"</value>
-    </param>
-    <param>
       <key>width6</key>
       <value>1</value>
     </param>
@@ -736,10 +696,6 @@
       <value>None</value>
     </param>
     <param>
-      <key>style7</key>
-      <value>"solid"</value>
-    </param>
-    <param>
       <key>width7</key>
       <value>1</value>
     </param>
@@ -749,7 +705,7 @@
     </param>
     <param>
       <key>color8</key>
-      <value>"dark red"</value>
+      <value>"blue"</value>
     </param>
     <param>
       <key>label8</key>
@@ -758,10 +714,6 @@
     <param>
       <key>marker8</key>
       <value>None</value>
-    </param>
-    <param>
-      <key>style8</key>
-      <value>"solid"</value>
     </param>
     <param>
       <key>width8</key>
@@ -773,7 +725,7 @@
     </param>
     <param>
       <key>color9</key>
-      <value>"dark green"</value>
+      <value>"blue"</value>
     </param>
     <param>
       <key>label9</key>
@@ -784,16 +736,8 @@
       <value>None</value>
     </param>
     <param>
-      <key>style9</key>
-      <value>"solid"</value>
-    </param>
-    <param>
       <key>width9</key>
       <value>1</value>
-    </param>
-    <param>
-      <key>maxhold</key>
-      <value>False</value>
     </param>
     <param>
       <key>name</key>
@@ -804,15 +748,23 @@
       <value>1</value>
     </param>
     <param>
+      <key>size</key>
+      <value>1024</value>
+    </param>
+    <param>
       <key>placement</key>
       <value>(0,1)</value>
     </param>
     <param>
-      <key>freqhalf</key>
-      <value>False</value>
+      <key>srate</key>
+      <value>samp_rate</value>
     </param>
     <param>
       <key>tr_chan</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>tr_delay</key>
       <value>0</value>
     </param>
     <param>
@@ -822,6 +774,10 @@
     <param>
       <key>tr_mode</key>
       <value>bokehgui.TRIG_MODE_FREE</value>
+    </param>
+    <param>
+      <key>tr_slope</key>
+      <value>bokehgui.TRIG_SLOPE_POS</value>
     </param>
     <param>
       <key>tr_tag</key>
@@ -836,32 +792,36 @@
       <value>100</value>
     </param>
     <param>
-      <key>wintype</key>
-      <value>firdes.WIN_BLACKMAN_hARRIS</value>
-    </param>
-    <param>
       <key>xlabel</key>
-      <value>Frequency</value>
+      <value>Time</value>
     </param>
     <param>
       <key>xunit</key>
       <value>""</value>
     </param>
     <param>
+      <key>xmax</key>
+      <value>1</value>
+    </param>
+    <param>
+      <key>xmin</key>
+      <value>-1</value>
+    </param>
+    <param>
       <key>ylabel</key>
-      <value>Relative Gain</value>
-    </param>
-    <param>
-      <key>ymax</key>
-      <value>50</value>
-    </param>
-    <param>
-      <key>ymin</key>
-      <value>-200</value>
+      <value>Amplitude</value>
     </param>
     <param>
       <key>yunit</key>
-      <value>dB</value>
+      <value>""</value>
+    </param>
+    <param>
+      <key>ymax</key>
+      <value>1</value>
+    </param>
+    <param>
+      <key>ymin</key>
+      <value>-1</value>
     </param>
   </block>
   <block>
@@ -999,7 +959,7 @@
   </connection>
   <connection>
     <source_block_id>blocks_throttle_0</source_block_id>
-    <sink_block_id>bokehgui_frequency_sink_x_0</sink_block_id>
+    <sink_block_id>bokehgui_time_const_x_0</sink_block_id>
     <source_key>0</source_key>
     <sink_key>0</sink_key>
   </connection>

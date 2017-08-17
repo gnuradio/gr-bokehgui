@@ -27,4 +27,5 @@ install(FILES
     bokehgui_radio_button.xml
     bokehgui_textbox.xml     
     bokehgui_waterfall_sink_x.xml
+    bokehgui_const_sink_x.xml 
     DESTINATION share/gnuradio/grc/blocks)

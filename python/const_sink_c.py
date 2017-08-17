@@ -178,7 +178,7 @@ class const_sink_c(bokeh_plot_config):
 
     def enable_tags(self, which = -1, en = True):
         if which == -1:
-            for i in range(2*self.nconnections):
+            for i in range(self.nconnections):
                 self.enable_tags(i, en)
         else:
             if en:
@@ -193,17 +193,17 @@ class const_sink_c(bokeh_plot_config):
         self.set_line_alpha(i, alpha)
 
     def set_line_color(self, i, color):
-        self.lines_markers[i].glyph.line_color = color
+        self.lines_markers[i][0].glyph.line_color = color
     def get_line_color(self, i):
-        return self.lines_markers[i].glyph.line_color
+        return self.lines_markers[i][0].glyph.line_color
     def set_line_width(self, i, width):
-        self.lines_markers[i].glyph.line_width = width
+        self.lines_markers[i][0].glyph.line_width = width
     def get_line_width(self, i):
-        return self.lines_markers[i].glyph.line_width
+        return self.lines_markers[i][0].glyph.line_width
     def set_line_alpha(self, i, alpha):
-        self.lines_markers[i].glyph.line_alpha = alpha
+        self.lines_markers[i][0].glyph.line_alpha = alpha
     def get_line_alpha(self, i):
-        return self.lines_markers[i].glyph.line_alpha
+        return self.lines_markers[i][0].glyph.line_alpha
 
     def add_custom_tools(self):
         from bokeh.models import HoverTool, CrosshairTool
