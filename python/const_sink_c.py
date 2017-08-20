@@ -98,7 +98,7 @@ class const_sink_c(bokeh_plot_config):
 
             if not self.is_message:
                 self.tags.append(LabelSet(x='x'+str(i), y='y'+str(i),
-                                      text='tags'+str(i/2),
+                                      text='tags'+str(i),
                                       level='glyph',
                                       x_offset=-20, y_offset=5,
                                       source=self.tag_stream,
@@ -152,13 +152,13 @@ class const_sink_c(bokeh_plot_config):
             temp_x = []
             temp_y = []
             temp_tags = []
-            for j in stream_tags[i/2].keys():
+            for j in stream_tags[i].keys():
                 temp_x.append(new_data['x'+str(i)][j])
                 temp_y.append(new_data['y'+str(i)][j])
-                temp_tags.append(stream_tags[i/2][j])
+                temp_tags.append(stream_tags[i][j])
             new_tagged_data['x'+str(i)] = temp_x
             new_tagged_data['y'+str(i)] = temp_y
-            new_tagged_data['tags'+str(i/2)] = temp_tags
+            new_tagged_data['tags'+str(i)] = temp_tags
             if len(temp_x) > max_tag_size:
                 max_tag_size = len(temp_x)
 
@@ -174,7 +174,6 @@ class const_sink_c(bokeh_plot_config):
         if newsize != self.size:
             self.process.set_nsamps(newsize);
             self.size = newsize
-        self.set_x_axis([0, self.size/self.samp_rate]);
 
     def enable_tags(self, which = -1, en = True):
         if which == -1:
@@ -204,6 +203,81 @@ class const_sink_c(bokeh_plot_config):
         self.lines_markers[i][0].glyph.line_alpha = alpha
     def get_line_alpha(self, i):
         return self.lines_markers[i][0].glyph.line_alpha
+    def set_line_marker(self, i, marker):
+        if marker == 'None':
+            self.lines_markers[i] = (None, None)
+        if marker == '*':
+            self.lines_markers[i] = (self.plot.asterisk(
+                                            x='x'+str(i), y='y'+str(i),
+                                            source=self.stream,
+                                            legend = self.legend_list[i],
+                                            ), '*')
+        if marker == 'o':
+            self.lines_markers[i] = (self.plot.circle(
+                                            x='x'+str(i), y='y'+str(i),
+                                            source=self.stream,
+                                            legend = self.legend_list[i],
+                                            ), 'o')
+        if marker == 'o+':
+            self.lines_markers[i] = (self.plot.circle_cross(
+                                            x='x'+str(i), y='y'+str(i),
+                                            source=self.stream,
+                                            legend = self.legend_list[i],
+                                            ), 'o+')
+        if marker == '+':
+            self.lines_markers[i] = (self.plot.cross(
+                                            x='x'+str(i), y='y'+str(i),
+                                            source=self.stream,
+                                            legend = self.legend_list[i],
+                                            ), '+')
+        if marker == 'd':
+            self.lines_markers[i] = (self.plot.diamond(
+                                            x='x'+str(i), y='y'+str(i),
+                                            source=self.stream,
+                                            legend = self.legend_list[i],
+                                            ), 'd')
+        if marker == 'd+':
+            self.lines_markers[i] = (self.plot.diamond_cross(
+                                            x='x'+str(i), y='y'+str(i),
+                                            source=self.stream,
+                                            legend = self.legend_list[i],
+                                            ), 'd+')
+        if marker == 'v':
+            self.lines_markers[i] = (self.plot.inverted_triangle(
+                                            x='x'+str(i), y='y'+str(i),
+                                            source=self.stream,
+                                            legend = self.legend_list[i],
+                                            ), 'v')
+        if marker == 's':
+            self.lines_markers[i] = (self.plot.square(
+                                            x='x'+str(i), y='y'+str(i),
+                                            source=self.stream,
+                                            legend = self.legend_list[i],
+                                            ), 's')
+        if marker == 's+':
+            self.lines_markers[i] = (self.plot.square_cross(
+                                            x='x'+str(i), y='y'+str(i),
+                                            source=self.stream,
+                                            legend = self.legend_list[i],
+                                            ), 's+')
+        if marker == 'sx':
+            self.lines_markers[i] = (self.plot.square_x(
+                                            x='x'+str(i), y='y'+str(i),
+                                            source=self.stream,
+                                            legend = self.legend_list[i],
+                                            ), 'sx')
+        if marker == '^':
+            self.lines_markers[i] = (self.plot.triangle(
+                                            x='x'+str(i), y='y'+str(i),
+                                            source=self.stream,
+                                            legend = self.legend_list[i],
+                                            ), '^')
+        if marker == 'x':
+            self.lines_markers[i] = (self.plot.x(
+                                            x='x'+str(i), y='y'+str(i),
+                                            source=self.stream,
+                                            legend = self.legend_list[i],
+                                            ), 'x')
 
     def add_custom_tools(self):
         from bokeh.models import HoverTool, CrosshairTool

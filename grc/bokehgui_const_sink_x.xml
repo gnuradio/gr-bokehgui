@@ -415,10 +415,6 @@ for i in xrange(#if $type.t == 'message' then 2 else $nconnections()#):
     <type>enum</type>
     <hide>#if int($nconnections()) >= 1 then 'part' else 'all'#</hide>
     <option>
-      <name>None</name>
-      <key>None</key>
-    </option>
-    <option>
       <name>Circle</name>
       <key>'o'</key>
     </option>
@@ -484,14 +480,14 @@ for i in xrange(#if $type.t == 'message' then 2 else $nconnections()#):
     <base_key>label1</base_key>
     <name>Line 2 Label</name>
     <key>label2</key>
-    <hide>#if (int($nconnections()) >= 2 or ($type() == "complex" and int($nconnections()) >= 1) or ($type() == "msg_complex")) and (not $type() == "msg_float") then 'part' else 'all'#</hide>
+    <hide>#if int($nconnections()) >= 2 then 'part' else 'all'#</hide>
   </param>
 
   <param>
     <base_key>width1</base_key>
     <name>Line 2 Width</name>
     <key>width2</key>
-    <hide>#if (int($nconnections()) >= 2 or ($type() == "complex" and int($nconnections()) >= 1) or ($type() == "msg_complex")) and (not $type() == "msg_float") then 'part' else 'all'#</hide>
+    <hide>#if int($nconnections()) >= 2 then 'part' else 'all'#</hide>
   </param>
 
   <param>
@@ -499,21 +495,21 @@ for i in xrange(#if $type.t == 'message' then 2 else $nconnections()#):
     <name>Line 2 Color</name>
     <key>color2</key>
     <value>"red"</value>
-    <hide>#if (int($nconnections()) >= 2 or ($type() == "complex" and int($nconnections()) >= 1) or ($type() == "msg_complex")) and (not $type() == "msg_float") then 'part' else 'all'#</hide>
+    <hide>#if int($nconnections()) >= 2 then 'part' else 'all'#</hide>
   </param>
 
   <param>
     <base_key>marker1</base_key>
     <name>Line 2 Marker</name>
     <key>marker2</key>
-    <hide>#if (int($nconnections()) >= 2 or ($type() == "complex" and int($nconnections()) >= 1) or ($type() == "msg_complex")) and (not $type() == "msg_float") then 'part' else 'all'#</hide>
+    <hide>#if int($nconnections()) >= 2 then 'part' else 'all'#</hide>
   </param>
 
   <param>
     <base_key>alpha1</base_key>
     <name>Line 2 Alpha</name>
     <key>alpha2</key>
-    <hide>#if (int($nconnections()) >= 2 or ($type() == "complex" and int($nconnections()) >= 1) or ($type() == "msg_complex")) and (not $type() == "msg_float") then 'part' else 'all'#</hide>
+    <hide>#if int($nconnections()) >= 2 then 'part' else 'all'#</hide>
   </param>
 
 
@@ -521,14 +517,14 @@ for i in xrange(#if $type.t == 'message' then 2 else $nconnections()#):
     <base_key>label1</base_key>
     <name>Line 3 Label</name>
     <key>label3</key>
-    <hide>#if ((int($nconnections()) >= 3 or ($type() == "complex" and int($nconnections()) >= 2)) and not $type.t == "message") then 'part' else 'all'#</hide>
+    <hide>#if int($nconnections()) >= 3 then 'part' else 'all'#</hide>
   </param>
 
   <param>
     <base_key>width1</base_key>
     <name>Line 3 Width</name>
     <key>width3</key>
-    <hide>#if ((int($nconnections()) >= 3 or ($type() == "complex" and int($nconnections()) >= 2)) and not $type.t == "message") then 'part' else 'all'#</hide>
+    <hide>#if int($nconnections()) >= 3 then 'part' else 'all'#</hide>
   </param>
 
   <param>
@@ -536,21 +532,21 @@ for i in xrange(#if $type.t == 'message' then 2 else $nconnections()#):
     <name>Line 3 Color</name>
     <key>color3</key>
     <value>"green"</value>
-    <hide>#if ((int($nconnections()) >= 3 or ($type() == "complex" and int($nconnections()) >= 2)) and not $type.t == "message") then 'part' else 'all'#</hide>
+    <hide>#if int($nconnections()) >= 3 then 'part' else 'all'#</hide>
   </param>
 
   <param>
     <base_key>marker1</base_key>
     <name>Line 3 Marker</name>
     <key>marker3</key>
-    <hide>#if ((int($nconnections()) >= 3 or ($type() == "complex" and int($nconnections()) >= 2)) and not $type.t == "message") then 'part' else 'all'#</hide>
+    <hide>#if int($nconnections()) >= 3 then 'part' else 'all'#</hide>
   </param>
 
   <param>
     <base_key>alpha1</base_key>
     <name>Line 3 Alpha</name>
     <key>alpha3</key>
-    <hide>#if ((int($nconnections()) >= 3 or ($type() == "complex" and int($nconnections()) >= 2)) and not $type.t == "message") then 'part' else 'all'#</hide>
+    <hide>#if (int($nconnections()) >= 3) then 'part' else 'all'#</hide>
   </param>
 
 
@@ -558,14 +554,14 @@ for i in xrange(#if $type.t == 'message' then 2 else $nconnections()#):
     <base_key>label1</base_key>
     <name>Line 4 Label</name>
     <key>label4</key>
-    <hide>#if ((int($nconnections()) >= 4 or ($type() == "complex" and int($nconnections()) >= 2)) and not $type.t == "message") then 'part' else 'all'#</hide>
+    <hide>#if (int($nconnections()) >= 4) then 'part' else 'all'#</hide>
   </param>
 
   <param>
     <base_key>width1</base_key>
     <name>Line 4 Width</name>
     <key>width4</key>
-    <hide>#if ((int($nconnections()) >= 4 or ($type() == "complex" and int($nconnections()) >= 2)) and not $type.t == "message") then 'part' else 'all'#</hide>
+    <hide>#if (int($nconnections()) >= 4) then 'part' else 'all'#</hide>
   </param>
 
   <param>
@@ -573,21 +569,21 @@ for i in xrange(#if $type.t == 'message' then 2 else $nconnections()#):
     <name>Line 4 Color</name>
     <key>color4</key>
     <value>"black"</value>
-    <hide>#if ((int($nconnections()) >= 4 or ($type() == "complex" and int($nconnections()) >= 2)) and not $type.t == "message") then 'part' else 'all'#</hide>
+    <hide>#if (int($nconnections()) >= 4) then 'part' else 'all'#</hide>
   </param>
 
   <param>
     <base_key>marker1</base_key>
     <name>Line 4 Marker</name>
     <key>marker4</key>
-    <hide>#if ((int($nconnections()) >= 4 or ($type() == "complex" and int($nconnections()) >= 2)) and not $type.t == "message") then 'part' else 'all'#</hide>
+    <hide>#if int($nconnections()) >= 4 then 'part' else 'all'#</hide>
   </param>
 
   <param>
     <base_key>alpha1</base_key>
     <name>Line 4 Alpha</name>
     <key>alpha4</key>
-    <hide>#if ((int($nconnections()) >= 4 or ($type() == "complex" and int($nconnections()) >= 2)) and not $type.t == "message") then 'part' else 'all'#</hide>
+    <hide>#if int($nconnections()) >= 4 then 'part' else 'all'#</hide>
   </param>
 
 
@@ -595,14 +591,14 @@ for i in xrange(#if $type.t == 'message' then 2 else $nconnections()#):
     <base_key>label1</base_key>
     <name>Line 5 Label</name>
     <key>label5</key>
-    <hide>#if ((int($nconnections()) >= 5 or ($type() == "complex" and int($nconnections()) >= 3)) and not $type.t == "message") then 'part' else 'all'#</hide>
+    <hide>#if int($nconnections()) >= 5 then 'part' else 'all'#</hide>
   </param>
 
   <param>
     <base_key>width1</base_key>
     <name>Line 5 Width</name>
     <key>width5</key>
-    <hide>#if ((int($nconnections()) >= 5 or ($type() == "complex" and int($nconnections()) >= 3)) and not $type.t == "message") then 'part' else 'all'#</hide>
+    <hide>#if int($nconnections()) >= 5 then 'part' else 'all'#</hide>
   </param>
 
   <param>
@@ -610,21 +606,21 @@ for i in xrange(#if $type.t == 'message' then 2 else $nconnections()#):
     <name>Line 5 Color</name>
     <key>color5</key>
     <value>"cyan"</value>
-    <hide>#if ((int($nconnections()) >= 5 or ($type() == "complex" and int($nconnections()) >= 3)) and not $type.t == "message") then 'part' else 'all'#</hide>
+    <hide>#if int($nconnections()) >= 5 then 'part' else 'all'#</hide>
   </param>
 
   <param>
     <base_key>marker1</base_key>
     <name>Line 5 Marker</name>
     <key>marker5</key>
-    <hide>#if ((int($nconnections()) >= 5 or ($type() == "complex" and int($nconnections()) >= 3)) and not $type.t == "message") then 'part' else 'all'#</hide>
+    <hide>#if int($nconnections()) >= 5 then 'part' else 'all'#</hide>
   </param>
 
   <param>
     <base_key>alpha1</base_key>
     <name>Line 5 Alpha</name>
     <key>alpha5</key>
-    <hide>#if ((int($nconnections()) >= 5 or ($type() == "complex" and int($nconnections()) >= 3)) and not $type.t == "message") then 'part' else 'all'#</hide>
+    <hide>#if int($nconnections()) >= 5 then 'part' else 'all'#</hide>
   </param>
 
 
@@ -632,14 +628,14 @@ for i in xrange(#if $type.t == 'message' then 2 else $nconnections()#):
     <base_key>label1</base_key>
     <name>Line 6 Label</name>
     <key>label6</key>
-    <hide>#if ((int($nconnections()) >= 6 or ($type() == "complex" and int($nconnections()) >= 3)) and not $type.t == "message") then 'part' else 'all'#</hide>
+    <hide>#if int($nconnections()) >= 6 then 'part' else 'all'#</hide>
   </param>
 
   <param>
     <base_key>width1</base_key>
     <name>Line 6 Width</name>
     <key>width6</key>
-    <hide>#if ((int($nconnections()) >= 6 or ($type() == "complex" and int($nconnections()) >= 3)) and not $type.t == "message") then 'part' else 'all'#</hide>
+    <hide>#if int($nconnections()) >= 6 then 'part' else 'all'#</hide>
   </param>
 
   <param>
@@ -647,21 +643,21 @@ for i in xrange(#if $type.t == 'message' then 2 else $nconnections()#):
     <name>Line 6 Color</name>
     <key>color6</key>
     <value>"magenta"</value>
-    <hide>#if ((int($nconnections()) >= 6 or ($type() == "complex" and int($nconnections()) >= 3)) and not $type.t == "message") then 'part' else 'all'#</hide>
+    <hide>#if int($nconnections()) >= 6 then 'part' else 'all'#</hide>
   </param>
 
   <param>
     <base_key>marker1</base_key>
     <name>Line 6 Marker</name>
     <key>marker6</key>
-    <hide>#if ((int($nconnections()) >= 6 or ($type() == "complex" and int($nconnections()) >= 3)) and not $type.t == "message") then 'part' else 'all'#</hide>
+    <hide>#if int($nconnections()) >= 6 then 'part' else 'all'#</hide>
   </param>
 
   <param>
     <base_key>alpha1</base_key>
     <name>Line 6 Alpha</name>
     <key>alpha6</key>
-    <hide>#if ((int($nconnections()) >= 6 or ($type() == "complex" and int($nconnections()) >= 3)) and not $type.t == "message") then 'part' else 'all'#</hide>
+    <hide>#if int($nconnections()) >= 6 then 'part' else 'all'#</hide>
   </param>
 
 
@@ -669,14 +665,14 @@ for i in xrange(#if $type.t == 'message' then 2 else $nconnections()#):
     <base_key>label1</base_key>
     <name>Line 7 Label</name>
     <key>label7</key>
-    <hide>#if ((int($nconnections()) >= 7 or ($type() == "complex" and int($nconnections()) >= 4)) and not $type.t == "message") then 'part' else 'all'#</hide>
+    <hide>#if int($nconnections()) >= 7 then 'part' else 'all'#</hide>
   </param>
 
   <param>
     <base_key>width1</base_key>
     <name>Line 7 Width</name>
     <key>width7</key>
-    <hide>#if ((int($nconnections()) >= 7 or ($type() == "complex" and int($nconnections()) >= 4)) and not $type.t == "message") then 'part' else 'all'#</hide>
+    <hide>#if int($nconnections()) >= 7 then 'part' else 'all'#</hide>
   </param>
 
   <param>
@@ -684,21 +680,21 @@ for i in xrange(#if $type.t == 'message' then 2 else $nconnections()#):
     <name>Line 7 Color</name>
     <key>color7</key>
     <value>"yellow"</value>
-    <hide>#if ((int($nconnections()) >= 7 or ($type() == "complex" and int($nconnections()) >= 4)) and not $type.t == "message") then 'part' else 'all'#</hide>
+    <hide>#if int($nconnections()) >= 7 then 'part' else 'all'#</hide>
   </param>
 
   <param>
     <base_key>marker1</base_key>
     <name>Line 7 Marker</name>
     <key>marker7</key>
-    <hide>#if ((int($nconnections()) >= 7 or ($type() == "complex" and int($nconnections()) >= 4)) and not $type.t == "message") then 'part' else 'all'#</hide>
+    <hide>#if int($nconnections()) >= 7 then 'part' else 'all'#</hide>
   </param>
 
   <param>
     <base_key>alpha1</base_key>
     <name>Line 7 Alpha</name>
     <key>alpha7</key>
-    <hide>#if ((int($nconnections()) >= 7 or ($type() == "complex" and int($nconnections()) >= 4)) and not $type.t == "message") then 'part' else 'all'#</hide>
+    <hide>#if int($nconnections()) >= 7 then 'part' else 'all'#</hide>
   </param>
 
 
@@ -706,14 +702,14 @@ for i in xrange(#if $type.t == 'message' then 2 else $nconnections()#):
     <base_key>label1</base_key>
     <name>Line 8 Label</name>
     <key>label8</key>
-    <hide>#if ((int($nconnections()) >= 8 or ($type() == "complex" and int($nconnections()) >= 4)) and not $type.t == "message") then 'part' else 'all'#</hide>
+    <hide>#if int($nconnections()) >= 8 then 'part' else 'all'#</hide>
   </param>
 
   <param>
     <base_key>width1</base_key>
     <name>Line 8 Width</name>
     <key>width8</key>
-    <hide>#if ((int($nconnections()) >= 8 or ($type() == "complex" and int($nconnections()) >= 4)) and not $type.t == "message") then 'part' else 'all'#</hide>
+    <hide>#if int($nconnections()) >= 8 then 'part' else 'all'#</hide>
   </param>
 
   <param>
@@ -721,21 +717,21 @@ for i in xrange(#if $type.t == 'message' then 2 else $nconnections()#):
     <name>Line 8 Color</name>
     <key>color8</key>
     <value>"dark red"</value>
-    <hide>#if ((int($nconnections()) >= 8 or ($type() == "complex" and int($nconnections()) >= 4)) and not $type.t == "message") then 'part' else 'all'#</hide>
+    <hide>#if int($nconnections()) >= 8 then 'part' else 'all'#</hide>
   </param>
 
   <param>
     <base_key>marker1</base_key>
     <name>Line 8 Marker</name>
     <key>marker8</key>
-    <hide>#if ((int($nconnections()) >= 8 or ($type() == "complex" and int($nconnections()) >= 4)) and not $type.t == "message") then 'part' else 'all'#</hide>
+    <hide>#if int($nconnections()) >= 8 then 'part' else 'all'#</hide>
   </param>
 
   <param>
     <base_key>alpha1</base_key>
     <name>Line 8 Alpha</name>
     <key>alpha8</key>
-    <hide>#if ((int($nconnections()) >= 8 or ($type() == "complex" and int($nconnections()) >= 4)) and not $type.t == "message") then 'part' else 'all'#</hide>
+    <hide>#if int($nconnections()) >= 8 then 'part' else 'all'#</hide>
   </param>
 
 
@@ -743,14 +739,14 @@ for i in xrange(#if $type.t == 'message' then 2 else $nconnections()#):
     <base_key>label1</base_key>
     <name>Line 9 Label</name>
     <key>label9</key>
-    <hide>#if ((int($nconnections()) >= 9 or ($type() == "complex" and int($nconnections()) >= 5)) and not $type.t == "message") then 'part' else 'all'#</hide>
+    <hide>#if int($nconnections()) >= 9 then 'part' else 'all'#</hide>
   </param>
 
   <param>
     <base_key>width1</base_key>
     <name>Line 9 Width</name>
     <key>width9</key>
-    <hide>#if ((int($nconnections()) >= 9 or ($type() == "complex" and int($nconnections()) >= 5)) and not $type.t == "message") then 'part' else 'all'#</hide>
+    <hide>#if int($nconnections()) >= 9 then 'part' else 'all'#</hide>
   </param>
 
   <param>
@@ -758,21 +754,21 @@ for i in xrange(#if $type.t == 'message' then 2 else $nconnections()#):
     <name>Line 9 Color</name>
     <key>color9</key>
     <value>"dark green"</value>
-    <hide>#if ((int($nconnections()) >= 9 or ($type() == "complex" and int($nconnections()) >= 5)) and not $type.t == "message") then 'part' else 'all'#</hide>
+    <hide>#if int($nconnections()) >= 9 then 'part' else 'all'#</hide>
   </param>
 
   <param>
     <base_key>marker1</base_key>
     <name>Line 9 Marker</name>
     <key>marker9</key>
-    <hide>#if ((int($nconnections()) >= 9 or ($type() == "complex" and int($nconnections()) >= 5)) and not $type.t == "message") then 'part' else 'all'#</hide>
+    <hide>#if int($nconnections()) >= 9 then 'part' else 'all'#</hide>
   </param>
 
   <param>
     <base_key>alpha1</base_key>
     <name>Line 9 Alpha</name>
     <key>alpha9</key>
-    <hide>#if ((int($nconnections()) >= 9 or ($type() == "complex" and int($nconnections()) >= 5)) and not $type.t == "message") then 'part' else 'all'#</hide>
+    <hide>#if int($nconnections()) >= 9 then 'part' else 'all'#</hide>
   </param>
 
 
@@ -780,14 +776,14 @@ for i in xrange(#if $type.t == 'message' then 2 else $nconnections()#):
     <base_key>label1</base_key>
     <name>Line 10 Label</name>
     <key>label10</key>
-    <hide>#if ((int($nconnections()) >= 10 or ($type() == "complex" and int($nconnections()) >= 5)) and not $type.t == "message") then 'part' else 'all'#</hide>
+    <hide>#if int($nconnections()) >= 10 then 'part' else 'all'#</hide>
   </param>
 
   <param>
     <base_key>width1</base_key>
     <name>Line 10 Width</name>
     <key>width10</key>
-    <hide>#if ((int($nconnections()) >= 10 or ($type() == "complex" and int($nconnections()) >= 5)) and not $type.t == "message") then 'part' else 'all'#</hide>
+    <hide>#if int($nconnections()) >= 10 then 'part' else 'all'#</hide>
   </param>
 
   <param>
@@ -795,21 +791,21 @@ for i in xrange(#if $type.t == 'message' then 2 else $nconnections()#):
     <name>Line 10 Color</name>
     <key>color10</key>
     <value>"dark blue"</value>
-    <hide>#if ((int($nconnections()) >= 10 or ($type() == "complex" and int($nconnections()) >= 5)) and not $type.t == "message") then 'part' else 'all'#</hide>
+    <hide>#if int($nconnections()) >= 10 then 'part' else 'all'#</hide>
   </param>
 
   <param>
     <base_key>marker1</base_key>
     <name>Line 10 Marker</name>
     <key>marker10</key>
-    <hide>#if ((int($nconnections()) >= 10 or ($type() == "complex" and int($nconnections()) >= 5)) and not $type.t == "message") then 'part' else 'all'#</hide>
+    <hide>#if int($nconnections()) >= 10 then 'part' else 'all'#</hide>
   </param>
 
   <param>
     <base_key>alpha1</base_key>
     <name>Line 10 Alpha</name>
     <key>alpha10</key>
-    <hide>#if ((int($nconnections()) >= 10 or ($type() == "complex" and int($nconnections()) >= 5)) and not $type.t == "message") then 'part' else 'all'#</hide>
+    <hide>#if int($nconnections()) >= 10 then 'part' else 'all'#</hide>
   </param>
   <check>len($placement) == 4 or len($placement) == 2</check>
   <check>all([i &gt;= 0 for i in $(placement)])</check>
