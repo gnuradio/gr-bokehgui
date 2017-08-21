@@ -79,7 +79,7 @@ class top_block(gr.top_block):
         self.bokehgui_waterfall_sink_c_0.set_frequency_range([0, self.samp_rate/2])
 
 def main(top_block_cls=top_block, options=None):
-    serverProc = bokehgui.utils.create_server()
+    serverProc, port = bokehgui.utils.create_server()
     def killProc(signum, frame, tb):
         tb.stop()
         tb.wait()
@@ -89,7 +89,7 @@ def main(top_block_cls=top_block, options=None):
     try:
         # Define the document instance
         doc = curdoc()
-        session = push_session(doc, session_id="test", url = "http://localhost:5006/bokehgui")
+        session = push_session(doc, session_id="test", url = "http://localhost:"+port+"/bokehgui")
         # Create Top Block instance
         tb = top_block_cls(doc)
         try:
