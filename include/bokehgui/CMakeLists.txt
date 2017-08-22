@@ -24,10 +24,10 @@ install(FILES
     api.h
     trigger_mode.h
     base_sink.h
-    time_sink_c_proc.h
     time_sink_f_proc.h
+    time_sink_c_proc.h
     freq_sink_f_proc.h
-    freq_sink_c_proc.h 
-    waterfall_sink_f_proc.h 
+    freq_sink_c_proc.h
+    waterfall_sink_f_proc.h
     waterfall_sink_c_proc.h
     DESTINATION include/bokehgui)

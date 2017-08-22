@@ -29,8 +29,6 @@ namespace gr {
     class freq_sink_f_proc_impl : public freq_sink_f_proc
     {
      private:
-       // int d_fftsize; // d-size
-       float d_fftavg;
        filter::firdes::win_type d_wintype;
        std::vector<float> d_window;
        double d_center_freq, d_bandwidth;
@@ -39,15 +37,17 @@ namespace gr {
        std::vector<float> d_fbuf;
        unsigned int d_tmpbuflen;
        std::vector<float> d_tmpbuf;
-       std::vector<std::vector<float> > d_residbufs;
-       // std::queue<std::vector<std::vector<float> > > d_magbufs; -- d_buffers
 
        // Some freq_sink specific trigger
        float d_trigger_level;
        int d_trigger_count;
 
      public:
-      freq_sink_f_proc_impl(int fftsize, int wintype, double fc, double bw, const std::string &name, int nconnections);
+      freq_sink_f_proc_impl(int fftsize,
+                            int wintype,
+                            double fc, double bw,
+                            const std::string &name,
+                            int nconnections);
       ~freq_sink_f_proc_impl();
 
       void set_trigger_mode(trigger_mode mode,
@@ -68,7 +68,6 @@ namespace gr {
       double get_center_freq();
       double get_bandwidth();
       int get_wintype();
-      void set_fft_avg(float);
 
       // Virtual functions inherited from base_sink
       void process_plot(float* arr, int* nrows, int* size);

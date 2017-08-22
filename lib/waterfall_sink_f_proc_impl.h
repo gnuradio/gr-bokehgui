@@ -36,11 +36,13 @@ namespace gr {
       bool d_shift;
       fft::fft_complex* d_fft;
       std::vector<float> d_fbuf;
-      std::vector<std::vector<float> > d_residbufs;
       double d_time_per_fft;
 
      public:
-      waterfall_sink_f_proc_impl(int fftsize, int wintype, double fc, double bw, const std::string &name, int nconnections);
+      waterfall_sink_f_proc_impl(int fftsize,
+                                 int wintype,
+                                 double fc, double bw,
+                                 const std::string &name);
       ~waterfall_sink_f_proc_impl();
 
       void reset();
@@ -59,10 +61,10 @@ namespace gr {
       double get_bandwidth();
       double get_time_per_fft();
       void set_time_per_fft(double);
-      void set_fft_avg(float);
       void set_size(int);
       void buildwindow();
-			// Virtual functions inherited from base_sink
+
+      // Virtual functions inherited from base_sink
       void get_plot_data (float** output_items, int* nrows, int* size);
       void process_plot(float* arr, int* nrows, int* size);
       void pop_other_queues();

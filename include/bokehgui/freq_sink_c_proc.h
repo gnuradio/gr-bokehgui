@@ -1,5 +1,5 @@
 /* -*- c++ -*- */
-/* Copyright 2011-2013,2015 Free Software Foundation, Inc.
+/* Copyright 2017 Free Software Foundation, Inc.
  *
  * GNU Radio is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,9 +21,7 @@
 #ifndef INCLUDED_BOKEHGUI_FREQ_SINK_C_PROC_H
 #define INCLUDED_BOKEHGUI_FREQ_SINK_C_PROC_H
 
-#include <bokehgui/api.h>
 #include <bokehgui/base_sink.h>
-#include <bokehgui/trigger_mode.h>
 #include <gnuradio/filter/firdes.h>
 
 namespace gr {
@@ -54,7 +52,7 @@ namespace gr {
      * is a uniform vector of float 32 values.
      *
      */
-    class BOKEHGUI_API freq_sink_c_proc : virtual public base_sink<gr_complex, float>
+    class BOKEHGUI_API freq_sink_c_proc : virtual public base_sink<gr_complex>
     {
      public:
       typedef boost::shared_ptr<freq_sink_c_proc> sptr;
@@ -83,7 +81,6 @@ namespace gr {
       virtual int get_wintype() = 0;
       virtual bool set_fft_window(filter::firdes::win_type newwintype) = 0;
       virtual void buildwindow() = 0;
-      virtual void set_fft_avg(float) = 0;
       virtual void set_frequency_range(double, double) = 0;
       virtual void handle_set_freq(pmt::pmt_t) = 0;
 
@@ -115,7 +112,6 @@ namespace gr {
                             int channel,
                             const std::string &tag_key) = 0;
     };
-
   } // namespace bokehgui
 } // namespace gr
 

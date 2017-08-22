@@ -23,16 +23,19 @@
 #ifndef INCLUDED_BOKEHGUI_WATERFALL_SINK_F_H
 #define INCLUDED_BOKEHGUI_WATERFALL_SINK_F_H
 
-#include "base_sink.h"
+#include <bokehgui/base_sink.h>
 #include <gnuradio/filter/firdes.h>
 
 namespace gr {
   namespace bokehgui {
-    class BOKEHGUI_API waterfall_sink_f_proc : virtual public base_sink<float, float>
+    class BOKEHGUI_API waterfall_sink_f_proc : virtual public base_sink<float>
     {
     public:
       typedef boost::shared_ptr <waterfall_sink_f_proc> sptr;
-      static sptr make(int size, int wintype, double fc, double bw, const std::string &name);
+      static sptr make(int size,
+                       int wintype,
+                       double fc, double bw,
+                       const std::string &name);
 
       virtual void reset() = 0;
 
@@ -42,7 +45,6 @@ namespace gr {
       virtual double get_time_per_fft() = 0;
       virtual void buildwindow() = 0;
       virtual void set_time_per_fft(double) = 0;
-      virtual void set_fft_avg(const float fftavg) = 0;
       virtual void set_fft_window(const gr::filter::firdes::win_type win) = 0;
       virtual gr::filter::firdes::win_type get_wintype() = 0;
 
@@ -51,4 +53,5 @@ namespace gr {
     };
   }
 }
-#endif
+
+#endif /* INCLUDED_BOKEHGUI_WATERFALL_SINK_F_H */

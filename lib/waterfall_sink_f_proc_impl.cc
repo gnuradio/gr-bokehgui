@@ -22,21 +22,25 @@
 #endif
 
 #include <string.h>
-#include <volk/volk.h>
 #include "waterfall_sink_f_proc_impl.h"
 
 namespace gr {
   namespace bokehgui {
     waterfall_sink_f_proc::sptr
-    waterfall_sink_f_proc::make(int fftsize, int wintype, double fc, double bw, const std::string &name)
+    waterfall_sink_f_proc::make(int fftsize,
+                                int wintype,
+                                double fc, double bw,
+                                const std::string &name)
     {
       return gnuradio::get_initial_sptr
-        (new waterfall_sink_f_proc_impl(fftsize, wintype, fc, bw, name, 1));
+        (new waterfall_sink_f_proc_impl(fftsize, wintype, fc, bw, name));
     }
 
-    waterfall_sink_f_proc_impl::waterfall_sink_f_proc_impl(int fftsize, int wintype, double fc, double bw, const std::string &name, int nconnections)
-      : base_sink<float, float>("waterfall_sink_f_proc", fftsize, name, nconnections),
-      d_fftavg(1.0), d_wintype((filter::firdes::win_type)(wintype)),
+    waterfall_sink_f_proc_impl::waterfall_sink_f_proc_impl(int fftsize, int wintype,
+   double fc, double bw,
+   const std::string &name)
+      : base_sink<float>("waterfall_sink_f_proc", fftsize, name, 1),
+      d_wintype((filter::firdes::win_type)(wintype)),
       d_center_freq(fc), d_bandwidth(bw), d_nrows(200)
     {
       d_shift = true;
@@ -44,8 +48,15 @@ namespace gr {
 
       // Used to save FFT values
       d_fbuf = std::vector<float> (d_size, 0);
+
+      message_port_register_in(pmt::mp("freq"));
+      set_msg_handler(pmt::mp("freq"),
+                      boost::bind(&waterfall_sink_f_proc_impl::handle_set_freq, this, _1));
+
       buildwindow();
+
       set_output_multiple(d_size);
+
       d_triggered = true;
       d_trigger_mode = TRIG_MODE_FREE;
     }
@@ -58,20 +69,21 @@ namespace gr {
 
     void
     waterfall_sink_f_proc_impl::get_plot_data (float** output_items, int* nrows, int* size) {
+      // Reimplementation of get_plot_data to handle
+      // multiple rows to be sent in case of PDU message
       gr::thread::scoped_lock lock(d_setlock);
       if (!d_buffers.size()) {
         *size = 0;
         *nrows = d_nconnections + 1;
         return;
       }
-      if (d_nconnections != 0) {
+      if (d_nconnections) {
         *nrows = d_nconnections + 1;
-        *size = d_buffers.front()[0].size();
       }
       else {
-        *size = d_buffers.front()[0].size();
         *nrows = d_nrows;
       }
+      *size = d_buffers.front()[0].size();
 
       float* arr = (float*) malloc(2*(*nrows)*(*size)*sizeof(float));
       memset(arr, 0, 2*(*nrows)*(*size)*sizeof(float));
@@ -87,7 +99,8 @@ namespace gr {
 
     void
     waterfall_sink_f_proc_impl::process_plot(float* arr, int* nrows, int* size) {
-      if (d_nconnections != 0) { // Not message input. Ignore nconnections+1-th row!
+      if (d_nconnections != 0) {
+        // Not message input. Ignore nconnections+1-th row!
         for (int n = 0; n < *nrows - 1; n++) {
           fft(&d_fbuf[0], &d_buffers.front()[n][0], *size);
           for(int x = 0; x < *size; x++) {
@@ -95,7 +108,8 @@ namespace gr {
           }
         }
       }
-      else { // Message input
+      else {
+        // Message input
         int stride = std::max(0, (int)(d_len.front() - (*size))/(int)(d_nrows));
 
         set_time_per_fft(1.0/d_bandwidth * stride);
@@ -259,12 +273,6 @@ namespace gr {
     waterfall_sink_f_proc_impl::get_wintype()
     {
       return d_wintype;
-    }
-
-    void
-    waterfall_sink_f_proc_impl::set_fft_avg(float newavg)
-    {
-      d_fftavg = newavg;
     }
 
     void

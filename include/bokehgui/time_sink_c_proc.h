@@ -24,8 +24,6 @@
 #ifndef INCLUDED_BOKEHGUI_TIME_SINK_C_PROC_H
 #define INCLUDED_BOKEHGUI_TIME_SINK_C_PROC_H
 
-#include <bokehgui/api.h>
-#include <gnuradio/high_res_timer.h>
 #include <bokehgui/base_sink.h>
 #include <bokehgui/trigger_mode.h>
 
@@ -57,7 +55,7 @@ namespace gr {
      * uniform vector of complex32 values.
      *
      */
-    class BOKEHGUI_API time_sink_c_proc : virtual public base_sink<gr_complex, float>
+    class BOKEHGUI_API time_sink_c_proc : virtual public base_sink<gr_complex>
     {
      public:
       typedef boost::shared_ptr<time_sink_c_proc> sptr;
