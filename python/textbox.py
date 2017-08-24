@@ -18,9 +18,11 @@
 
 from bokeh.models.widgets import TextInput
 
-class textbox():
+
+class textbox:
     def __init__(self, widget_lst, default_value, label):
         self.widget_lst = widget_lst
+        self.textinput = None
         self.initialize(default_value, label)
 
     def initialize(self, default_value, label):

@@ -16,20 +16,19 @@
 # the Free Software Foundation, Inc., 51 Franklin Street,
 # Boston, MA 02110-1301, USA.
 
-import numpy
-
+from bokeh.models import ColumnDataSource, CustomJS
 from bokeh.plotting import figure
-from bokeh.models import ColumnDataSource, LabelSet, CustomJS
+from bokehgui import bokeh_plot_config, utils
 
-from gnuradio import gr
-from bokehgui import freq_sink_c_proc, utils, bokeh_plot_config
 
 class freq_sink_c(bokeh_plot_config):
     """
-    docstring for block freq_sink_f
+    Python side implementation for frequency sink for complex values.
+    It creates a line series plot on the frontend. It gets data from
+    freq_sink_c_proc class and streams to the frontend plot.
     """
-    def __init__(self, doc, plot_lst, proc,
-                 is_message = False):
+
+    def __init__(self, doc, plot_lst, proc, is_message = False):
         super(freq_sink_c, self).__init__()
 
         self.doc = doc
@@ -44,17 +43,24 @@ class freq_sink_c(bokeh_plot_config):
         self.bw = self.process.get_bandwidth()
 
         self.is_message = is_message
+        self.frequency_range = None
+        self.set_frequency_range(self.fc, self.bw, set_x_axis = False,
+                                 notify_process = False)
 
-        self.set_frequency_range(self.fc, self.bw, set_x_axis = False, notify_process = False)
+        self.plot = None
+        self.stream = None
+        self.lines = None
+        self.lines_markers = None
+        self.legend_list = None
+        self.max_hold = None
 
     def set_trigger_mode(self, trigger_mode, level, channel, tag_key):
-        self.process.set_trigger_mode(trigger_mode, level,
-                                      channel, tag_key)
+        self.process.set_trigger_mode(trigger_mode, level, channel, tag_key)
 
-    def initialize(self, legend_list = utils.default_labels_f, update_time = 100):
-        self.plot = figure(tools = utils.default_tools(),
-                            active_drag = 'ypan',
-                            active_scroll = 'ywheel_zoom',)
+    def initialize(self, legend_list = utils.default_labels_f,
+                   update_time = 100):
+        self.plot = figure(tools = utils.default_tools(), active_drag = 'ypan',
+                           active_scroll = 'ywheel_zoom', )
         data = dict()
         data['x'] = []
 
@@ -63,7 +69,7 @@ class freq_sink_c(bokeh_plot_config):
         else:
             nconn = self.nconnections
         for i in range(nconn):
-            data['y'+str(i)] = []
+            data['y' + str(i)] = []
 
         self.stream = ColumnDataSource(data)
 
@@ -71,12 +77,10 @@ class freq_sink_c(bokeh_plot_config):
         self.lines_markers = []
         self.legend_list = legend_list[:]
         for i in range(self.nconnections):
-            self.lines.append(self.plot.line(
-                                        x = 'x', y='y'+str(i),
-                                        source = self.stream,
-                                        line_color = 'blue',
-                                        legend = self.legend_list[i]
-                                        ))
+            self.lines.append(
+                self.plot.line(x = 'x', y = 'y' + str(i), source = self.stream,
+                               line_color = 'blue',
+                               legend = self.legend_list[i]))
             self.lines_markers.append((None, None))
 
         self.add_custom_tools()
@@ -94,10 +98,10 @@ class freq_sink_c(bokeh_plot_config):
         self.doc.add_periodic_callback(self.update, update_time)
 
     def update(self):
-        ## Call to receive from buffers
+        # Call to receive from buffers
 
-        ## First call to check if BW and FC is not changed
-        ## Through some direct message port to the block
+        # First call to check if BW and FC is not changed
+        # Through some direct message port to the block
         output_items = self.process.get_plot_data()
         if len(output_items[0]) != 0:
             fc = self.process.get_center_freq()
@@ -107,33 +111,33 @@ class freq_sink_c(bokeh_plot_config):
                 self.size = fftsize
                 self.set_frequency_range(fc, bw, notify_process = False)
 
-
             new_data = dict()
             for i in range(self.nconnections + 1):
-                if(not self.is_message) and i == self.nconnections:
+                if (not self.is_message) and i == self.nconnections:
                     continue
-                new_data['y'+str(i)] = output_items[i]
+                new_data['y' + str(i)] = output_items[i]
             new_data['x'] = self.frequency_range
             self.stream.stream(new_data, rollover = self.size)
         return
 
-    def set_frequency_range(self, fc, bw, set_x_axis = True, notify_process = True):
+    def set_frequency_range(self, fc, bw, set_x_axis = True,
+                            notify_process = True):
         self.fc = fc
         self.bw = bw
         if notify_process:
             self.process.set_frequency_range(fc, bw)
 
-        step = bw/self.size
+        step = bw / self.size
 
-        self.frequency_range = [0]*self.size
-        for i in range(self.size/2):
-            self.frequency_range[i] = fc - step*(self.size/2 - i)
-        self.frequency_range[(self.size + 1)/2] = self.fc
-        for i in range((self.size-1)/2):
-            self.frequency_range[i + 1 + (self.size+1)/2] = fc + step*i
+        self.frequency_range = [0] * self.size
+        for i in range(self.size / 2):
+            self.frequency_range[i] = fc - step * (self.size / 2 - i)
+        self.frequency_range[(self.size + 1) / 2] = self.fc
+        for i in range((self.size - 1) / 2):
+            self.frequency_range[i + 1 + (self.size + 1) / 2] = fc + step * i
 
         if set_x_axis:
-            self.set_x_axis([fc - bw/2, fc + bw/2])
+            self.set_x_axis([fc - bw / 2, fc + bw / 2])
 
     def set_center_freq(self, fc):
         if self.fc != fc:
@@ -156,34 +160,33 @@ class freq_sink_c(bokeh_plot_config):
         self.size = fftsize
         self.process.fftresize(fftsize)
 
-    def set_fft_avg(self, newavg):
-        self.process.set_fft_avg(newavg)
-
     def enable_max_hold(self, en = True):
-        if self.max_hold == None:
-            max_hold_source = ColumnDataSource(data=dict(x=range(self.size),y=[-1000]*self.size))
-            self.max_hold = self.plot.line(x = 'x', y='y',
-                                      source = max_hold_source,
-                                      line_color = 'green',
-                                      line_dash = 'dotdash',
-                                      line_alpha = 0)
-            callback = CustomJS(args=dict(max_hold_source = self.max_hold.data_source), code = """
-                                               var no_of_elem = cb_obj.data.x.length;
-                                               console.log(no_of_elem);
-                                               var data = cb_obj.data;
-                                               nconn = Object.getOwnPropertyNames(data).length -1;
-                                               var max_data = max_hold_source.data;
-                                               max_data.x = cb_obj.data.x;
+        if self.max_hold is None:
+            max_hold_source = ColumnDataSource(
+                    data = dict(x = range(self.size), y = [-1000] * self.size))
+            self.max_hold = self.plot.line(x = 'x', y = 'y',
+                                           source = max_hold_source,
+                                           line_color = 'green',
+                                           line_dash = 'dotdash',
+                                           line_alpha = 0)
+            callback = CustomJS(
+                    args = dict(max_hold_source = self.max_hold.data_source),
+                    code = """
+                        var no_of_elem = cb_obj.data.x.length;
+                        var data = cb_obj.data;
+                        nconn = Object.getOwnPropertyNames(data).length - 1;
+                        var max_data = max_hold_source.data;
+                        max_data.x = cb_obj.data.x;
 
-                                               for(n = 0; n < nconn; n++) {
-                                                   for (i = 0; i < no_of_elem; i++) {
-                                                       if(max_data['y'][i] < data['y'+n][i]) {
-                                                           max_data['y'][i] = data['y'+n][i]
-                                                       }
-                                                   }
-                                               }
-                                               max_hold_source.change.emit();
-                                               """)
+                        for(n = 0; n < nconn; n++) {
+                            for (i = 0; i < no_of_elem; i++) {
+                                if(max_data['y'][i] < data['y'+n][i]) {
+                                    max_data['y'][i] = data['y'+n][i];
+                                }
+                            }
+                        }
+                        max_hold_source.change.emit();
+                        """)
             self.stream.js_on_change("streaming", callback)
 
         if en:

@@ -20,26 +20,21 @@
 # Boston, MA 02110-1301, USA.
 #
 
-from gnuradio import gr, gr_unittest
-from gnuradio import blocks
 import pmt
 from bokehgui_swig import time_sink_f_proc
-import numpy as np
+from gnuradio import blocks, gr, gr_unittest
 
-class qa_time_sink_f (gr_unittest.TestCase):
+class qa_time_sink_f(gr_unittest.TestCase):
+    def setUp(self):
+        self.tb = gr.top_block()
 
-    def setUp (self):
-        self.tb = gr.top_block ()
-
-    def tearDown (self):
+    def tearDown(self):
         self.tb = None
 
-    def test_001_t (self):
-        original = (1,2,3,4,5,6,
-                    7,8,9,10,11,12,
-                    13,14,15,16,17,
-                    18,)
-        expected_result = (0,)+original
+    def test_001_t(self):
+        original = (
+        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,)
+        expected_result = (0,) + original
 
         src = blocks.vector_source_f(original, False, 1, [])
 
@@ -59,17 +54,18 @@ class qa_time_sink_f (gr_unittest.TestCase):
         self.tb.stop()
         self.tb.wait()
 
-    def test_002_t (self):
+    def test_002_t(self):
         src = blocks.vector_source_f(range(12), False, 1, [])
 
-        tag = blocks.tags_strobe(gr.sizeof_float*1, pmt.intern("TEST"), 2, pmt.intern("strobe"))
+        tag = blocks.tags_strobe(gr.sizeof_float * 1, pmt.intern("TEST"), 2,
+                                 pmt.intern("strobe"))
         add = blocks.add_vff(1)
 
         dst = time_sink_f_proc(6, 32000, 'Test', 1)
 
-        self.tb.connect((src,0), (add,0))
-        self.tb.connect((tag,0), (add,1))
-        self.tb.connect((add,0), (dst,0))
+        self.tb.connect((src, 0), (add, 0))
+        self.tb.connect((tag, 0), (add, 1))
+        self.tb.connect((add, 0), (dst, 0))
 
         self.tb.run()
 

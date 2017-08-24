@@ -3,8 +3,8 @@ from os.path import dirname, join
 from bokeh.core.properties import Color, Float, Int, Override, Seq
 from bokeh.models import Renderer
 
-class WaterfallRenderer(Renderer):
 
+class WaterfallRenderer(Renderer):
     __implementation__ = join(dirname(__file__), "waterfall.coffee")
 
     latest = Seq(Float)
@@ -19,4 +19,4 @@ class WaterfallRenderer(Renderer):
 
     max_value = Float()
 
-    level = Override(default="glyph")
+    level = Override(default = "glyph")

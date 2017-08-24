@@ -16,17 +16,20 @@
 # the Free Software Foundation, Inc., 51 Franklin Street,
 # Boston, MA 02110-1301, USA.
 
-import numpy
-
+from bokeh.models import FuncTickFormatter
 from bokeh.plotting import figure
-from bokeh.models import ColumnDataSource, LabelSet, FuncTickFormatter
+from bokehgui import bokeh_plot_config, utils
 from bokehgui.plots import WaterfallRenderer
-from gnuradio import gr
-from bokehgui import waterfall_sink_c_proc, utils, bokeh_plot_config
+
 
 class waterfall_sink_c(bokeh_plot_config):
-    def __init__(self, doc, plot_lst, proc,
-                 is_message = False):
+    """
+    Python side implementation for waterfall sink for complex values.
+    It creates a waterfall plot on the frontend. It gets data from
+    waterfall_sink_c_proc class and streams to the frontend plot.
+    """
+
+    def __init__(self, doc, plot_lst, proc, is_message = False):
         super(waterfall_sink_c, self).__init__()
 
         self.doc = doc
@@ -43,29 +46,36 @@ class waterfall_sink_c(bokeh_plot_config):
         self.is_message = is_message
         self.nrows = 200
         self.time_per_sample = 0.1
-        self.set_frequency_range(self.fc, self.bw, set_y_axis = False, notify_process = False)
+        self.frequency_range = None
+        self.set_frequency_range(self.fc, self.bw, set_y_axis = False,
+                                 notify_process = False)
 
-    def initialize(self, legend_list = utils.default_labels_f, update_time = 100,
-                   values_range = [-200, 10],
+        self.plot = None
+        self.waterfall_renderer = None
+
+    def initialize(self, legend_lst = utils.default_labels_f,
+                   update_time = 100, values_range = (-200, 10),
                    time_per_sample = 0.1, number_of_samples = 200,
                    palette = 'Inferno'):
         self.nrows = number_of_samples
         self.time_per_sample = time_per_sample
 
         self.plot = figure(tools = ['save', 'reset'],
-                           x_range = [0, self.nrows], y_range = [self.frequency_range[0], self.frequency_range[-1]])
+                           x_range = [0, self.nrows],
+                           y_range = [self.frequency_range[0],
+                                      self.frequency_range[-1]])
         self.plot.xaxis.formatter = FuncTickFormatter(code = """
                            return tick*%s
                            """ % time_per_sample)
 
         self.waterfall_renderer = []
         for i in range(self.nconnections):
-            self.waterfall_renderer.append(WaterfallRenderer(palette=utils.PALETTES[palette],
-                                                             time_length = self.nrows,
-                                                             fft_length=self.size,
-                                                             min_value = values_range[0],
-                                                             max_value = values_range[-1]
-                                                            ))
+            self.waterfall_renderer.append(
+                WaterfallRenderer(palette = utils.PALETTES[palette],
+                                  time_length = self.nrows,
+                                  fft_length = self.size,
+                                  min_value = values_range[0],
+                                  max_value = values_range[-1]))
             self.plot.renderers.append(self.waterfall_renderer[i])
 
         self.plot_lst.append(self)
@@ -85,7 +95,7 @@ class waterfall_sink_c(bokeh_plot_config):
                 self.size = fftsize
                 self.set_frequency_range(fc, bw, notify_process = False)
 
-            if(not self.is_message):
+            if not self.is_message:
                 for i in range(self.nconnections):
                     self.waterfall_renderer[i].latest = list(output_items[i])
             else:
@@ -98,23 +108,24 @@ class waterfall_sink_c(bokeh_plot_config):
                     self.waterfall_renderer[0].latest = output_items[i]
         return
 
-    def set_frequency_range(self, fc, bw, set_y_axis = True, notify_process = True):
+    def set_frequency_range(self, fc, bw, set_y_axis = True,
+                            notify_process = True):
         self.fc = fc
         self.bw = bw
         if notify_process:
             self.process.set_frequency_range(fc, bw)
 
-        step = bw/self.size
+        step = bw / self.size
 
-        self.frequency_range = [0]*self.size
-        for i in range(self.size/2):
-            self.frequency_range[i] = fc - step*(self.size/2 - i)
-        self.frequency_range[(self.size + 1)/2] = self.fc
-        for i in range((self.size-1)/2):
-            self.frequency_range[i + 1 + (self.size+1)/2] = fc + step*i
+        self.frequency_range = [0] * self.size
+        for i in range(self.size / 2):
+            self.frequency_range[i] = fc - step * (self.size / 2 - i)
+        self.frequency_range[(self.size + 1) / 2] = self.fc
+        for i in range((self.size - 1) / 2):
+            self.frequency_range[i + 1 + (self.size + 1) / 2] = fc + step * i
 
         if set_y_axis:
-            self.set_y_axis([fc - bw/2, fc + bw/2])
+            self.set_y_axis([fc - bw / 2, fc + bw / 2])
 
     def set_center_freq(self, fc):
         if self.fc != fc:
@@ -139,12 +150,9 @@ class waterfall_sink_c(bokeh_plot_config):
 
     def add_custom_tools(self):
         from bokeh.models import HoverTool, CrosshairTool
-        hover = HoverTool(tooltips = [("x", "$x"),
-                                      ("y", "$y")])
+        hover = HoverTool(tooltips = [("x", "$x"), ("y", "$y")])
         crosshair = CrosshairTool()
         self.plot.add_tools(hover, crosshair)
 
-    def set_color(self, palette_name):
+    def set_color(self, palette):
         self.waterfall_renderers[0].palette = utils.PALETTES[palette]
-
-

@@ -20,29 +20,26 @@
 # Boston, MA 02110-1301, USA.
 #
 
-from gnuradio import gr, gr_unittest
-from gnuradio import blocks
-from gnuradio import filter
 from bokehgui import waterfall_sink_c_proc
+from gnuradio import blocks, filter, gr, gr_unittest
 
-class qa_waterfall_sink_c (gr_unittest.TestCase):
+class qa_waterfall_sink_c(gr_unittest.TestCase):
+    def setUp(self):
+        self.tb = gr.top_block()
 
-    def setUp (self):
-        self.tb = gr.top_block ()
-
-    def tearDown (self):
+    def tearDown(self):
         self.tb = None
 
-    def test_001_t (self):
-        original = (1+0j,)*100 + (0+1j,)*100 + (0+2j,)*100
-        expected_result = [(-200,)*50 + (0,) + (-200,)*49,
-                           (-200,)*50 + (0,) + (-200,)*49,
-                           (-200,)*50 + (6.02,) + (-200,)*49,
-                          ]
+    def test_001_t(self):
+        original = (1 + 0j,) * 100 + (0 + 1j,) * 100 + (0 + 2j,) * 100
+        expected_result = [(-200,) * 50 + (0,) + (-200,) * 49,
+                           (-200,) * 50 + (0,) + (-200,) * 49,
+                           (-200,) * 50 + (6.02,) + (-200,) * 49, ]
 
         src = blocks.vector_source_c(original, False, 1, [])
 
-        dst = waterfall_sink_c_proc(100, filter.firdes.WIN_RECTANGULAR, 0, 15000, 'Test')
+        dst = waterfall_sink_c_proc(100, filter.firdes.WIN_RECTANGULAR, 0,
+                                    15000, 'Test')
 
         self.tb.connect(src, dst)
         self.tb.run()
@@ -50,12 +47,13 @@ class qa_waterfall_sink_c (gr_unittest.TestCase):
         result_data = dst.get_plot_data()
         result_data1 = dst.get_plot_data()
 
-        self.assertEqual(expected_result[0], tuple(round(x,2) for x in result_data[0]))
-        self.assertEqual(expected_result[1], tuple(round(x,2) for x in result_data1[0]))
+        self.assertEqual(expected_result[0],
+                         tuple(round(x, 2) for x in result_data[0]))
+        self.assertEqual(expected_result[1],
+                         tuple(round(x, 2) for x in result_data1[0]))
 
         self.tb.stop()
         self.tb.wait()
 
 if __name__ == '__main__':
     gr_unittest.run(qa_waterfall_sink_c, "qa_waterfall_sink_c.xml")
-

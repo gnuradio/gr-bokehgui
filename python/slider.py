@@ -19,12 +19,16 @@
 from bokeh.models.widgets import Slider
 
 class slider():
-    def __init__(self, widget_lst, label, start, end, step, callback_throttle, default):
+    def __init__(self, widget_lst, label, start, end, step, callback_throttle,
+                 default):
         self.widget_lst = widget_lst
+        self.slider = None
         self.initialize(label, start, end, step, callback_throttle, default)
 
     def initialize(self, label, start, end, step, callback_throttle, default):
-        self.slider = Slider(start = start, end = end, value = default, step = step, title = label, callback_throttle = callback_throttle)
+        self.slider = Slider(start = start, end = end, value = default,
+                             step = step, title = label,
+                             callback_throttle = callback_throttle)
         self.widget_lst.append(self.slider)
 
     def add_callback(self, callback):
