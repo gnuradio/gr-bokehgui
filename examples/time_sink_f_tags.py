@@ -9,6 +9,7 @@
 if __name__ == '__main__':
     import ctypes
     import sys
+
     if sys.platform.startswith('linux'):
         try:
             x11 = ctypes.cdll.LoadLibrary('libX11.so')
@@ -16,17 +17,16 @@ if __name__ == '__main__':
         except:
             print "Warning: failed to XInitThreads()"
 
-import functools, time, signal
+import functools
+import signal
+import time
 
+import bokehgui
 import pmt
-from gnuradio import analog
-from gnuradio import blocks
-from gnuradio import gr
-from gnuradio.filter import firdes
-
 from bokeh.client import push_session
 from bokeh.plotting import curdoc
-import bokehgui
+from gnuradio import analog, blocks, gr
+
 
 class top_block(gr.top_block):
     def __init__(self, doc):
@@ -47,20 +47,34 @@ class top_block(gr.top_block):
                                                                      samp_rate,
                                                                      'TimeSink',
                                                                      2)
-        self.bokehgui_time_sink_f_0 = bokehgui.time_sink_f(self.doc, self.plot_lst,
+        self.bokehgui_time_sink_f_0 = bokehgui.time_sink_f(self.doc,
+                                                           self.plot_lst,
                                                            self.bokehgui_time_sink_f_proc_0)
-        self.bokehgui_time_sink_f_0.set_trigger_mode(bokehgui.TRIG_MODE_FREE,bokehgui.TRIG_SLOPE_POS,0,0,0,"")
-        self.bokehgui_time_sink_f_0.initialize(legend_list=['data0','data1'])
-        self.bokehgui_time_sink_f_0.set_layout(1,1,1,1)
+        self.bokehgui_time_sink_f_0.set_trigger_mode(bokehgui.TRIG_MODE_FREE,
+                                                     bokehgui.TRIG_SLOPE_POS,
+                                                     0, 0, 0, "")
+        self.bokehgui_time_sink_f_0.initialize(
+            legend_list = ['data0', 'data1'])
+        self.bokehgui_time_sink_f_0.set_layout(1, 1, 1, 1)
 
-        self.blocks_throttle_0 = blocks.throttle(gr.sizeof_float*1, samp_rate,True)
-        self.blocks_throttle_1 = blocks.throttle(gr.sizeof_float*1, samp_rate,True)
-        self.tagged_1 = blocks.tags_strobe(gr.sizeof_float*1, pmt.intern("TEST"), 256, pmt.intern("strobe1"))
-        self.tagged_0 = blocks.tags_strobe(gr.sizeof_float*1, pmt.intern("TEST"), 256, pmt.intern("strobe2"))
+        self.blocks_throttle_0 = blocks.throttle(gr.sizeof_float * 1,
+                                                 samp_rate, True)
+        self.blocks_throttle_1 = blocks.throttle(gr.sizeof_float * 1,
+                                                 samp_rate, True)
+        self.tagged_1 = blocks.tags_strobe(gr.sizeof_float * 1,
+                                           pmt.intern("TEST"), 256,
+                                           pmt.intern("strobe1"))
+        self.tagged_0 = blocks.tags_strobe(gr.sizeof_float * 1,
+                                           pmt.intern("TEST"), 256,
+                                           pmt.intern("strobe2"))
         self.adder = blocks.add_vff(1)
         self.adder_1 = blocks.add_vff(1)
-        self.analog_sig_source_x_0 = analog.sig_source_f(samp_rate, analog.GR_COS_WAVE, 500, 3, 0)
-        self.analog_sig_source_x_1 = analog.sig_source_f(samp_rate, analog.GR_COS_WAVE, 100, 1, 0)
+        self.analog_sig_source_x_0 = analog.sig_source_f(samp_rate,
+                                                         analog.GR_COS_WAVE,
+                                                         500, 3, 0)
+        self.analog_sig_source_x_1 = analog.sig_source_f(samp_rate,
+                                                         analog.GR_COS_WAVE,
+                                                         100, 1, 0)
 
         self.bokehgui_time_sink_f_0.set_line_color(0, 'black')
         self.bokehgui_time_sink_f_0.set_line_color(1, 'red')
@@ -77,8 +91,10 @@ class top_block(gr.top_block):
         self.connect((self.tagged_1, 0), (self.adder_1, 1))
         self.connect((self.adder, 0), (self.blocks_throttle_0, 0))
         self.connect((self.adder_1, 0), (self.blocks_throttle_1, 0))
-        self.connect((self.blocks_throttle_0, 0), (self.bokehgui_time_sink_f_proc_0, 0))
-        self.connect((self.blocks_throttle_1, 0), (self.bokehgui_time_sink_f_proc_0, 1))
+        self.connect((self.blocks_throttle_0, 0),
+                     (self.bokehgui_time_sink_f_proc_0, 0))
+        self.connect((self.blocks_throttle_1, 0),
+                     (self.bokehgui_time_sink_f_proc_0, 1))
 
     def get_samp_rate(self):
         return self.samp_rate
@@ -89,18 +105,22 @@ class top_block(gr.top_block):
         self.analog_sig_source_x_0.set_sampling_freq(self.samp_rate)
         self.bokehgui_time_sink_f_0.set_sample_rate(self.samp_rate)
 
-def main(top_block_cls=top_block, options=None):
-    serverProc = bokehgui.utils.create_server()
+
+def main(top_block_cls = top_block, options = None):
+    serverProc, port = bokehgui.utils.create_server()
+
     def killProc(signum, frame, tb):
         tb.stop()
         tb.wait()
         serverProc.terminate()
         serverProc.kill()
+
     time.sleep(1)
     try:
         # Define the document instance
         doc = curdoc()
-        session = push_session(doc, session_id="test")
+        session = push_session(doc, session_id = "test",
+                               url = "http://localhost:" + port + "/bokehgui")
         # Create Top Block instance
         tb = top_block_cls(doc)
         try:
@@ -110,10 +130,11 @@ def main(top_block_cls=top_block, options=None):
         finally:
             print "Exiting the simulation. Stopping Bokeh Server"
             tb.stop()
-	    tb.wait()
+            tb.wait()
     finally:
         serverProc.terminate()
         serverProc.kill()
+
 
 if __name__ == '__main__':
     main()
