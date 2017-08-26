@@ -1,6 +1,6 @@
 from os.path import dirname, join
 
-from bokeh.core.properties import Color, Float, Int, Override, Seq
+from bokeh.core.properties import Color, Float, Int, Override, Seq, Bool
 from bokeh.models import Renderer
 
 
@@ -18,5 +18,7 @@ class WaterfallRenderer(Renderer):
     min_value = Float()
 
     max_value = Float()
+
+    update = Bool()
 
     level = Override(default = "glyph")

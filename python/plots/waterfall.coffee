@@ -5,7 +5,9 @@ import {LinearColorMapper} from "models/mappers/linear_color_mapper"
 export class WaterfallRendererView extends RendererView
   initialize: (options) ->
     super(options)
-    
+
+    @model.update = false
+
     N = 5
     @model.tile_width = @model.time_length / 4
     [w, h] = [@model.tile_width, @model.fft_length]
@@ -90,6 +92,7 @@ export class WaterfallRenderer extends Renderer
     fft_length: [ p.Int ]
     min_value: [ p.Any ]
     max_value: [ p.Any ]
+    update: [ p.Any ]
   }
   @override { level: "glyph" }
 

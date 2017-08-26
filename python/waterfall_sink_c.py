@@ -106,6 +106,9 @@ class waterfall_sink_c(bokeh_plot_config):
 
                 for i in range(self.nrows):
                     self.waterfall_renderer[0].latest = output_items[i]
+                    print self.waterfall_renderer[0].update
+                    self.waterfall_renderer[0].update = \
+                            not self.waterfall_renderer[0].update
         return
 
     def set_frequency_range(self, fc, bw, set_y_axis = True,

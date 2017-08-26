@@ -97,7 +97,12 @@ class waterfall_sink_f(bokeh_plot_config):
 
             if not self.is_message:
                 for i in range(self.nconnections):
-                    self.waterfall_renderer[i].latest = list(output_items[i])
+                    if self.waterfall_renderer[i].latest != list(output_items[i]):
+                        self.waterfall_renderer[i].latest = list(output_items[i])
+                    else:
+                        self.waterfall_renderer[0].update = \
+                            not self.waterfall_renderer[0].update
+
             else:
                 self.time_per_sample = self.process.get_time_per_fft()
                 self.plot.xaxis.formatter = FuncTickFormatter(code = """
@@ -105,7 +110,11 @@ class waterfall_sink_f(bokeh_plot_config):
                                    """ % self.time_per_sample)
 
                 for i in range(self.nrows):
-                    self.waterfall_renderer[0].latest = output_items[i]
+                    if self.waterfall_renderer[i].latest != list(output_items[i]):
+                        self.waterfall_renderer[0].latest = output_items[i]
+                    else:
+                        self.waterfall_renderer[0].update = \
+                            not self.waterfall_renderer[0].update
         return
 
     def set_frequency_range(self, fc, bw, set_y_axis = True,

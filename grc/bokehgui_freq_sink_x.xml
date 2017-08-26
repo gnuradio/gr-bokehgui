@@ -1009,22 +1009,12 @@ for i in xrange(#if $type.t == 'message' then 1 else $nconnections#):
     <optional>1</optional>
   </sink>
 
-  <!--<sink>
+  <source>
     <name>freq</name>
     <type>message</type>
     <optional>1</optional>
     <hide>$showports</hide>
-  </sink>-->
-
-<!--  <source>
-    <name>freq</name>
-    <type>message</type>
-    <optional>1</optional>
-    <hide>$showports</hide>
-  </source>-->
+  </source>
   <doc>
-The GUI hint can be used to position the widget within the application. \
-The hint is of the form [tab_id@tab_index]: [row, col, row_span, col_span]. \
-Both the tab specification and the grid position are optional.
   </doc>
 </block>
