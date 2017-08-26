@@ -1,4 +1,4 @@
-# Copyright 2011 Free Software Foundation, Inc.
+# Copyright 2017 Free Software Foundation, Inc.
 #
 # This file is part of GNU Radio
 #
@@ -43,9 +43,9 @@ GR_PYTHON_INSTALL(
     checkbox.py
     radio_button.py
     bokeh_layout.py
-    utils.py 
-    waterfall_sink_f.py 
-    waterfall_sink_c.py 
+    utils.py
+    waterfall_sink_f.py
+    waterfall_sink_c.py
     const_sink_c.py
     DESTINATION ${GR_PYTHON_DIR}/bokehgui
 )
