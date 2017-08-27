@@ -39,9 +39,7 @@ self.$(id)_plot.set_trigger_mode($tr_mode,$tr_level, $tr_chan, $tr_tag)
 
 self.$(id)_plot.enable_grid($grid)
 self.$(id)_plot.enable_axis_labels($axislabels)
-#if $legend() == 'False'
-self.$(id)_plot.disable_legend()
-#end if
+self.$(id)_plot.disable_legend(not $legend())
 #if ($type() == 'float' or $type() == 'msg_float')
 self.$(id)_plot.set_plot_pos_half($freqhalf)
 #end if

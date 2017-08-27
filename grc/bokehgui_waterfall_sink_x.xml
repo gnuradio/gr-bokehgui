@@ -33,8 +33,7 @@ self.$(id)_plot.set_x_label($xlabel + '(' +$xunit+')')
 
 self.$(id)_plot.enable_grid($grid)
 
-if not $legend:
-  self.$(id).disable_legend()
+self.$(id)_plot.disable_legend(not $legend())
 
 self.$(id)_plot.set_layout(*($placement))
 </make>

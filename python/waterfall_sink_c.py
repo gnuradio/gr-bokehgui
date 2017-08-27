@@ -159,3 +159,7 @@ class waterfall_sink_c(bokeh_plot_config):
 
     def set_color(self, palette):
         self.waterfall_renderers[0].palette = utils.PALETTES[palette]
+
+    def disable_legend(self, en = True):
+        # Pass the call. Waterfall plots does not support legends as of now
+        pass

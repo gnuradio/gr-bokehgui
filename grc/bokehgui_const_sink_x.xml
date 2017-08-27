@@ -38,9 +38,7 @@ self.$(id)_plot.enable_tags(-1, $entags)
 self.$(id)_plot.set_trigger_mode($tr_mode, $tr_slope, $tr_level, $tr_delay, $tr_chan, $tr_tag)
 self.$(id)_plot.enable_grid($grid)
 self.$(id)_plot.enable_axis_labels($axislabels)
-#if $legend() == 'False'
-self.$(id)_plot.disable_legend()
-#end if
+self.$(id)_plot.disable_legend(not $legend())
 self.$(id)_plot.set_layout(*($placement))
 
 colors = [$color1, $color2, $color3, $color4, $color5,

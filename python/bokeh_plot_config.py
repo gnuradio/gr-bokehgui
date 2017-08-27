@@ -180,6 +180,7 @@ class bokeh_plot_config(object):
     def disable_legend(self, en = True):
         if en:
             self.plot.legend[0].visible = False
+            self.plot.legend[0].click_policy = "hide"
         else:
             self.plot.legend[0].visible = True
-            # def set_size(self, height, width);
+            self.plot.legend[0].click_policy = "hide"
