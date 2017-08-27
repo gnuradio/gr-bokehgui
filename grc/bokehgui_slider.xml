@@ -8,7 +8,7 @@
 <block>
 	<name>Bokeh GUI Slider</name>
   <key>variable_bokehgui_slider</key>
-  <category>[Bokeh GUI]</category>
+  <category>[Bokeh GUI]/Bokeh GUI Widgets</category>
 	<import>from gnuradio import eng_notation</import>
   <import>import bokehgui</import>
   <var_make>self.$(id) = $(id) = $value</var_make>

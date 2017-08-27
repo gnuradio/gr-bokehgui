@@ -2,7 +2,7 @@
 <block>
   <name>Bokeh GUI Frequency Sink</name>
   <key>bokehgui_frequency_sink_x</key>
-  <category>[Bokeh GUI]</category>
+  <category>[Bokeh GUI]/Bokeh GUI Sinks</category>
   <import>import bokehgui</import>
   <make>bokehgui.$(type.fcn)($fftsize,
                      $wintype,

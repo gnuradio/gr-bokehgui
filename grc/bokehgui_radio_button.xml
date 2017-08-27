@@ -2,7 +2,7 @@
 <block>
 	<name>Bokeh GUI Radio buttons</name>
   <key>variable_bokehgui_radiobutton</key>
-  <category>[Bokeh GUI]</category>
+  <category>[Bokeh GUI]/Bokeh GUI Widgets</category>
   <import>import bokehgui</import>
   <var_make>self.$(id) = $(id) = $value</var_make>
   <make>#slurp

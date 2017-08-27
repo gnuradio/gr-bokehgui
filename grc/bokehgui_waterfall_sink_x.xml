@@ -2,7 +2,7 @@
 <block>
   <name>Bokeh GUI Waterfall Sink</name>
   <key>bokehgui_waterfall_sink_x</key>
-  <category>[Bokeh GUI]</category>
+  <category>[Bokeh GUI]/Bokeh GUI Sinks</category>
   <import>import bokehgui</import>
   <make>bokehgui.$(type.fcn)($fftsize, $wintype, $fc,	$bw, $name)
 self.$(id)_plot = bokehgui.$(type.plot)(self.doc, self.plot_lst, self.$(id), is_message = #if $type.t == 'message' then True else False#)
