@@ -52,8 +52,12 @@ The following Youtube video provides quick glance over the module and basic proc
 ## Future works
 1. Histogram sink
 2. BER sink
-3. Providing default layout for the plot arrangements
+3. Providing a default layout for the plot arrangements
 4. Add CSS based styling themes
+
+### Minor tasks:
+1. Enable averaging in Frequency sink
+2. Change Waterfall orientation to top-bottom
 
 ## Bugs reporting:
 Kindly report any bugs or issues [on Github](https://github.com/kartikp1995/gr-bokehgui/issues/).
