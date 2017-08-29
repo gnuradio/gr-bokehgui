@@ -796,6 +796,14 @@
       <value>True</value>
     </param>
     <param>
+      <key>maxoutbuf</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>minoutbuf</key>
+      <value>0</value>
+    </param>
+    <param>
       <key>name</key>
       <value>""</value>
     </param>
@@ -1314,10 +1322,6 @@
       <value>""</value>
     </param>
     <param>
-      <key>nconnections</key>
-      <value>1</value>
-    </param>
-    <param>
       <key>placement</key>
       <value>(2,0,1,2)</value>
     </param>
@@ -1327,7 +1331,7 @@
     </param>
     <param>
       <key>update_time</key>
-      <value>0.10</value>
+      <value>100</value>
     </param>
     <param>
       <key>wintype</key>
@@ -1335,15 +1339,15 @@
     </param>
     <param>
       <key>xlabel</key>
-      <value>Time</value>
+      <value>Frequency</value>
     </param>
     <param>
       <key>xunit</key>
-      <value>""</value>
+      <value>Hz</value>
     </param>
     <param>
       <key>ylabel</key>
-      <value>Frequency</value>
+      <value>Time</value>
     </param>
     <param>
       <key>yunit</key>

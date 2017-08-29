@@ -181,7 +181,7 @@ self.$(id)_plot.set_layout(*($placement))
   <param>
     <name>Y label</name>
     <key>ylabel</key>
-    <value>Frequency</value>
+    <value>Time</value>
     <type>string</type>
     <hide>part</hide>
   </param>
@@ -189,14 +189,14 @@ self.$(id)_plot.set_layout(*($placement))
   <param>
     <name>Y units</name>
     <key>yunit</key>
-    <value>Hz</value>
+    <value></value>
     <type>string</type>
     <hide>part</hide>
   </param>
   <param>
     <name>X Axis Label</name>
     <key>xlabel</key>
-    <value>Time</value>
+    <value>Frequency</value>
     <type>string</type>
     <hide>part</hide>
   </param>
@@ -204,7 +204,7 @@ self.$(id)_plot.set_layout(*($placement))
   <param>
     <name>X Axis Unit</name>
     <key>xunit</key>
-    <value>s</value>
+    <value>Hz</value>
     <type>string</type>
     <hide>part</hide>
   </param>

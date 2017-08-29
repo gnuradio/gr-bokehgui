@@ -108,10 +108,6 @@
       <value>(256, 324)</value>
     </param>
     <param>
-      <key>gui_hint</key>
-      <value></value>
-    </param>
-    <param>
       <key>_rotation</key>
       <value>0</value>
     </param>
@@ -145,10 +141,6 @@
     <param>
       <key>_coordinate</key>
       <value>(720, 292)</value>
-    </param>
-    <param>
-      <key>gui_hint</key>
-      <value></value>
     </param>
     <param>
       <key>_rotation</key>
@@ -1090,6 +1082,14 @@
       <value>True</value>
     </param>
     <param>
+      <key>maxoutbuf</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>minoutbuf</key>
+      <value>0</value>
+    </param>
+    <param>
       <key>name</key>
       <value>Complex Frequency Sink</value>
     </param>
@@ -1459,6 +1459,14 @@
     <param>
       <key>maxhold</key>
       <value>True</value>
+    </param>
+    <param>
+      <key>maxoutbuf</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>minoutbuf</key>
+      <value>0</value>
     </param>
     <param>
       <key>name</key>
