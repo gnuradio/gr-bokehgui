@@ -53,7 +53,7 @@ class waterfall_sink_c(bokeh_plot_config):
         self.plot = None
         self.waterfall_renderer = None
 
-    def initialize(self, legend_lst = utils.default_labels_f,
+    def initialize(self, legend_list = utils.default_labels_f,
                    update_time = 100, values_range = (-200, 10),
                    time_per_sample = 0.1, number_of_samples = 200,
                    palette = 'Inferno'):
