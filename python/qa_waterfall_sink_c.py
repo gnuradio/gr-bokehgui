@@ -20,7 +20,7 @@
 # Boston, MA 02110-1301, USA.
 #
 
-from bokehgui import waterfall_sink_c_proc
+from bokehgui_swig import waterfall_sink_c_proc
 from gnuradio import blocks, filter, gr, gr_unittest
 
 class qa_waterfall_sink_c(gr_unittest.TestCase):
