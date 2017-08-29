@@ -63,8 +63,8 @@ class top_block(gr.top_block):
         self.bokehgui_waterfall_sink_c_0.initialize(
             legend_list = ['Signal (5000 Hz)', ], update_time = 100)
 
-        self.bokehgui_waterfall_sink_c_0.set_y_label('Frequency (Hz)')
-        self.bokehgui_waterfall_sink_c_0.set_x_label('Time')
+        self.bokehgui_waterfall_sink_c_0.set_x_label('Frequency (Hz)')
+        self.bokehgui_waterfall_sink_c_0.set_y_label('Time')
         self.bokehgui_waterfall_sink_c_0.set_layout(1, 1, 1, 1)
 
         self.doc.add_root(bokehgui.BokehLayout.create_layout(self.plot_lst))
