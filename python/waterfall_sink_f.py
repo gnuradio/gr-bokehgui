@@ -61,12 +61,12 @@ class waterfall_sink_f(bokeh_plot_config):
         self.time_per_sample = time_per_sample
 
         self.plot = figure(tools = ['save', 'reset'],
-                           x_range = [0, self.nrows],
-                           y_range = [self.frequency_range[0],
+                           y_range = [0, self.nrows],
+                           x_range = [self.frequency_range[0],
                                       self.frequency_range[-1]])
-        self.plot.xaxis.formatter = FuncTickFormatter(code = """
-                           return tick*%s
-                           """ % time_per_sample)
+        self.plot.yaxis.formatter = FuncTickFormatter(code = """
+                           return (%s - tick)*%s
+                           """ % (self.nrows, time_per_sample))
 
         self.waterfall_renderer = []
         for i in range(self.nconnections):

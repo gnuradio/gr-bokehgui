@@ -44,7 +44,7 @@ class waterfall_sink_c(bokeh_plot_config):
         self.bw = self.process.get_bandwidth()
 
         self.is_message = is_message
-        self.nrows = 200
+        self.nrows = 1000
         self.time_per_sample = 0.1
         self.frequency_range = None
         self.set_frequency_range(self.fc, self.bw, set_y_axis = False,
@@ -55,18 +55,18 @@ class waterfall_sink_c(bokeh_plot_config):
 
     def initialize(self, legend_list = utils.default_labels_f,
                    update_time = 100, values_range = (-200, 10),
-                   time_per_sample = 0.1, number_of_samples = 200,
+                   time_per_sample = 0.1, number_of_samples = 1000,
                    palette = 'Inferno'):
         self.nrows = number_of_samples
         self.time_per_sample = time_per_sample
 
         self.plot = figure(tools = ['save', 'reset'],
-                           x_range = [0, self.nrows],
-                           y_range = [self.frequency_range[0],
+                           y_range = [0, self.nrows],
+                           x_range = [self.frequency_range[0],
                                       self.frequency_range[-1]])
-        self.plot.xaxis.formatter = FuncTickFormatter(code = """
-                           return tick*%s
-                           """ % time_per_sample)
+        self.plot.yaxis.formatter = FuncTickFormatter(code = """
+                           return (%s - tick)*%s
+                           """ % (self.nrows, time_per_sample))
 
         self.waterfall_renderer = []
         for i in range(self.nconnections):
