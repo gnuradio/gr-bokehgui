@@ -31,7 +31,7 @@ default_labels_c = ["Re{{Data {0}}}".format(i / 2) if i % 2 == 0
 
 def create_server():
     port = subprocess.check_output([os.path.abspath(
-        os.path.dirname(__file__)) + "/scripts/start-server.sh"])
+        os.path.dirname(__file__)) + "/scripts/check-port.sh"])
     server_proc = subprocess.Popen(["bokeh", "serve", "--port", str(port[:-1]),
                                     "--allow-websocket-origin=*",
                                     os.path.abspath(os.path.dirname(
