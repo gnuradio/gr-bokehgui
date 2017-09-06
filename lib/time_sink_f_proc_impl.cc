@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /*
- * Copyright 2008-2012 Free Software Foundation, Inc.
+ * Copyright 2017 Free Software Foundation, Inc.
  *
  * This file is part of GNU Radio
  * GNU Radio is free software; you can redistribute it and/or modify
@@ -23,24 +23,31 @@
 #include "config.h"
 #endif
 
-#include <volk/volk.h>
 #include "time_sink_f_proc_impl.h"
 
 namespace gr {
   namespace bokehgui {
 
     time_sink_f_proc::sptr
-    time_sink_f_proc::make(int size, double samp_rate, const std::string &name, int nconnections)
+    time_sink_f_proc::make(int size,
+                           double samp_rate,
+                           const std::string &name,
+                           int nconnections)
     {
       return gnuradio::get_initial_sptr
-        (new time_sink_f_proc_impl(size, samp_rate, name, nconnections));
+        (new time_sink_f_proc_impl(size, samp_rate,
+                                   name, nconnections));
     }
 
     /*
      * The private constructor
      */
-    time_sink_f_proc_impl::time_sink_f_proc_impl(int size, double samp_rate, const std::string &name, int nconnections)
-      : base_sink<float, float>("time_sink_f_proc", size, name, nconnections),
+    time_sink_f_proc_impl::time_sink_f_proc_impl(int size,
+                                                 double samp_rate,
+                                                 const std::string &name,
+                                                 int nconnections)
+      : base_sink<float>("time_sink_f_proc",
+                         size, name, nconnections),
        d_samp_rate(samp_rate)
     {
       set_trigger_mode(TRIG_MODE_FREE, TRIG_SLOPE_POS, 0.0, 0.0, 0, "");
@@ -115,9 +122,9 @@ namespace gr {
 
     void
     time_sink_f_proc_impl::set_trigger_mode(trigger_mode mode, trigger_slope slope,
-                                       float level,
-                                       float delay, int channel,
-                                       const std::string &tag_key)
+                                            float level,
+                                            float delay, int channel,
+                                            const std::string &tag_key)
     {
       gr::thread::scoped_lock lock(d_setlock);
 
@@ -213,7 +220,9 @@ namespace gr {
     {
       int trigger_index;
       const float *in = (const float*)inputs[d_trigger_channel];
-      for(trigger_index = start; trigger_index < nitems + start; trigger_index++) {
+      for(trigger_index = start;
+          trigger_index < nitems + start;
+          trigger_index++) {
         d_trigger_count++;
 
         // Test if trigger has occurred based on the input stream,

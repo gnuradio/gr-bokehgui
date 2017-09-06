@@ -1,5 +1,5 @@
 /* -*- c++ -*- */
-/* Copyright 2011-2013,2015 Free Software Foundation, Inc.
+/* Copyright 2017 Free Software Foundation, Inc.
  *
  * This file is part of GNU Radio
  *
@@ -50,7 +50,9 @@ namespace gr {
       int d_initial_delay; // used for limiting d_trigger_delay
 
      public:
-      time_sink_c_proc_impl(int size, double samp_rate, const std::string &name, int nconnections);
+      time_sink_c_proc_impl(int size, double samp_rate,
+                            const std::string &name,
+                            int nconnections);
       ~time_sink_c_proc_impl();
 
       std::vector<std::vector<gr::tag_t> > get_tags();

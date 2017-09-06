@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /*
- * Copyright 2008-2012 Free Software Foundation, Inc.
+ * Copyright 2017 Free Software Foundation, Inc.
  *
  * This file is part of GNU Radio
  * GNU Radio is free software; you can redistribute it and/or modify
@@ -40,7 +40,6 @@ namespace gr {
      * store-sinks in this module. The two classes in this template are
      * used as follows:
      * class T -> Type of input stream into the block.
-     * class U -> Type of output via get_plot_data.
      *
      * This class also defines set of virtual functions that must be defined
      * by the child-class. If the functions are irrelevant for the child-class
@@ -58,7 +57,7 @@ namespace gr {
      * limitation provided by SWIG for template classes.
      */
 
-    template <class T, class U> class base_sink : public sync_block
+    template <class T> class base_sink : public sync_block
     {
      public:
       base_sink() {} // To allow a virtual inheritance
@@ -73,13 +72,14 @@ namespace gr {
 
         message_port_register_in(pmt::mp("in"));
         set_msg_handler(pmt::mp("in"),
-                        boost::bind(&base_sink<T, U>::handle_pdus, this, _1));
+                        boost::bind(&base_sink<T>::handle_pdus, this, _1));
 
         const int alignment_multiple = volk_get_alignment() / sizeof(T);
         set_alignment(std::max(1, alignment_multiple));
 
         set_output_multiple (d_size);
       }
+
       ~base_sink() {
         while(!d_buffers.empty())
           d_buffers.pop();
@@ -101,7 +101,7 @@ namespace gr {
        * \param size Pointer to integer value representing number of elements
        *             in a row. Generally \p d_size
        */
-      void get_plot_data (U** output_items, int* nrows, int* size) {
+      void get_plot_data (float** output_items, int* nrows, int* size) {
         gr::thread::scoped_lock lock(d_setlock);
         if (!d_buffers.size()) {
           *size = 0;
@@ -112,9 +112,8 @@ namespace gr {
         *nrows = d_nconnections + 1;
         *size = d_buffers.front()[0].size();
 
-        U* arr = (U*) malloc(2*(*nrows)*(*size)*sizeof(U));
-        memset(arr, 0, 2*(*nrows)*(*size)*sizeof(U));
-
+        float* arr = (float*) malloc(2*(*nrows)*(*size)*sizeof(float));
+        memset(arr, 0, 2*(*nrows)*(*size)*sizeof(float));
         process_plot(arr, nrows, size);
 
         *output_items = arr;
@@ -232,7 +231,7 @@ namespace gr {
       virtual void _test_trigger_tags(int, int) = 0;
       virtual void pop_other_queues() = 0;
       virtual void verify_datatype_PDU(const T*, pmt::pmt_t, size_t) = 0;
-      virtual void process_plot(U* arr, int* nrows, int* size) = 0;
+      virtual void process_plot(float* arr, int* nrows, int* size) = 0;
       virtual void work_process_other_queues(int, int) = 0;
       virtual void set_size(int) = 0;
      protected:
@@ -249,11 +248,13 @@ namespace gr {
       int d_index;
       int d_queue_size;
 
-      // Only used for handle pdu. saves the PDU length corresponding to each item in d_buffers queue.
-      // Will be used in process_plot_data
+      // Only used for handle pdu.
+      // Saves the PDU length corresponding to each item
+      // in d_buffers queue when using message handling
+      // It will be used in process_plot_data for message port
       std::queue<float> d_len;
 
-      // Members used for triggering scope
+      // Members used for scope triggers
       bool d_triggered;
       trigger_mode d_trigger_mode;
       int d_trigger_channel;

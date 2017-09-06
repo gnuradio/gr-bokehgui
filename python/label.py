@@ -1,4 +1,4 @@
-# Copyright 2008-2012 Free Software Foundation, Inc.
+# Copyright 2017 Free Software Foundation, Inc.
 #
 # This file is part of GNU Radio
 # GNU Radio is free software; you can redistribute it and/or modify
@@ -21,10 +21,12 @@ from bokeh.models.widgets import TextInput
 class label():
     def __init__(self, widget_lst, default_value, label):
         self.widget_lst = widget_lst
+        self.textinput = None
         self.initialize(default_value, label)
 
     def initialize(self, default_value, label):
-        self.textinput = TextInput(value = default_value, title = label, disabled = True)
+        self.textinput = TextInput(value = default_value, title = label,
+                                   disabled = True)
         self.widget_lst.append(self.textinput)
 
     def set_value(self, value):

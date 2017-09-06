@@ -1,4 +1,4 @@
-# Copyright 2011 Free Software Foundation, Inc.
+# Copyright 2017 Free Software Foundation, Inc.
 #
 # This file is part of GNU Radio
 #
@@ -18,11 +18,14 @@
 # Boston, MA 02110-1301, USA.
 
 install(FILES
-    bokehgui_time_sink_x.xml 
-    bokehgui_freq_sink_x.xml 
+    bokehgui_time_sink_x.xml
+    bokehgui_freq_sink_x.xml
     bokehgui_label.xml
     bokehgui_slider.xml
     bokehgui_range_slider.xml
     bokehgui_checkbox.xml
     bokehgui_radio_button.xml
-    bokehgui_textbox.xml     DESTINATION share/gnuradio/grc/blocks)
+    bokehgui_textbox.xml
+    bokehgui_waterfall_sink_x.xml
+    bokehgui_const_sink_x.xml
+    DESTINATION share/gnuradio/grc/blocks)

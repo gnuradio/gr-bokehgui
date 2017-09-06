@@ -1,4 +1,4 @@
-# Copyright 2011,2012,2016 Free Software Foundation, Inc.
+# Copyright 2017 Free Software Foundation, Inc.
 #
 # This file is part of GNU Radio
 #
@@ -25,10 +25,12 @@ include(GrPlatform) #define LIB_SUFFIX
 include_directories(${Boost_INCLUDE_DIR})
 link_directories(${Boost_LIBRARY_DIRS})
 list(APPEND bokehgui_sources
-    time_sink_c_proc_impl.cc
     time_sink_f_proc_impl.cc
+    time_sink_c_proc_impl.cc
     freq_sink_f_proc_impl.cc
-    freq_sink_c_proc_impl.cc) 
+    freq_sink_c_proc_impl.cc
+    waterfall_sink_f_proc_impl.cc
+    waterfall_sink_c_proc_impl.cc)
 
 set(bokehgui_sources "${bokehgui_sources}" PARENT_SCOPE)
 if(NOT bokehgui_sources)
@@ -58,23 +60,6 @@ GR_LIBRARY_FOO(gnuradio-bokehgui RUNTIME_COMPONENT "bokehgui_runtime" DEVEL_COMP
 include(GrTest)
 
 include_directories(${CPPUNIT_INCLUDE_DIRS})
-
-#list(APPEND test_bokehgui_sources
-#    ${CMAKE_CURRENT_SOURCE_DIR}/test_bokehgui.cc
-#    ${CMAKE_CURRENT_SOURCE_DIR}/qa_bokehgui.cc
-#)
-#
-#add_executable(test-bokehgui ${test_bokehgui_sources})
-#
-#target_link_libraries(
-#  test-bokehgui
-#  ${GNURADIO_RUNTIME_LIBRARIES}
-#  ${Boost_LIBRARIES}
-#  ${CPPUNIT_LIBRARIES}
-#  gnuradio-bokehgui
-#)
-#
-#GR_ADD_TEST(test_bokehgui test-bokehgui)
 
 ########################################################################
 # Print summary

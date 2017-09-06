@@ -2,7 +2,7 @@
 <block>
   <name>Bokeh GUI Frequency Sink</name>
   <key>bokehgui_frequency_sink_x</key>
-  <category>[Bokeh GUI]</category>
+  <category>[Bokeh GUI]/Bokeh GUI Sinks</category>
   <import>import bokehgui</import>
   <make>bokehgui.$(type.fcn)($fftsize,
                      $wintype,
@@ -39,10 +39,7 @@ self.$(id)_plot.set_trigger_mode($tr_mode,$tr_level, $tr_chan, $tr_tag)
 
 self.$(id)_plot.enable_grid($grid)
 self.$(id)_plot.enable_axis_labels($axislabels)
-#if $legend() == 'False'
-self.$(id)_plot.disable_legend()
-#end if
-self.$(id)_plot.set_fft_avg($average)
+self.$(id)_plot.disable_legend(not $legend())
 #if ($type() == 'float' or $type() == 'msg_float')
 self.$(id)_plot.set_plot_pos_half($freqhalf)
 #end if
@@ -1010,22 +1007,12 @@ for i in xrange(#if $type.t == 'message' then 1 else $nconnections#):
     <optional>1</optional>
   </sink>
 
-  <!--<sink>
+  <source>
     <name>freq</name>
     <type>message</type>
     <optional>1</optional>
     <hide>$showports</hide>
-  </sink>-->
-
-<!--  <source>
-    <name>freq</name>
-    <type>message</type>
-    <optional>1</optional>
-    <hide>$showports</hide>
-  </source>-->
+  </source>
   <doc>
-The GUI hint can be used to position the widget within the application. \
-The hint is of the form [tab_id@tab_index]: [row, col, row_span, col_span]. \
-Both the tab specification and the grid position are optional.
   </doc>
 </block>

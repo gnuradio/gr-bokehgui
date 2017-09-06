@@ -1,5 +1,5 @@
 /* -*- c++ -*- */
-/* Copyright 2011-2013,2015 Free Software Foundation, Inc.
+/* Copyright 2017 Free Software Foundation, Inc.
  *
  * This file is part of GNU Radio
  *
@@ -24,21 +24,25 @@
 #include "config.h"
 #endif
 
-#include <volk/volk.h>
 #include "time_sink_c_proc_impl.h"
 
 namespace gr {
   namespace bokehgui {
 
     time_sink_c_proc::sptr
-    time_sink_c_proc::make(int size, double samp_rate, const std::string &name, int nconnections)
+    time_sink_c_proc::make(int size, double samp_rate,
+                           const std::string &name,
+                           int nconnections)
     {
       return gnuradio::get_initial_sptr
         (new time_sink_c_proc_impl(size, samp_rate, name, nconnections));
     }
 
-    time_sink_c_proc_impl::time_sink_c_proc_impl(int size, double samp_rate, const std::string &name, int nconnections)
-      : base_sink<gr_complex, float>("time_sink_c_proc", size, name, nconnections),
+    time_sink_c_proc_impl::time_sink_c_proc_impl(int size,
+                                                 double samp_rate,
+                                                 const std::string &name,
+                                                 int nconnections)
+      : base_sink<gr_complex>("time_sink_c_proc", size, name, nconnections),
       d_samp_rate(samp_rate)
     {
       set_trigger_mode(TRIG_MODE_FREE, TRIG_SLOPE_POS, 0.0, 0.0, 0, "");

@@ -1,5 +1,5 @@
 /* -*- c++ -*- */
-/* Copyright 2011-2013,2015 Free Software Foundation, Inc.
+/* Copyright 2017 Free Software Foundation, Inc.
  *
  * GNU Radio is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,29 +22,35 @@
 #endif
 
 #include <string.h>
-#include <volk/volk.h>
 #include "freq_sink_f_proc_impl.h"
 
 namespace gr {
   namespace bokehgui {
 
     freq_sink_f_proc::sptr
-    freq_sink_f_proc::make(int fftsize, int wintype, double fc, double bw, const std::string &name, int nconnections)
+    freq_sink_f_proc::make(int fftsize, int wintype,
+                           double fc, double bw,
+                           const std::string &name,
+                           int nconnections)
     {
       return gnuradio::get_initial_sptr
-        (new freq_sink_f_proc_impl(fftsize, wintype, fc, bw, name, nconnections));
+        (new freq_sink_f_proc_impl(fftsize,
+                                   wintype,
+                                   fc, bw, name,
+                                   nconnections));
     }
 
     /*
      * The private constructor
      */
-    freq_sink_f_proc_impl::freq_sink_f_proc_impl(int fftsize, int wintype, double fc, double bw, const std::string &name, int nconnections)
-      : base_sink<float, float>("freq_sink_f_proc", fftsize, name, nconnections),
-      d_fftavg(1.0), d_wintype((filter::firdes::win_type)(wintype)),
+    freq_sink_f_proc_impl::freq_sink_f_proc_impl(int fftsize, int wintype,
+        double fc, double bw,
+        const std::string &name,
+        int nconnections)
+      : base_sink<float>("freq_sink_f_proc", fftsize, name, nconnections),
+      d_wintype((filter::firdes::win_type)(wintype)),
       d_center_freq(fc), d_bandwidth(bw)
     {
-      // TODO: Double click on plot callback
-
       // Perform fftshift operation;
       // This is usually desired when plotting
       d_shift = true;
@@ -57,11 +63,9 @@ namespace gr {
       d_tmpbuflen = (unsigned int)(floor(d_size/2.0));
       d_tmpbuf = std::vector<float>(d_tmpbuflen+1, 0);
 
-      // Used as temporary storage of input values
-      d_residbufs.reserve(d_nconnections + 1);
-      for(int n = 0; n < d_nconnections + 1; n++) {
-        d_residbufs.push_back(std::vector<float> (d_size, 0));
-      }
+      message_port_register_in(pmt::mp("freq"));
+      set_msg_handler(pmt::mp("freq"),
+                      boost::bind(&freq_sink_f_proc_impl::handle_set_freq, this, _1));
 
       buildwindow();
 
@@ -78,8 +82,6 @@ namespace gr {
 
       d_fbuf = std::vector<float> ();
       d_tmpbuf = std::vector<float> ();
-
-      d_residbufs = std::vector<std::vector<float> > ();
     }
 
     void
@@ -106,7 +108,7 @@ namespace gr {
         for(int n = 0; n < *nrows -1; n++) {
           fft(&d_fbuf[0], &d_buffers.front()[n][0], *size);
           for(int x = 0; x < *size; x++) {
-            arr[n*(*size) + x] = (1.0 - d_fftavg)*arr[n*(*size)+x] + (d_fftavg)*d_fbuf[x];
+            arr[n*(*size) + x] = d_fbuf[x];
           }
         }
       }
@@ -235,12 +237,9 @@ namespace gr {
       }
     }
 
-    // TODO: Check_clicked()
-
     void
     freq_sink_f_proc_impl::handle_set_freq(pmt::pmt_t msg)
     {
-      // TODO: Connect frequency message port
       if(pmt::is_pair(msg)) {
         pmt::pmt_t x = pmt::cdr(msg);
         if(pmt::is_real(x)) {
@@ -323,12 +322,6 @@ namespace gr {
     freq_sink_f_proc_impl::get_wintype()
     {
       return d_wintype;
-    }
-
-    void
-    freq_sink_f_proc_impl::set_fft_avg(float newavg)
-    {
-      d_fftavg = newavg;
     }
   } /* namespace bokehgui */
 } /* namespace gr */

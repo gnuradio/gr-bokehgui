@@ -1,4 +1,4 @@
-# Copyright 2008-2012 Free Software Foundation, Inc.
+# Copyright 2017 Free Software Foundation, Inc.
 #
 # This file is part of GNU Radio
 # GNU Radio is free software; you can redistribute it and/or modify
@@ -21,10 +21,12 @@ from bokeh.models.widgets import RadioGroup
 class radiobutton():
     def __init__(self, widget_lst, default_value, label, inline = True):
         self.widget_lst = widget_lst
+        self.radiobutton = None
         self.initialize(default_value, label, inline)
 
     def initialize(self, default_value, label, inline):
-        self.radiobutton = RadioGroup(active = default_value, labels = label, inline = inline)
+        self.radiobutton = RadioGroup(active = default_value, labels = label,
+                                      inline = inline)
         self.widget_lst.append(self.radiobutton)
 
     def add_callback(self, callback):

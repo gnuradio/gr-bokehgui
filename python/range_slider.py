@@ -1,4 +1,4 @@
-# Copyright 2008-2012 Free Software Foundation, Inc.
+# Copyright 2017 Free Software Foundation, Inc.
 #
 # This file is part of GNU Radio
 # GNU Radio is free software; you can redistribute it and/or modify
@@ -19,12 +19,16 @@
 from bokeh.models.widgets import RangeSlider
 
 class range_slider():
-    def __init__(self, widget_lst, label, start, end, step, callback_throttle, default):
+    def __init__(self, widget_lst, label, start, end, step, callback_throttle,
+                 default):
         self.widget_lst = widget_lst
+        self.slider = None
         self.initialize(label, start, end, step, callback_throttle, default)
 
     def initialize(self, label, start, end, step, callback_throttle, default):
-        self.slider = RangeSlider(start = start, end = end, range = default, step = step, title = label, callback_throttle = callback_throttle)
+        self.slider = RangeSlider(start = start, end = end, range = default,
+                                  step = step, title = label,
+                                  callback_throttle = callback_throttle)
         self.widget_lst.append(self.slider)
 
     def add_callback(self, callback):

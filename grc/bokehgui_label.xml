@@ -2,7 +2,7 @@
 <block>
 	<name>Bokeh GUI Label</name>
   <key>variable_bokehgui_label</key>
-  <category>[Bokeh GUI]</category>
+  <category>[Bokeh GUI]/Bokeh GUI Widgets</category>
 	<import>from gnuradio import eng_notation</import>
   <import>import bokehgui</import>
   <var_make>self.$(id)_val = $(id) = $value</var_make>
@@ -65,20 +65,9 @@ self.$(id) = bokehgui.label(self.widget_lst, str($(id)), $label+": ")
 		<type>$type</type>
 	</param>
 
-  <param>
-    <name>GUI Hint</name>
-    <key>gui_hint</key>
-    <value></value>
-    <type>gui_hint</type>
-    <hide>part</hide>
-  </param>
 	<doc>
 This block creates a variable with a label widget for text. \
 Leave the label blank to use the variable id as the label.
-
-The GUI hint can be used to position the widget within the application. \
-The hint is of the form [tab_id@tab_index]: [row, col, row_span, col_span]. \
-Both the tab specification and the grid position are optional.
 	</doc>
 </block>
 

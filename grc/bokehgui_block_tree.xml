@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+
+<cat>
+  <name>[Bokeh GUI]</name>
+  <cat>
+    <name>Bokeh GUI Sinks</name>
+    <block>bokehgui_frequency_sink_x</block>
+    <block>bokehgui_time_const_x</block>
+    <block>bokehgui_time_sink_x</block>
+    <block>bokehgui_waterfall_sink_x</block>
+  </cat>
+  <cat>
+    <name>Bokeh GUI Widgets</category></name>
+    <block>variable_bokehgui_checkbox</block>
+    <block>variable_bokehgui_label</block>
+    <block>variable_bokehgui_radiobutton</block>
+    <block>variable_bokehgui_range_slider</block>
+    <block>variable_bokehgui_slider</block>
+    <block>variable_bokehgui_textbox</block>
+  </cat>
+</cat>

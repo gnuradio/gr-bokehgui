@@ -1,5 +1,5 @@
 /* -*- c++ -*- */
-/* Copyright 2011-2013,2015 Free Software Foundation, Inc.
+/* Copyright 2017 Free Software Foundation, Inc.
  *
  * GNU Radio is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,7 +29,6 @@ namespace gr {
     class freq_sink_c_proc_impl : public freq_sink_c_proc
     {
      private:
-       float d_fftavg;
        filter::firdes::win_type d_wintype;
        std::vector<float> d_window;
        double d_center_freq, d_bandwidth;
@@ -38,7 +37,6 @@ namespace gr {
        std::vector<float> d_fbuf;
        unsigned int d_tmpbuflen;
        std::vector<float> d_tmpbuf;
-       std::vector<std::vector<gr_complex> > d_residbufs;
 
        // Some freq_sink specific trigger
        float d_trigger_level;
@@ -66,7 +64,6 @@ namespace gr {
       double get_center_freq();
       double get_bandwidth();
       int get_wintype();
-      void set_fft_avg(float);
 
       // Virtual functions inherited from base_sink
       void process_plot(float* arr, int* nrows, int* size);

@@ -46,7 +46,7 @@
     </param>
     <param>
       <key>id</key>
-      <value>top_block</value>
+      <value>tutorial</value>
     </param>
     <param>
       <key>max_nouts</key>
@@ -109,7 +109,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(688, 200)</value>
+      <value>(504, 200)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -148,7 +148,7 @@
     </param>
     <param>
       <key>value</key>
-      <value>0</value>
+      <value>0.01</value>
     </param>
     <param>
       <key>_enabled</key>
@@ -160,7 +160,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(360, 200)</value>
+      <value>(192, 200)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -176,7 +176,7 @@
     </param>
     <param>
       <key>start</key>
-      <value>0</value>
+      <value>0.01</value>
     </param>
     <param>
       <key>step</key>
@@ -238,7 +238,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(528, 200)</value>
+      <value>(352, 200)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -293,7 +293,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(192, 148)</value>
+      <value>(192, 116)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -317,7 +317,7 @@
     </param>
     <param>
       <key>type</key>
-      <value>complex</value>
+      <value>float</value>
     </param>
     <param>
       <key>seed</key>
@@ -376,7 +376,7 @@
     </param>
     <param>
       <key>type</key>
-      <value>complex</value>
+      <value>float</value>
     </param>
     <param>
       <key>samp_rate</key>
@@ -407,7 +407,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(400, 112)</value>
+      <value>(408, 24)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -419,7 +419,7 @@
     </param>
     <param>
       <key>type</key>
-      <value>complex</value>
+      <value>float</value>
     </param>
     <param>
       <key>maxoutbuf</key>
@@ -458,7 +458,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(464, 36)</value>
+      <value>(496, 36)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -486,7 +486,7 @@
     </param>
     <param>
       <key>type</key>
-      <value>complex</value>
+      <value>float</value>
     </param>
     <param>
       <key>vlen</key>
@@ -505,7 +505,7 @@
     </param>
     <param>
       <key>bw</key>
-      <value>samp_rate/2</value>
+      <value>samp_rate</value>
     </param>
     <param>
       <key>alias</key>
@@ -533,7 +533,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(688, 100)</value>
+      <value>(704, 164)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -793,7 +793,15 @@
     </param>
     <param>
       <key>maxhold</key>
-      <value>False</value>
+      <value>True</value>
+    </param>
+    <param>
+      <key>maxoutbuf</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>minoutbuf</key>
+      <value>0</value>
     </param>
     <param>
       <key>name</key>
@@ -805,7 +813,7 @@
     </param>
     <param>
       <key>placement</key>
-      <value>(0,1)</value>
+      <value>(0,1,2,1)</value>
     </param>
     <param>
       <key>freqhalf</key>
@@ -829,7 +837,7 @@
     </param>
     <param>
       <key>type</key>
-      <value>complex</value>
+      <value>float</value>
     </param>
     <param>
       <key>update_time</key>
@@ -853,11 +861,11 @@
     </param>
     <param>
       <key>ymax</key>
-      <value>50</value>
+      <value>10</value>
     </param>
     <param>
       <key>ymin</key>
-      <value>-200</value>
+      <value>-140</value>
     </param>
     <param>
       <key>yunit</key>
@@ -892,7 +900,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(688, 28)</value>
+      <value>(704, 100)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -1164,7 +1172,7 @@
     </param>
     <param>
       <key>placement</key>
-      <value>(1,0,1,2)</value>
+      <value>(1,0,1,1)</value>
     </param>
     <param>
       <key>srate</key>
@@ -1196,7 +1204,7 @@
     </param>
     <param>
       <key>type</key>
-      <value>complex</value>
+      <value>float</value>
     </param>
     <param>
       <key>update_time</key>
@@ -1228,11 +1236,122 @@
     </param>
     <param>
       <key>ymax</key>
-      <value>15</value>
+      <value>1</value>
     </param>
     <param>
       <key>ymin</key>
-      <value>-15</value>
+      <value>-1</value>
+    </param>
+  </block>
+  <block>
+    <key>bokehgui_waterfall_sink_x</key>
+    <param>
+      <key>bw</key>
+      <value>samp_rate</value>
+    </param>
+    <param>
+      <key>alias</key>
+      <value></value>
+    </param>
+    <param>
+      <key>fc</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>comment</key>
+      <value></value>
+    </param>
+    <param>
+      <key>affinity</key>
+      <value></value>
+    </param>
+    <param>
+      <key>_enabled</key>
+      <value>True</value>
+    </param>
+    <param>
+      <key>fftsize</key>
+      <value>1024</value>
+    </param>
+    <param>
+      <key>_coordinate</key>
+      <value>(696, 20)</value>
+    </param>
+    <param>
+      <key>_rotation</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>grid</key>
+      <value>False</value>
+    </param>
+    <param>
+      <key>id</key>
+      <value>bokehgui_waterfall_sink_x_0</value>
+    </param>
+    <param>
+      <key>int_max</key>
+      <value>10</value>
+    </param>
+    <param>
+      <key>int_min</key>
+      <value>-140</value>
+    </param>
+    <param>
+      <key>label</key>
+      <value></value>
+    </param>
+    <param>
+      <key>legend</key>
+      <value>True</value>
+    </param>
+    <param>
+      <key>color</key>
+      <value>Inferno</value>
+    </param>
+    <param>
+      <key>maxoutbuf</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>minoutbuf</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>name</key>
+      <value>""</value>
+    </param>
+    <param>
+      <key>placement</key>
+      <value>(2,0,1,2)</value>
+    </param>
+    <param>
+      <key>type</key>
+      <value>float</value>
+    </param>
+    <param>
+      <key>update_time</key>
+      <value>100</value>
+    </param>
+    <param>
+      <key>wintype</key>
+      <value>firdes.WIN_BLACKMAN_hARRIS</value>
+    </param>
+    <param>
+      <key>xlabel</key>
+      <value>Frequency</value>
+    </param>
+    <param>
+      <key>xunit</key>
+      <value>Hz</value>
+    </param>
+    <param>
+      <key>ylabel</key>
+      <value>Time</value>
+    </param>
+    <param>
+      <key>yunit</key>
+      <value></value>
     </param>
   </block>
   <connection>
@@ -1262,6 +1381,12 @@
   <connection>
     <source_block_id>blocks_throttle_0</source_block_id>
     <sink_block_id>bokehgui_time_sink_x_0</sink_block_id>
+    <source_key>0</source_key>
+    <sink_key>0</sink_key>
+  </connection>
+  <connection>
+    <source_block_id>blocks_throttle_0</source_block_id>
+    <sink_block_id>bokehgui_waterfall_sink_x_0</sink_block_id>
     <source_key>0</source_key>
     <sink_key>0</sink_key>
   </connection>

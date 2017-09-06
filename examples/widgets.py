@@ -8,6 +8,7 @@
 if __name__ == '__main__':
     import ctypes
     import sys
+
     if sys.platform.startswith('linux'):
         try:
             x11 = ctypes.cdll.LoadLibrary('libX11.so')
@@ -15,16 +16,15 @@ if __name__ == '__main__':
         except:
             print "Warning: failed to XInitThreads()"
 
-import time, signal, functools
+import functools
+import signal
+import time
 
-from gnuradio import analog
-from gnuradio import blocks
-from gnuradio import gr
-from gnuradio.filter import firdes
-
+import bokehgui
 from bokeh.client import push_session
 from bokeh.plotting import curdoc
-import bokehgui
+from gnuradio import analog, blocks, gr
+
 
 class top_block(gr.top_block):
     def __init__(self, doc):
@@ -37,30 +37,41 @@ class top_block(gr.top_block):
         # Variables
         ##################################################
         self.samp_rate = samp_rate = 32000
-        self.freq = freq = 500
+        self.freq = 500
 
         ##################################################
         # Blocks
         ##################################################
-        self.bokehgui_time_sink_f_proc_0 = bokehgui.time_sink_f_proc(750, samp_rate, 'TimeSink', 2)
-        self.bokehgui_time_sink_f_0 = bokehgui.time_sink_f(self.doc, self.plot_lst, self.bokehgui_time_sink_f_proc_0)
-        self.blocks_throttle_0 = blocks.throttle(gr.sizeof_float*1, samp_rate,True)
-        self.blocks_throttle_1 = blocks.throttle(gr.sizeof_float*1, samp_rate,True)
-        self.analog_sig_source_x_0 = analog.sig_source_f(samp_rate, analog.GR_COS_WAVE, self.freq, 3, 0)
-        self.analog_sig_source_x_1 = analog.sig_source_f(samp_rate, analog.GR_COS_WAVE, self.freq, 1, 0)
+        self.bokehgui_time_sink_f_proc_0 = bokehgui.time_sink_f_proc(750,
+                                                                     samp_rate,
+                                                                     'TimeSink',
+                                                                     2)
+        self.bokehgui_time_sink_f_0 = bokehgui.time_sink_f(self.doc,
+                                                           self.plot_lst,
+                                                           self.bokehgui_time_sink_f_proc_0)
+        self.blocks_throttle_0 = blocks.throttle(gr.sizeof_float * 1,
+                                                 samp_rate, True)
+        self.blocks_throttle_1 = blocks.throttle(gr.sizeof_float * 1,
+                                                 samp_rate, True)
+        self.analog_sig_source_x_0 = analog.sig_source_f(samp_rate,
+                                                         analog.GR_COS_WAVE,
+                                                         self.freq, 3, 0)
+        self.analog_sig_source_x_1 = analog.sig_source_f(samp_rate,
+                                                         analog.GR_COS_WAVE,
+                                                         self.freq, 1, 0)
 
-        self.text_input = bokehgui.textbox(self.widget_lst, str(self.freq), "Frequency")
-        self.text_input.add_callback(lambda attr,old,new: self.set_freq(float(new)))
-        self.label = bokehgui.label(self.widget_lst, str(self.freq), "Current Frequency")
+        self.text_input = bokehgui.textbox(self.widget_lst, str(self.freq),
+                                           "Frequency")
+        self.text_input.add_callback(
+            lambda attr, old, new: self.set_freq(float(new)))
+        self.label = bokehgui.label(self.widget_lst, str(self.freq),
+                                    "Current Frequency")
 
         ##################################################
         # Customizing the plot
         ##################################################
-        self.bokehgui_time_sink_f_0.initialize(legend_list = ['data0',
-                                                              'data1',
-                                                             ],
-                                               update_time = 100
-                                               )
+        self.bokehgui_time_sink_f_0.initialize(
+            legend_list = ['data0', 'data1', ], update_time = 100)
 
         self.bokehgui_time_sink_f_0.set_x_label('Time (s)')
         self.bokehgui_time_sink_f_0.set_y_label('Value')
@@ -69,11 +80,11 @@ class top_block(gr.top_block):
         self.bokehgui_time_sink_f_0.set_line_style(1, 'dashed')
         self.bokehgui_time_sink_f_0.set_line_marker(0, '^')
         self.bokehgui_time_sink_f_0.set_line_width(1, 2)
-        self.bokehgui_time_sink_f_0.set_layout(1,1,2,2)
+        self.bokehgui_time_sink_f_0.set_layout(1, 1, 2, 2)
 
         input_t = bokehgui.BokehLayout.widgetbox(self.widget_lst)
         widgetbox = bokehgui.BokehLayout.WidgetLayout(input_t)
-        widgetbox.set_layout(3,3,2,2)
+        widgetbox.set_layout(3, 3, 2, 2)
 
         list_obj = [widgetbox] + self.plot_lst
         layout_t = bokehgui.BokehLayout.create_layout(list_obj)
@@ -82,10 +93,14 @@ class top_block(gr.top_block):
         ##################################################
         # Connections
         ##################################################
-        self.connect((self.analog_sig_source_x_0, 0), (self.blocks_throttle_0, 0))
-        self.connect((self.analog_sig_source_x_1, 0), (self.blocks_throttle_1, 0))
-        self.connect((self.blocks_throttle_0, 0), (self.bokehgui_time_sink_f_proc_0, 0))
-        self.connect((self.blocks_throttle_1, 0), (self.bokehgui_time_sink_f_proc_0, 1))
+        self.connect((self.analog_sig_source_x_0, 0),
+                     (self.blocks_throttle_0, 0))
+        self.connect((self.analog_sig_source_x_1, 0),
+                     (self.blocks_throttle_1, 0))
+        self.connect((self.blocks_throttle_0, 0),
+                     (self.bokehgui_time_sink_f_proc_0, 0))
+        self.connect((self.blocks_throttle_1, 0),
+                     (self.bokehgui_time_sink_f_proc_0, 1))
 
     def get_samp_rate(self):
         return self.samp_rate
@@ -104,18 +119,22 @@ class top_block(gr.top_block):
     def get_freq(self):
         return self.freq
 
-def main(top_block_cls=top_block, options=None):
-    serverProc = bokehgui.utils.create_server()
+
+def main(top_block_cls = top_block, options = None):
+    serverProc, port = bokehgui.utils.create_server()
+
     def killProc(signum, frame, tb):
         tb.stop()
         tb.wait()
         serverProc.terminate()
         serverProc.kill()
+
     time.sleep(1)
     try:
         # Define the document instance
         doc = curdoc()
-        session = push_session(doc, session_id="test")
+        session = push_session(doc, session_id = "test",
+                               url = "http://localhost:" + port + "/bokehgui")
         # Create Top Block instance
         tb = top_block_cls(doc)
         try:
@@ -125,11 +144,11 @@ def main(top_block_cls=top_block, options=None):
         finally:
             print "Exiting the simulation. Stopping Bokeh Server"
             tb.stop()
-	    tb.wait()
+            tb.wait()
     finally:
         serverProc.terminate()
         serverProc.kill()
 
+
 if __name__ == '__main__':
     main()
-

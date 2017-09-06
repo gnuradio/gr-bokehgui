@@ -1,4 +1,4 @@
-# Copyright 2011 Free Software Foundation, Inc.
+# Copyright 2017 Free Software Foundation, Inc.
 #
 # This file is part of GNU Radio
 #
@@ -43,8 +43,23 @@ GR_PYTHON_INSTALL(
     checkbox.py
     radio_button.py
     bokeh_layout.py
-    utils.py DESTINATION ${GR_PYTHON_DIR}/bokehgui
+    utils.py
+    waterfall_sink_f.py
+    waterfall_sink_c.py
+    const_sink_c.py
+    DESTINATION ${GR_PYTHON_DIR}/bokehgui
 )
+GR_PYTHON_INSTALL(
+    FILES
+    plots/__init__.py
+    plots/waterfall.py
+    plots/bokehgui.py
+    DESTINATION ${GR_PYTHON_DIR}/bokehgui/plots
+)
+
+install(FILES plots/waterfall.coffee
+  DESTINATION ${GR_PYTHON_DIR}/bokehgui/plots
+  PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
 
 install(FILES scripts/check-port.sh
   DESTINATION ${GR_PYTHON_DIR}/bokehgui/scripts
@@ -61,3 +76,5 @@ GR_ADD_TEST(qa_time_sink_f ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_t
 GR_ADD_TEST(qa_time_sink_c ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_time_sink_c.py)
 GR_ADD_TEST(qa_freq_sink_f ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_freq_sink_f.py)
 GR_ADD_TEST(qa_freq_sink_c ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_freq_sink_c.py)
+GR_ADD_TEST(qa_waterfall_sink_f ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_waterfall_sink_f.py)
+GR_ADD_TEST(qa_waterfall_sink_c ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_waterfall_sink_c.py)

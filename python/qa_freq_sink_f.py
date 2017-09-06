@@ -20,27 +20,24 @@
 # Boston, MA 02110-1301, USA.
 #
 
-from gnuradio import gr, gr_unittest
-from gnuradio import blocks
-from gnuradio import filter
 from bokehgui_swig import freq_sink_f_proc
+from gnuradio import blocks, filter, gr, gr_unittest
 
-class qa_freq_sink_f (gr_unittest.TestCase):
+class qa_freq_sink_f(gr_unittest.TestCase):
+    def setUp(self):
+        self.tb = gr.top_block()
 
-    def setUp (self):
-        self.tb = gr.top_block ()
-
-    def tearDown (self):
+    def tearDown(self):
         self.tb = None
 
-    def test_001_t (self):
-        original = (1,)*100 + (-1,)*100 + (0,)*50 + (10,) + (0,)*49
-        expected_result = [(-200,)*50 + (0,) + (-200,)*49,
-                           (-20,)*100]
+    def test_001_t(self):
+        original = (1,) * 100 + (-1,) * 100 + (0,) * 50 + (10,) + (0,) * 49
+        expected_result = [(-200,) * 50 + (0,) + (-200,) * 49, (-20,) * 100]
 
         src = blocks.vector_source_f(original, False, 1, [])
 
-        dst = freq_sink_f_proc(100, filter.firdes.WIN_RECTANGULAR, 0, 15000, 'Test', 1)
+        dst = freq_sink_f_proc(100, filter.firdes.WIN_RECTANGULAR, 0, 15000,
+                               'Test', 1)
 
         self.tb.connect(src, dst)
         self.tb.run()
