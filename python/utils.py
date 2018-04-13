@@ -22,7 +22,7 @@ import bokeh.palettes as bp
 
 
 def default_tools():
-    return ['box_zoom', 'ypan', 'ywheel_zoom', 'save', 'reset', 'resize']
+    return ['box_zoom', 'ypan', 'ywheel_zoom', 'save', 'reset']
 
 default_labels_f = ["Data {0}".format(i) for i in range(10)]
 default_labels_c = ["Re{{Data {0}}}".format(i / 2) if i % 2 == 0
