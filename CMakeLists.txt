@@ -132,10 +132,10 @@ endif(APPLE)
 ########################################################################
 # Find gnuradio build dependencies
 ########################################################################
-find_package(Gnuradio "3.7.2" REQUIRED)
+find_package(Gnuradio "3.8" REQUIRED)
 find_package(CppUnit)
 find_package(Doxygen)
-find_package(PythonLibs 2)
+find_package(PythonLibs 3)
 find_package(Volk)
 find_package(SWIG)
 
