@@ -1,0 +1,15 @@
+'[Bokeh GUI]':
+- Bokeh GUI Sinks:
+  - bokehgui_frequency_sink_x
+  - bokehgui_time_const_x
+  - bokehgui_time_sink_x
+  - bokehgui_waterfall_sink_x
+
+
+- Bokeh GUI Widgets
+  - variable_bokehgui_checkbox
+  - variable_bokehgui_label
+  - variable_bokehgui_radiobutton
+  - variable_bokehgui_range_slider
+  - variable_bokehgui_slider
+  - variable_bokehgui_textbox
