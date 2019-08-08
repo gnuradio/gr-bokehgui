@@ -196,23 +196,23 @@ endif(DOXYGEN_FOUND)
 ########################################################################
 # Setup the include and linker paths
 ########################################################################
-#include_directories(
+include_directories(
 #    ${CMAKE_SOURCE_DIR}/lib
 #    ${CMAKE_SOURCE_DIR}/include
 #    ${CMAKE_BINARY_DIR}/lib
 #    ${CMAKE_BINARY_DIR}/include
-#    ${Boost_INCLUDE_DIRS}
+    ${Boost_INCLUDE_DIRS}
 #    ${CPPUNIT_INCLUDE_DIRS}
-#    ${GNURADIO_ALL_INCLUDE_DIRS}
-#    ${VOLK_INCLUDE_DIRS}
-#)
+    ${GNURADIO_ALL_INCLUDE_DIRS}
+    ${VOLK_INCLUDE_DIRS}
+)
 
-#link_directories(
-#    ${Boost_LIBRARY_DIRS}
+link_directories(
+    ${Boost_LIBRARY_DIRS}
 #    ${CPPUNIT_LIBRARY_DIRS}
-#    ${GNURADIO_RUNTIME_LIBRARY_DIRS}
-#    ${VOLK_LIBRARY_DIRS}
-#)
+    ${GNURADIO_RUNTIME_LIBRARY_DIRS}
+    ${VOLK_LIBRARY_DIRS}
+)
 
 # Set component parameters
 #set(GR_BOKEHGUI_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/include CACHE INTERNAL "" FORCE)
