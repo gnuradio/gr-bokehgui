@@ -157,9 +157,9 @@ find_package(SWIG)
 set(GR_REQUIRED_COMPONENTS RUNTIME FFT FILTER)
 list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_SOURCE_DIR}/cmake/Modules)
 
-if(NOT CPPUNIT_FOUND)
-    message(FATAL_ERROR "CppUnit required to compile bokehgui")
-endif()
+#if(NOT CPPUNIT_FOUND)
+#    message(FATAL_ERROR "CppUnit required to compile bokehgui")
+#endif()
 
 if(NOT PYTHONLIBS_FOUND)
     message(FATAL_ERROR "Python required to compile gr-bokehgui")
