@@ -40,7 +40,7 @@ if(NOT bokehgui_sources)
 endif(NOT bokehgui_sources)
 
 add_library(gnuradio-bokehgui SHARED ${bokehgui_sources})
-target_link_libraries(gnuradio-bokehgui gnuradio::gnuradio-runtime)
+target_link_libraries(gnuradio-bokehgui ${Boost_LIBRARIES} gnuradio::gnuradio-runtime volk)
 target_include_directories(gnuradio-bokehgui
     PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>
     PUBLIC $<INSTALL_INTERFACE:include>
