@@ -125,22 +125,43 @@ asserts:
 
 templates:
     imports: import bokehgui
-    make: "bokehgui.${type.fcn}(${fftsize}, ${wintype}, ${fc},\t${bw}, ${name})\n\
-        self.$(id)_plot = bokehgui.$(type.plot)(self.doc, self.plot_lst, self.$(id),\
-        \ is_message = % if type.t == 'message' then True else False#):\n\nlegend_list\
-        \ = []\n\nfor i in xrange(1):\n    if len(${label}) == 0:\n        legend_list.append(\"\
-        Data {0}\".format(i))\n    else:\n        legend_list.append(${label})\n\n\
-        self.${id}_plot.initialize(update_time = ${update_time},\n               \
-        \            legend_list = legend_list,\n                           palette\
-        \ = '$color',\n                           values_range = [${int_min}, ${int_max}])\n\
-        \n% if (yunit == ''):\nself.${id}_plot.set_y_label(${ylabel})\n% else:\nself.${id}_plot.set_y_label(${ylabel}\
-        \ + '(' +${yunit+')'})\n% endif\n% if (xunit == ''):\nself.${id}_plot.set_x_label(${xlabel})\n\
-        % else:\nself.${id}_plot.set_x_label(${xlabel} + '(' +${xunit+')'})\n% endif\n\
-        \nself.${id}_plot.enable_grid(${grid})\n\nself.${id}_plot.disable_legend(not\
-        \ ${legend})\n\nself.${id}_plot.set_layout(*(${placement}))\n"
+    make: |+
+      bokehgui.${type.fcn}(${fftsize}, ${wintype}, ${fc},${bw}, ${name})
+
+      self.$(id)_plot = bokehgui.$(type.plot)(self.doc, self.plot_lst, self.$(id), is_message = \
+      % if type.t == 'message':
+         True\
+      % else:
+         False\
+      % endif):
+
+      legend_list = []
+      for i in xrange(1):
+        if len(${label}) == 0:
+          legend_list.append(\"Data {0}\".format(i))
+        else:
+          legend_list.append(${label})
+
+        self.${id}_plot.initialize(update_time = ${update_time},
+                    legend_list = legend_list, palette = '$color',
+                    values_range = [${int_min}, ${int_max}])
+
+        % if (yunit == ''):
+          self.${id}_plot.set_y_label(${ylabel})
+        % else:
+          self.${id}_plot.set_y_label(${ylabel} + '(' +${yunit}+')')
+        % endif
+        % if (xunit == ''):
+          self.${id}_plot.set_x_label(${xlabel})
+        % else:
+          self.${id}_plot.set_x_label(${xlabel} + '(' +${xunit}+')')
+        % endif
+        self.${id}_plot.enable_grid(${grid})
+        self.${id}_plot.disable_legend(not ${legend})
+        self.${id}_plot.set_layout(*(${placement}))
     callbacks:
     - set_frequency_range(${fc}, ${bw})
-    - set_title(${which}, ${title})
+    # - set_title(${which}, ${title})
     - set_color(${color})
 
 file_format: 1

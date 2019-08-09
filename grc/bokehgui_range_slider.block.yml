@@ -56,10 +56,13 @@ templates:
         from gnuradio import eng_notation
         import bokehgui
     var_make: self.${id} = ${id} = ${value}
-    make: "\n% if not label:\n\t<% label = '\"%s\"'%id %>\n% endif\nself.${id}_slider\
-        \ = bokehgui.range_slider(self.widget_lst, ${label+\":\"}, ${start}, ${end},\
-        \ ${step}, ${throttle}, ${value})\nself.${id}_slider.add_callback(lambda attr,\
-        \ old, new: self.set_${id}(new))\n  "
+    make: |+
+      % if not label:
+        <% label = '\"%s\"'%id %>
+      % endif
+      self.${id}_slider = bokehgui.range_slider(self.widget_lst, ${label}+\":\", ${start}, ${end}, ${step}, ${throttle}, ${value})
+      self.${id}_slider.add_callback(lambda attr, old, new: self.set_${id}(new))
+
     callbacks:
     - self.set_${id}(${value})
     - self.${id}_slider.set_value(${value})

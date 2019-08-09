@@ -32,9 +32,14 @@ templates:
         from gnuradio import eng_notation
         import bokehgui
     var_make: self.${id} = ${id} = ${value}
-    make: "\n% if not label:\n\t<% label = '\"%s\"'%id %>\n% endif\nself.${id}_textbox\
-        \ = bokehgui.textbox(self.widget_lst, str(${value}), ${label+\": \"})\nself.${id}_textbox.add_callback(\n\
-        \tlambda attr, old, new: self.set_${id}(${type.conv}(new)))\n  "
+    make: |+
+    % if not label:
+      <% label = '\"%s\"'%id %>
+    % endif
+    self.${id}_textbox = bokehgui.textbox(self.widget_lst, str(${value}), ${label}+\": \")
+    self.${id}_textbox.add_callback(
+      lambda attr, old, new: self.set_${id}(${type.conv}(new)))
+
     callbacks:
     - self.set_${id}(${value})
     - self.${id}_textbox.set_value(${value})

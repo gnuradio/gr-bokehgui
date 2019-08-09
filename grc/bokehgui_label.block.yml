@@ -32,8 +32,11 @@ templates:
         from gnuradio import eng_notation
         import bokehgui
     var_make: self.${id}_val = ${id} = ${value}
-    make: "\n% if not label:\n\t<% label = '\"%s\"'%id %>\n% endif\nself.${id} = bokehgui.label(self.widget_lst,\
-        \ str(${id}), ${label+\": \"})\n  "
+    make: |+
+      % if not label:
+        <% label = '\"%s\"'%${id} %>
+      % endif
+      self.${id} = bokehgui.label(self.widget_lst, str(${id}), ${label}+\": \")
     callbacks:
     - self.set_${id}_val(${value})
     - self.${id}.set_value(str(${value}))

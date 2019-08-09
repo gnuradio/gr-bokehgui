@@ -446,14 +446,31 @@ templates:
         bokehgui.${type.fcn}(${fftsize},
                              ${wintype},
                              ${fc}, ${bw},
-                             $name, % if type.t == 'message' then 0 else nconnections#):
-        self.$(id)_plot = bokehgui.$(type.plot)(self.doc, self.plot_lst, self.$(id), is_message = % if type.t == 'message' then True else False#):
-
+                             ${name},
+                             % if type.t == 'message':
+                               0
+                            % else:
+                             ${nconnections}
+                             % endif
+                            )
+        self.${id}_plot = bokehgui.${type.plot}(self.doc, self.plot_lst, self.${id}, is_message =
+        % if type.t == 'message':
+           True
+        % else:
+        False
+        % endif
+        )
         labels = [${label1}, ${label2}, ${label3}, ${label4}, ${label5},
                   ${label6}, ${label7}, ${label8}, ${label9}, ${label10}]
         legend_list = []
 
-        for i in xrange(% if type.t == 'message' then 1 else nconnections#)::
+        for i in xrange(
+        % if type.t == 'message' :
+           1
+        % else:
+        ${nconnections}
+        %endif
+        ):
             if len(labels[i]) == 0:
                 legend_list.append("Data {0}".format(i))
             else:
@@ -497,13 +514,19 @@ templates:
         alphas = [${alpha1}, ${alpha2}, ${alpha3}, ${alpha4}, ${alpha5},
                   ${alpha6}, ${alpha7}, ${alpha8}, ${alpha9}, ${alpha10}]
 
-        for i in xrange(% if type.t == 'message' then 1 else nconnections#)::
+        for i in xrange(
+        % if type.t == 'message' :
+           1
+        % else:
+        ${nconnections}
+        % endif
+        ):
             self.${id}_plot.format_line(i, colors[i], widths[i], styles[i], markers[i], alphas[i])
 
     callbacks:
     - set_frequency_range(${fc}, ${bw})
-    - set_title(${which}, ${title})
-    - set_color(${which}, ${color})
+    # - set_title(${which}, ${title})
+    # - set_color(${which}, ${color})
     - self.${id}_plot.set_y_axis([${ymin}, ${ymax}])
     - self.${id}_plot.set_trigger_mode(${tr_mode}, ${tr_level}, ${tr_chan}, ${tr_tag})
 
