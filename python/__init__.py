@@ -35,7 +35,7 @@ except ImportError:
     pass
 
 # import any pure python here
-import bokeh_layout as BokehLayout
+import .bokeh_layout as BokehLayout
 from .bokeh_plot_config import bokeh_plot_config
 from .checkbox import checkbox
 from .const_sink_c import const_sink_c
