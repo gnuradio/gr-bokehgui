@@ -191,193 +191,229 @@ parameters:
     default: '1.0'
     hide: ${ ('part' if int(nconnections) >= 1 else 'all') }
 -   id: label2
+    base_key: label1
     label: Line 2 Label
-    dtype: ''
     hide: ${ ('part' if int(nconnections) >= 2 else 'all') }
 -   id: width2
     label: Line 2 Width
-    dtype: ''
+    base_key: width1
     hide: ${ ('part' if int(nconnections) >= 2 else 'all') }
 -   id: color2
     label: Line 2 Color
-    dtype: ''
+    base_key: color1
     default: '"red"'
+    hide: ${ ('part' if int(nconnections) >= 2 else 'all') }
+-   id: style2
+    label: Line 2 Style
+    base_key: style1
     hide: ${ ('part' if int(nconnections) >= 2 else 'all') }
 -   id: marker2
     label: Line 2 Marker
-    dtype: ''
+    base_key: marker1
     hide: ${ ('part' if int(nconnections) >= 2 else 'all') }
 -   id: alpha2
     label: Line 2 Alpha
-    dtype: ''
+    base_key: alpha1
     hide: ${ ('part' if int(nconnections) >= 2 else 'all') }
 -   id: label3
     label: Line 3 Label
-    dtype: ''
+    base_key: label1
     hide: ${ ('part' if int(nconnections) >= 3 else 'all') }
 -   id: width3
     label: Line 3 Width
-    dtype: ''
+    base_key: width1
     hide: ${ ('part' if int(nconnections) >= 3 else 'all') }
 -   id: color3
     label: Line 3 Color
-    dtype: ''
+    base_key: color1
     default: '"green"'
+    hide: ${ ('part' if int(nconnections) >= 3 else 'all') }
+-   id: style3
+    label: Line 3 Style
+    base_key: style1
     hide: ${ ('part' if int(nconnections) >= 3 else 'all') }
 -   id: marker3
     label: Line 3 Marker
-    dtype: ''
+    base_key: marker1
     hide: ${ ('part' if int(nconnections) >= 3 else 'all') }
 -   id: alpha3
     label: Line 3 Alpha
-    dtype: ''
-    hide: ${ ('part' if (int(nconnections) >= 3) else 'all') }
+    base_key: alpha1
+    hide: ${ ('part' if int(nconnections) >= 3 else 'all') }
 -   id: label4
     label: Line 4 Label
-    dtype: ''
-    hide: ${ ('part' if (int(nconnections) >= 4) else 'all') }
+    base_key: label1
+    hide: ${ ('part' if int(nconnections) >= 4 else 'all') }
 -   id: width4
     label: Line 4 Width
-    dtype: ''
-    hide: ${ ('part' if (int(nconnections) >= 4) else 'all') }
+    base_key: width1
+    hide: ${ ('part' if int(nconnections) >= 4 else 'all') }
 -   id: color4
     label: Line 4 Color
-    dtype: ''
+    base_key: color1
     default: '"black"'
-    hide: ${ ('part' if (int(nconnections) >= 4) else 'all') }
+    hide: ${ ('part' if int(nconnections) >= 4 else 'all') }
+-   id: style4
+    label: Line 4 Style
+    base_key: style1
+    hide: ${ ('part' if int(nconnections) >= 4 else 'all') }
 -   id: marker4
     label: Line 4 Marker
-    dtype: ''
+    base_key: marker1
     hide: ${ ('part' if int(nconnections) >= 4 else 'all') }
 -   id: alpha4
     label: Line 4 Alpha
-    dtype: ''
+    base_key: alpha1
     hide: ${ ('part' if int(nconnections) >= 4 else 'all') }
 -   id: label5
     label: Line 5 Label
-    dtype: ''
+    base_key: label1
     hide: ${ ('part' if int(nconnections) >= 5 else 'all') }
 -   id: width5
     label: Line 5 Width
-    dtype: ''
+    base_key: width1
     hide: ${ ('part' if int(nconnections) >= 5 else 'all') }
 -   id: color5
     label: Line 5 Color
-    dtype: ''
+    base_key: color1
     default: '"cyan"'
+    hide: ${ ('part' if int(nconnections) >= 5 else 'all') }
+-   id: style5
+    label: Line 5 Style
+    base_key: style1
     hide: ${ ('part' if int(nconnections) >= 5 else 'all') }
 -   id: marker5
     label: Line 5 Marker
-    dtype: ''
+    base_key: marker1
     hide: ${ ('part' if int(nconnections) >= 5 else 'all') }
 -   id: alpha5
     label: Line 5 Alpha
-    dtype: ''
+    base_key: alpha1
     hide: ${ ('part' if int(nconnections) >= 5 else 'all') }
 -   id: label6
     label: Line 6 Label
-    dtype: ''
+    base_key: label1
     hide: ${ ('part' if int(nconnections) >= 6 else 'all') }
 -   id: width6
     label: Line 6 Width
-    dtype: ''
+    base_key: width1
     hide: ${ ('part' if int(nconnections) >= 6 else 'all') }
 -   id: color6
     label: Line 6 Color
-    dtype: ''
+    base_key: color1
     default: '"magenta"'
+    hide: ${ ('part' if int(nconnections) >= 6 else 'all') }
+-   id: style6
+    label: Line 6 Style
+    base_key: style1
     hide: ${ ('part' if int(nconnections) >= 6 else 'all') }
 -   id: marker6
     label: Line 6 Marker
-    dtype: ''
+    base_key: marker1
     hide: ${ ('part' if int(nconnections) >= 6 else 'all') }
 -   id: alpha6
     label: Line 6 Alpha
-    dtype: ''
+    base_key: alpha1
     hide: ${ ('part' if int(nconnections) >= 6 else 'all') }
 -   id: label7
     label: Line 7 Label
-    dtype: ''
+    base_key: label1
     hide: ${ ('part' if int(nconnections) >= 7 else 'all') }
 -   id: width7
     label: Line 7 Width
-    dtype: ''
+    base_key: width1
     hide: ${ ('part' if int(nconnections) >= 7 else 'all') }
 -   id: color7
     label: Line 7 Color
-    dtype: ''
+    base_key: color1
     default: '"yellow"'
+    hide: ${ ('part' if int(nconnections) >= 7 else 'all') }
+-   id: style7
+    label: Line 7 Style
+    base_key: style1
     hide: ${ ('part' if int(nconnections) >= 7 else 'all') }
 -   id: marker7
     label: Line 7 Marker
-    dtype: ''
+    base_key: marker1
     hide: ${ ('part' if int(nconnections) >= 7 else 'all') }
 -   id: alpha7
     label: Line 7 Alpha
-    dtype: ''
+    base_key: alpha1
     hide: ${ ('part' if int(nconnections) >= 7 else 'all') }
 -   id: label8
     label: Line 8 Label
-    dtype: ''
+    base_key: label1
     hide: ${ ('part' if int(nconnections) >= 8 else 'all') }
 -   id: width8
     label: Line 8 Width
-    dtype: ''
+    base_key: width1
     hide: ${ ('part' if int(nconnections) >= 8 else 'all') }
 -   id: color8
     label: Line 8 Color
-    dtype: ''
+    base_key: color1
     default: '"dark red"'
+    hide: ${ ('part' if int(nconnections) >= 8 else 'all') }
+-   id: style8
+    label: Line 8 Style
+    base_key: style1
     hide: ${ ('part' if int(nconnections) >= 8 else 'all') }
 -   id: marker8
     label: Line 8 Marker
-    dtype: ''
+    base_key: marker1
     hide: ${ ('part' if int(nconnections) >= 8 else 'all') }
 -   id: alpha8
     label: Line 8 Alpha
-    dtype: ''
+    base_key: alpha1
     hide: ${ ('part' if int(nconnections) >= 8 else 'all') }
 -   id: label9
     label: Line 9 Label
-    dtype: ''
+    base_key: label1
     hide: ${ ('part' if int(nconnections) >= 9 else 'all') }
 -   id: width9
     label: Line 9 Width
-    dtype: ''
+    base_key: width1
     hide: ${ ('part' if int(nconnections) >= 9 else 'all') }
 -   id: color9
     label: Line 9 Color
-    dtype: ''
+    base_key: color1
     default: '"dark green"'
+    hide: ${ ('part' if int(nconnections) >= 9 else 'all') }
+-   id: style9
+    label: Line 9 Style
+    base_key: style1
     hide: ${ ('part' if int(nconnections) >= 9 else 'all') }
 -   id: marker9
     label: Line 9 Marker
-    dtype: ''
+    base_key: marker1
     hide: ${ ('part' if int(nconnections) >= 9 else 'all') }
 -   id: alpha9
     label: Line 9 Alpha
-    dtype: ''
+    base_key: alpha1
     hide: ${ ('part' if int(nconnections) >= 9 else 'all') }
 -   id: label10
     label: Line 10 Label
-    dtype: ''
+    base_key: label1
     hide: ${ ('part' if int(nconnections) >= 10 else 'all') }
 -   id: width10
     label: Line 10 Width
-    dtype: ''
+    base_key: width1
     hide: ${ ('part' if int(nconnections) >= 10 else 'all') }
 -   id: color10
     label: Line 10 Color
-    dtype: ''
+    base_key: color1
     default: '"dark blue"'
+    hide: ${ ('part' if int(nconnections) >= 10 else 'all') }
+-   id: style10
+    label: Line 10 Style
+    base_key: style1
     hide: ${ ('part' if int(nconnections) >= 10 else 'all') }
 -   id: marker10
     label: Line 10 Marker
-    dtype: ''
+    base_key: marker1
     hide: ${ ('part' if int(nconnections) >= 10 else 'all') }
 -   id: alpha10
     label: Line 10 Alpha
-    dtype: ''
+    base_key: alpha1
     hide: ${ ('part' if int(nconnections) >= 10 else 'all') }
 
 inputs:
@@ -392,76 +428,76 @@ asserts:
 templates:
     imports: import bokehgui
     make: |+
-      bokehgui.$(type.fcn)($size, $srate, $name,
+      bokehgui.${type.fcn}(${size}, ${srate}, ${name},\
       % if type.t == 'message' :
-        0
+        0\
       % else :
-        ${nconnections}
+        ${nconnections}\
       % endif
       )
 
-      self.$(id)_plot = bokehgui.$(type.plot)(self.doc, self.plot_lst, self.$(id), is_message =
+      self.${id}_plot = bokehgui.${type.plot}(self.doc, self.plot_lst, self.${id}, is_message =\
       % if type.t == 'message' :
-         True
+       True\
       % else :
-       False
+       False\
       % endif
       )
       labels = [${label1}, ${label2}, ${label3}, ${label4}, ${label5},
                 ${label6}, ${label7}, ${label8}, ${label9}, ${label10}]
       legend_list = []
-      for i in xrange(
+      for i in xrange(\
        % if type.t == 'message' :
-          1
+        1\
        % else :
-         ${nconnections}
+        ${nconnections}\
        % endif
        ):
         if len(labels[i]) == 0:
             if(i % 2 == 0):
-                legend_list.append("Re{{Data {0}}}\".format(i/2))
+                legend_list.append("Re{{Data {0}}}".format(i/2))
             else:
-                legend_list.append("Im{{Data {0}}}\".format(i/2))
+                legend_list.append("Im{{Data {0}}}".format(i/2))
         else:
             legend_list.append(labels[i])
 
-        self.${id}_plot.initialize(update_time = ${update_time},
+      self.${id}_plot.initialize(update_time = ${update_time},
                                   legend_list = legend_list)
 
-        self.${id}_plot.set_y_axis([${ymin}, ${ymax}])
-        % if (yunit == ""):
-          self.${id}_plot.set_y_label(${ylabel})
-        % else:
-          self.${id}_plot.set_y_label(${ylabel} + '(' +${yunit}+')')
-        % endif
+      self.${id}_plot.set_y_axis([${ymin}, ${ymax}])
+      % if (yunit == ""):
+      self.${id}_plot.set_y_label(${ylabel})
+      % else:
+      self.${id}_plot.set_y_label(${ylabel} + '(' +${yunit}+')')
+      % endif
 
-        % if (xunit == ""):
-          self.${id}_plot.set_x_label(${xlabel})
-        % else:
-          self.${id}_plot.set_x_label(${xlabel} + '(' +${xunit}+')')
-        % endif
-        self.${id}_plot.enable_tags(-1, ${entags})
-        self.${id}_plot.set_trigger_mode(${tr_mode}, ${tr_slope}, ${tr_level}, ${tr_delay}, ${tr_chan}, ${tr_tag})
-        self.${id}_plot.enable_grid(${grid})
-        self.${id}_plot.enable_axis_labels(${axislabels})
-        self.${id}_plot.disable_legend(not ${legend})
-        self.${id}_plot.set_layout(*(${placement}))
-        colors = [${color1}, ${color2}, ${color3}, ${color4}, ${color5},
-                  ${color6}, ${color7}, ${color8}, ${color9}, ${color10}]
-        widths = [${width1}, ${width2}, ${width3}, ${width4}, ${width5},
-                  ${width6}, ${width7}, ${width8}, ${width9}, ${width10}]
-        markers = [${marker1}, ${marker2}, ${marker3}, ${marker4}, ${marker5},
-                   ${marker6}, ${marker7}, ${marker8}, ${marker9}, ${marker10}]
-        alphas = [${alpha1}, ${alpha2}, ${alpha3}, ${alpha4}, ${alpha5},
-                  ${alpha6}, ${alpha7}, ${alpha8}, ${alpha9}, ${alpha10}]
-        for i in xrange(
+      % if (xunit == ""):
+      self.${id}_plot.set_x_label(${xlabel})
+      % else:
+      self.${id}_plot.set_x_label(${xlabel} + '(' +${xunit}+')')
+      % endif
+      self.${id}_plot.enable_tags(-1, ${entags})
+      self.${id}_plot.set_trigger_mode(${tr_mode}, ${tr_slope}, ${tr_level}, ${tr_delay}, ${tr_chan}, ${tr_tag})
+      self.${id}_plot.enable_grid(${grid})
+      self.${id}_plot.enable_axis_labels(${axislabels})
+      self.${id}_plot.disable_legend(not ${legend})
+      self.${id}_plot.set_layout(*(${placement}))
+      colors = [${color1}, ${color2}, ${color3}, ${color4}, ${color5},
+                ${color6}, ${color7}, ${color8}, ${color9}, ${color10}]
+      widths = [${width1}, ${width2}, ${width3}, ${width4}, ${width5},
+                ${width6}, ${width7}, ${width8}, ${width9}, ${width10}]
+      markers = [${marker1}, ${marker2}, ${marker3}, ${marker4}, ${marker5},
+                 ${marker6}, ${marker7}, ${marker8}, ${marker9}, ${marker10}]
+      alphas = [${alpha1}, ${alpha2}, ${alpha3}, ${alpha4}, ${alpha5},
+                ${alpha6}, ${alpha7}, ${alpha8}, ${alpha9}, ${alpha10}]
+      for i in xrange(\
         % if type.t == 'message' :
-           2
-        % else
-          ${nconnections}
+          2\
+        % else:
+          ${nconnections}\
         % endif
         ):
-          self.${id}_plot.format_line(i, colors[i], widths[i], 'None', markers[i], alphas[i])
+        self.${id}_plot.format_line(i, colors[i], widths[i], 'None', markers[i], alphas[i])
     callbacks:
     - set_x_axis([${min}, ${max}])
     # - set_title(${which}, ${title})

@@ -45,15 +45,12 @@ templates:
     imports: import bokehgui
     var_make: self.${id} = ${id} = ${value}
     make: |+
-      % if not label:
-      <% label = '\"%s\"'%${id} %>
-      % endif
-      _${id}_choices = {\"[0]\": ${true}, \"[]\": ${false}}
-      _${id}_choices_inv = dict((_${id}_choices[k],[0] if k == \"[0]\" else []) for k in _${id}_choices.keys())
-      % if (${value}() == ${true}() or ${value}() == ${false}()):
-      self.${id}_checkbox = bokehgui.checkbox(self.widget_lst, _${id}_choices_inv[${value}], ${label+\": \"}, inline = ${inline})
+      _${id}_choices = {"[0]": ${true}, "[]": ${false}}
+      _${id}_choices_inv = dict((_${id}_choices[k],[0] if k == "[0]" else []) for k in _${id}_choices.keys())
+      % if (value == true or value == false):
+      self.${id}_checkbox = bokehgui.checkbox(self.widget_lst, _${id}_choices_inv[${value}], ${label if label!="''" else "'{}'".format(id)} + ": ", inline = ${inline})
       % else:
-      self.${id}_checkbox = bokehgui.checkbox(self.widget_lst, _${id}_choices_inv[${false}], ${label+\": \"}, inline = ${inline})
+      self.${id}_checkbox = bokehgui.checkbox(self.widget_lst, _${id}_choices_inv[${false}], ${label if label!="''" else "'{}'".format(id)} + ": ", inline = ${inline})
       % endif
       self.${id}_checkbox.add_callback(
         lambda new: self.set_${id}(${type.conv}(_${id}_choices[str(new)])))

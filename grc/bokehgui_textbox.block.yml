@@ -33,12 +33,9 @@ templates:
         import bokehgui
     var_make: self.${id} = ${id} = ${value}
     make: |+
-    % if not label:
-      <% label = '\"%s\"'%id %>
-    % endif
-    self.${id}_textbox = bokehgui.textbox(self.widget_lst, str(${value}), ${label}+\": \")
-    self.${id}_textbox.add_callback(
-      lambda attr, old, new: self.set_${id}(${type.conv}(new)))
+      self.${id}_textbox = bokehgui.textbox(self.widget_lst, str(${value}), ${label if label!="''" else "'{}'".format(id)} +": ")
+      self.${id}_textbox.add_callback(
+        lambda attr, old, new: self.set_${id}(${type.conv}(new)))
 
     callbacks:
     - self.set_${id}(${value})

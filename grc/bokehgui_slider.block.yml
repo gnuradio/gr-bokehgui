@@ -33,7 +33,7 @@ parameters:
     label: Step
     dtype: ${ type }
     default: '1'
-    hide: ${ ('all' if type = 'int' else 'part') }
+    hide: ${ 'all' if type == 'int' else 'part' }
 -   id: value
     label: Default Value
     dtype: ${ type }
@@ -52,10 +52,7 @@ templates:
         import bokehgui
     var_make: self.${id} = ${id} = ${value}
     make: |+
-      % if not label:
-        <% label = '\"%s\"'%id %>
-      % endif
-      self.${id}_slider = bokehgui.slider(self.widget_lst, ${label}+\":\", ${start}, ${end}, ${step}, ${throttle}, ${value})
+      self.${id}_slider = bokehgui.slider(self.widget_lst, ${label if label!="''" else "'{}'".format(id)} +":", ${start}, ${end}, ${step}, ${throttle}, ${value})
       self.${id}_slider.add_callback(lambda attr, old, new: self.set_${id}(new))
 
     callbacks:

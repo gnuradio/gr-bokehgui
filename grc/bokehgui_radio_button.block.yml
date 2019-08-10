@@ -95,37 +95,35 @@ templates:
     imports: import bokehgui
     var_make: self.${id} = ${id} = ${value}
     make: |+
-      <% all_options = [option0, option1, option2, option3, option4][:int(${num_opts}())] %>
-      <% all_labels = [label0, label1, label2, label3, label4][:int(${num_opts}())]%>
       ########################################################################
       ## Create the options list
       ########################################################################
       % if int(num_opts):
-        self._${id}_options = [\
-        %for ${ch} in ${all_options}:
+      self._${id}_options = [\
+        %for ch in [option0, option1, option2, option3, option4][:int(num_opts())]:
           ${ch}, \
         % endfor
         ]
       % else:
-        self._${id}_options = ${options}
+      self._${id}_options = ${options}
       % endif
       ########################################################################
       ## Create the labels list
       ########################################################################
       % if int(num_opts):
-        self._${id}_labels = [\\
-        % for i, ${labels} in enumerate(${all_labels}):
-          % if labels:
-            ${labels},
+      self._${id}_labels = [\
+        % for i, lbl in enumerate([label0, label1, label2, label3, label4][:int(num_opts())]):
+          % if lbl:
+            ${lbl},\
           % else:
-            str(self._${id}_options[${i}]),
+            str(self._${id}_options[${i}]),\
           % endif
         % endfor
         ]
-      % elif ${labels}():
-        self._${id}_labels = ${labels}
+      % elif labels:
+      self._${id}_labels = ${labels}
       % else:
-        self._${id}_labels = map(str, self._${id}_options)
+      self._${id}_labels = map(str, self._${id}_options)
       % endif
 
       self.${id}_radiobutton = bokehgui.radiobutton(self.widget_lst, None, self._${id}_labels, inline = ${inline})

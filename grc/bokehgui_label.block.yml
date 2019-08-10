@@ -33,10 +33,7 @@ templates:
         import bokehgui
     var_make: self.${id}_val = ${id} = ${value}
     make: |+
-      % if not label:
-        <% label = '\"%s\"'%${id} %>
-      % endif
-      self.${id} = bokehgui.label(self.widget_lst, str(${id}), ${label}+\": \")
+      self.${id} = bokehgui.label(self.widget_lst, str(${id}), ${label if label!="''" else "'{}'".format(id)} +": ")
     callbacks:
     - self.set_${id}_val(${value})
     - self.${id}.set_value(str(${value}))
