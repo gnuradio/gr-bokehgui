@@ -86,7 +86,7 @@ ENDIF()
 ########################################################################
 # Install directories
 ########################################################################
-find_package(Gnuradio "3.8" REQUIRED)
+find_package(Gnuradio "3.8" REQUIRED runtime fft)
 include(GrVersion)
 
 include(GrPlatform) #define LIB_SUFFIX
@@ -126,9 +126,9 @@ endif(APPLE)
 # Find gnuradio build dependencies
 ########################################################################
 find_package(Doxygen)
-find_package(PythonLibs 3)
-find_package(Volk)
-find_package(SWIG)
+#find_package(PythonLibs 3)
+#find_package(Volk)
+#find_package(SWIG)
 
 
 ########################################################################
@@ -153,27 +153,27 @@ endif(DOXYGEN_FOUND)
 ########################################################################
 # Setup the include and linker paths
 ########################################################################
-include_directories(
+#include_directories(
 #    ${CMAKE_SOURCE_DIR}/lib
 #    ${CMAKE_SOURCE_DIR}/include
 #    ${CMAKE_BINARY_DIR}/lib
 #    ${CMAKE_BINARY_DIR}/include
-    ${Boost_INCLUDE_DIRS}
+#    ${Boost_INCLUDE_DIRS}
 #    ${CPPUNIT_INCLUDE_DIRS}
-    ${GNURADIO_ALL_INCLUDE_DIRS}
-    ${VOLK_INCLUDE_DIRS}
-)
+#    ${GNURADIO_ALL_INCLUDE_DIRS}
+#    ${VOLK_INCLUDE_DIRS}
+#)
 
-link_directories(
-    ${Boost_LIBRARY_DIRS}
+#link_directories(
+#    ${Boost_LIBRARY_DIRS}
 #    ${CPPUNIT_LIBRARY_DIRS}
-    ${GNURADIO_RUNTIME_LIBRARY_DIRS}
-    ${VOLK_LIBRARY_DIRS}
-)
+#    ${GNURADIO_RUNTIME_LIBRARY_DIRS}
+#    ${VOLK_LIBRARY_DIRS}
+#)
 
 # Set component parameters
-set(GR_BOKEHGUI_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/include CACHE INTERNAL "" FORCE)
-set(GR_BOKEHGUI_SWIG_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/swig CACHE INTERNAL "" FORCE)
+#set(GR_BOKEHGUI_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/include CACHE INTERNAL "" FORCE)
+#set(GR_BOKEHGUI_SWIG_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/swig CACHE INTERNAL "" FORCE)
 
 ########################################################################
 # Create uninstall target

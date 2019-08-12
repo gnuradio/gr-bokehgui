@@ -23,15 +23,14 @@
 ########################################################################
 include(GrPlatform) #define LIB_SUFFIX
 
-include_directories(${Boost_INCLUDE_DIR})
-link_directories(${Boost_LIBRARY_DIRS})
 list(APPEND bokehgui_sources
     time_sink_f_proc_impl.cc
     time_sink_c_proc_impl.cc
     freq_sink_f_proc_impl.cc
     freq_sink_c_proc_impl.cc
     waterfall_sink_f_proc_impl.cc
-    waterfall_sink_c_proc_impl.cc)
+    waterfall_sink_c_proc_impl.cc
+    )
 
 set(bokehgui_sources "${bokehgui_sources}" PARENT_SCOPE)
 if(NOT bokehgui_sources)
@@ -40,7 +39,7 @@ if(NOT bokehgui_sources)
 endif(NOT bokehgui_sources)
 
 add_library(gnuradio-bokehgui SHARED ${bokehgui_sources})
-target_link_libraries(gnuradio-bokehgui ${Boost_LIBRARIES} gnuradio::gnuradio-runtime volk)
+target_link_libraries(gnuradio-bokehgui gnuradio::gnuradio-runtime gnuradio::gnuradio-fft)
 target_include_directories(gnuradio-bokehgui
     PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>
     PUBLIC $<INSTALL_INTERFACE:include>
