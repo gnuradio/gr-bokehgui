@@ -101,7 +101,7 @@ class time_sink_c(bokeh_plot_config):
 
             if not self.is_message:
                 self.tags.append(LabelSet(x = 'x' + str(i), y = 'y' + str(i),
-                                          text = 'tags' + str(i / 2),
+                                          text = 'tags' + str(i // 2),
                                           level = 'glyph', x_offset = -20,
                                           y_offset = 5,
                                           source = self.tag_stream,
