@@ -127,7 +127,7 @@ class Layout:
                     return False
 
             vertical_cuts = [-1]
-            for i in xrange(self.min_col, self.max_col):
+            for i in  range(self.min_col, self.max_col):
                 if if_vert_line_cut(i, self.list):
                     continue
                 vertical_cuts.append(i)
@@ -184,7 +184,7 @@ class Layout:
                     return False
 
             horizontal_cuts = [-1]
-            for i in xrange(self.min_row, self.max_row):
+            for i in  range(self.min_row, self.max_row):
                 if if_hori_line_cut(i, self.list):
                     continue
                 horizontal_cuts.append(i)

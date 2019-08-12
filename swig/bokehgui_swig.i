@@ -1,7 +1,6 @@
 /* -*- c++ -*- */
 
 #define BOKEHGUI_API
-#define FILTER_API
 
 %{
 #define SWIG_FILE_WITH_INIT
@@ -27,7 +26,7 @@ if(PyArray_API == NULL)
 %include "bokehgui/trigger_mode.h"
 
 // load the firdes window types
-%import "gnuradio/filter/firdes.h"
+%import "gnuradio/fft/window.h"
 
 %{
 #include "bokehgui/base_sink.h"

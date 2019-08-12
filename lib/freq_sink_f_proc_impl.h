@@ -29,7 +29,7 @@ namespace gr {
     class freq_sink_f_proc_impl : public freq_sink_f_proc
     {
      private:
-       filter::firdes::win_type d_wintype;
+       fft::window::win_type d_wintype;
        std::vector<float> d_window;
        double d_center_freq, d_bandwidth;
        bool d_shift;
@@ -57,7 +57,7 @@ namespace gr {
       void reset();
       void _reset();
       void fft(float*, const float*, int);
-      bool set_fft_window(filter::firdes::win_type newwintype);
+      bool set_fft_window(fft::window::win_type newwintype);
       void set_frequency_range(double, double);
       void buildwindow();
       void set_size(int newsize);

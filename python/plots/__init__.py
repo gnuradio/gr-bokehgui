@@ -1,1 +1,1 @@
-from waterfall import WaterfallRenderer
+from .waterfall import WaterfallRenderer

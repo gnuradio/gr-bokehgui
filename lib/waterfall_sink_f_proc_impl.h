@@ -30,7 +30,7 @@ namespace gr {
      private:
       int d_nrows;
       float d_fftavg;
-      filter::firdes::win_type d_wintype;
+      fft::window::win_type d_wintype;
       std::vector<float> d_window;
       double d_center_freq, d_bandwidth;
       bool d_shift;
@@ -52,8 +52,8 @@ namespace gr {
       // Handles messages input port
       void handle_set_freq(pmt::pmt_t);
 
-      void set_fft_window(gr::filter::firdes::win_type win);
-      gr::filter::firdes::win_type get_wintype();
+      void set_fft_window(gr::fft::window::win_type win);
+      gr::fft::window::win_type get_wintype();
 
       void set_frequency_range(double, double);
       void _test_trigger_tags(int, int);

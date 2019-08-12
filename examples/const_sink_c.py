@@ -67,7 +67,7 @@ class top_block(gr.top_block):
         self.bokehgui_const_sink_c_0.set_x_label('I Channel')
         self.bokehgui_const_sink_c_0.set_layout(1, 1, 1, 1)
 
-        self.doc.add_root(bokehgui.BokehLayout.create_layout(self.plot_lst))
+        self.doc.add_root(bokehgui.bokeh_layout.create_layout(self.plot_lst))
         ##################################################
         # Connections
         ##################################################

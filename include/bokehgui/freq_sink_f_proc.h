@@ -22,7 +22,7 @@
 #define INCLUDED_BOKEHGUI_FREQ_SINK_F_PROC_H
 
 #include <bokehgui/base_sink.h>
-#include <gnuradio/filter/firdes.h>
+#include <gnuradio/fft/window.h>
 
 namespace gr {
   namespace bokehgui {
@@ -80,7 +80,7 @@ namespace gr {
       virtual double get_bandwidth() = 0;
       // virtual int get_fft_size() = 0; // Renamed to get_size
       virtual int get_wintype() = 0;
-      virtual bool set_fft_window(filter::firdes::win_type newwintype) = 0;
+      virtual bool set_fft_window(fft::window::win_type newwintype) = 0;
       virtual void buildwindow() = 0;
 
       // virtual bool fftresize(const int) = 0; // Renamed to set_size

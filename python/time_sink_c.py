@@ -101,7 +101,7 @@ class time_sink_c(bokeh_plot_config):
 
             if not self.is_message:
                 self.tags.append(LabelSet(x = 'x' + str(i), y = 'y' + str(i),
-                                          text = 'tags' + str(i / 2),
+                                          text = 'tags' + str(i // 2),
                                           level = 'glyph', x_offset = -20,
                                           y_offset = 5,
                                           source = self.tag_stream,
@@ -161,13 +161,13 @@ class time_sink_c(bokeh_plot_config):
             temp_x = []
             temp_y = []
             temp_tags = []
-            for j in stream_tags[i / 2].keys():
+            for j in stream_tags[i // 2].keys():
                 temp_x.append(self.values_x()[j])
                 temp_y.append(new_data['y' + str(i)][j])
-                temp_tags.append(stream_tags[i / 2][j])
+                temp_tags.append(stream_tags[i // 2][j])
             new_tagged_data['x' + str(i)] = temp_x
             new_tagged_data['y' + str(i)] = temp_y
-            new_tagged_data['tags' + str(i / 2)] = temp_tags
+            new_tagged_data['tags' + str(i // 2)] = temp_tags
             if len(temp_x) > max_tag_size:
                 max_tag_size = len(temp_x)
 

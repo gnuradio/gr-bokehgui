@@ -22,7 +22,9 @@ FIND_LIBRARY(
           /usr/local/lib64
           /usr/lib
           /usr/lib64
-)
+          )
+
+include("${CMAKE_CURRENT_LIST_DIR}/bokehguiTarget.cmake")
 
 INCLUDE(FindPackageHandleStandardArgs)
 FIND_PACKAGE_HANDLE_STANDARD_ARGS(BOKEHGUI DEFAULT_MSG BOKEHGUI_LIBRARIES BOKEHGUI_INCLUDE_DIRS)

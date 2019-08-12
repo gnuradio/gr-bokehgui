@@ -68,7 +68,7 @@ class top_block(gr.top_block):
         self.bokehgui_waterfall_sink_f_0.set_y_label('Time')
         self.bokehgui_waterfall_sink_f_0.set_layout(1, 1, 1, 1)
 
-        self.doc.add_root(bokehgui.BokehLayout.create_layout(self.plot_lst))
+        self.doc.add_root(bokehgui.bokeh_layout.create_layout(self.plot_lst))
         ##################################################
         # Connections
         ##################################################

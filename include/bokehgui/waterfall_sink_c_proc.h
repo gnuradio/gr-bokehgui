@@ -9,13 +9,13 @@
  * the Free Software Foundation; either version 3, or (at your option)
  * any later version.
  *
- * GNU Radio is distributed in the hope that it will be useful,
+ * This software is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GNU Radio; see the file COPYING.  If not, write to
+ * along with this software; see the file COPYING.  If not, write to
  * the Free Software Foundation, Inc., 51 Franklin Street,
  * Boston, MA 02110-1301, USA.
  */
@@ -24,7 +24,7 @@
 #define INCLUDED_BOKEHGUI_WATERFALL_SINK_C_H
 
 #include <bokehgui/base_sink.h>
-#include <gnuradio/filter/firdes.h>
+#include <gnuradio/fft/window.h>
 
 namespace gr {
   namespace bokehgui {
@@ -46,8 +46,8 @@ namespace gr {
       virtual double get_time_per_fft() = 0;
       virtual void buildwindow() = 0;
       virtual void set_time_per_fft(double) = 0;
-      virtual void set_fft_window(const gr::filter::firdes::win_type win) = 0;
-      virtual gr::filter::firdes::win_type get_wintype() = 0;
+      virtual void set_fft_window(const gr::fft::window::win_type win) = 0;
+      virtual gr::fft::window::win_type get_wintype() = 0;
 
       virtual void set_frequency_range(double, double) = 0;
       virtual void get_plot_data (float** output_items, int* nrows, int* size) = 0;

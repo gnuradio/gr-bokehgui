@@ -39,7 +39,7 @@ namespace gr {
                                                            double fc, double bw,
                                                            const std::string &name)
       : base_sink<gr_complex>("waterfall_sink_c_proc", fftsize, name, 1),
-      d_wintype((filter::firdes::win_type)(wintype)),
+      d_wintype((fft::window::win_type)(wintype)),
       d_center_freq(fc), d_bandwidth(bw), d_nrows(200)
     {
       d_shift = true;
@@ -180,7 +180,7 @@ namespace gr {
     }
 
     void
-    waterfall_sink_c_proc_impl::set_fft_window(filter::firdes::win_type newwintype)
+    waterfall_sink_c_proc_impl::set_fft_window(fft::window::win_type newwintype)
     {
       gr::thread::scoped_lock lock(d_setlock);
       if (d_wintype != newwintype) {
@@ -192,9 +192,9 @@ namespace gr {
     void
     waterfall_sink_c_proc_impl::buildwindow()
     {
-      if(d_wintype != filter::firdes::WIN_NONE) {
-        d_window = filter::firdes::window(d_wintype, d_size, 6.76);
-      }
+      // if(d_wintype != fft::window::WIN_NONE) {
+        d_window = fft::window::build(d_wintype, d_size, 6.76);
+      // }
     }
 
     void
@@ -265,7 +265,7 @@ namespace gr {
       return d_bandwidth;
     }
 
-    gr::filter::firdes::win_type
+    gr::fft::window::win_type
     waterfall_sink_c_proc_impl::get_wintype()
     {
       return d_wintype;
