@@ -121,11 +121,11 @@ class waterfall_sink_c(bokeh_plot_config):
         step = bw / self.size
 
         self.frequency_range = [0] * self.size
-        for i in range(self.size / 2):
-            self.frequency_range[i] = fc - step * (self.size / 2 - i)
-        self.frequency_range[(self.size + 1) / 2] = self.fc
-        for i in range((self.size - 1) / 2):
-            self.frequency_range[i + 1 + (self.size + 1) / 2] = fc + step * i
+        for i in range(self.size // 2):
+            self.frequency_range[i] = fc - step * (self.size // 2 - i)
+        self.frequency_range[(self.size + 1) // 2] = self.fc
+        for i in range((self.size - 1) // 2):
+            self.frequency_range[i + 1 + (self.size + 1) // 2] = fc + step * i
 
         if set_y_axis:
             self.set_y_axis([fc - bw / 2, fc + bw / 2])
