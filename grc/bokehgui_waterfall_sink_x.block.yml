@@ -144,7 +144,7 @@ templates:
           legend_list.append(${label})
 
       self.${id}_plot.initialize(update_time = ${update_time},
-                    legend_list = legend_list, palette = '$color',
+                    legend_list = legend_list, palette = '${color}',
                     values_range = [${int_min}, ${int_max}])
 
       % if (yunit == ''):
