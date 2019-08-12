@@ -446,7 +446,7 @@ templates:
       labels = [${label1}, ${label2}, ${label3}, ${label4}, ${label5},
                 ${label6}, ${label7}, ${label8}, ${label9}, ${label10}]
       legend_list = []
-      for i in xrange(\
+      for i in range(\
        % if type.t == 'message' :
         1\
        % else :
@@ -490,7 +490,7 @@ templates:
                  ${marker6}, ${marker7}, ${marker8}, ${marker9}, ${marker10}]
       alphas = [${alpha1}, ${alpha2}, ${alpha3}, ${alpha4}, ${alpha5},
                 ${alpha6}, ${alpha7}, ${alpha8}, ${alpha9}, ${alpha10}]
-      for i in xrange(\
+      for i in range(\
         % if type.t == 'message' :
           2\
         % else:

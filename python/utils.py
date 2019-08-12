@@ -32,11 +32,11 @@ default_labels_c = ["Re{{Data {0}}}".format(i / 2) if i % 2 == 0
 def create_server():
     port = subprocess.check_output([os.path.abspath(
         os.path.dirname(__file__)) + "/scripts/check-port.sh"])
-    server_proc = subprocess.Popen(["bokeh", "serve", "--port", str(port[:-1]),
+    server_proc = subprocess.Popen(["bokeh", "serve", "--port", str(int(port)),
                                     "--allow-websocket-origin=*",
                                     os.path.abspath(os.path.dirname(
                                         __file__)) + "/plots/bokehgui.py"])
-    return server_proc, str(port[:-1])
+    return server_proc, str(int(port))
 
 PALETTES = {
     'Inferno':bp.all_palettes['Inferno'][256],
