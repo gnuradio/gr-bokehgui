@@ -10,19 +10,24 @@ export class WaterfallRendererView extends RendererView {
 
   private canvas: HTMLCanvasElement[]
   private image: Uint32Array[]
-  private x: number[]
-  private col: number
+  private y: number[]
+  private row: number
   private tile: number
   private cmap: LinearColorMapper
   private xscale: Scale
   private yscale: Scale
+  private min_freq: number
   private max_freq: number
+  private tile_height: number
 
   initialize(): void {
     super.initialize()
 
-    const N = Math.ceil(this.model.num_grams/this.model.tile_width) + 1
-    const [w, h] = [this.model.tile_width, this.model.gram_length]
+    this.model.update = false
+
+    const N = 11
+    this.tile_height = this.model.time_length / 10
+    const [w, h] = [this.model.fft_length, this.tile_height]
 
     this.canvas = []
     this.image = []
@@ -31,16 +36,17 @@ export class WaterfallRendererView extends RendererView {
       this.image.push(new Uint32Array(w*h))
     }
 
-    this.x = new Array(N)
+    this.y = new Array(N)
     for (let i = 0; i < N; i++)
-      this.x[i] = -this.model.num_grams + this.model.tile_width*(i-1)
+      this.y[i] = this.model.time_length + this.tile_height*(i-1)
 
-    this.col = 0
+    this.row = 0
     this.tile = 0
-    this.cmap = new LinearColorMapper({palette: this.model.palette, low: 0, high: 5})
+    this.cmap = new LinearColorMapper({palette: this.model.palette, low: this.model.min_value, high: this.model.max_value})
     this.xscale = this.plot_view.frame.xscales.default
     this.yscale = this.plot_view.frame.yscales.default
-    this.max_freq = this.plot_view.frame.y_range.end
+    this.min_freq = this.plot_view.frame.x_range.start
+    this.max_freq = this.plot_view.frame.x_range.end
   }
 
   connect_signals(): void {
@@ -57,21 +63,13 @@ export class WaterfallRendererView extends RendererView {
 
     this._update_tiles()
 
-    const sx = this.xscale.v_compute(this.x)
-    const sy = this.yscale.compute(0)
-    const sw = Math.ceil(this.xscale.compute(this.model.tile_width) - this.xscale.compute(0))
-    const sh = Math.ceil(this.yscale.compute(0) - this.yscale.compute(this.max_freq))
+    const sx = this.xscale.compute(this.min_freq)
+    const sy = this.yscale.v_compute(this.y)
+    const sw = Math.ceil(this.xscale.compute(this.max_freq) - this.xscale.compute(this.min_freq))
+    const sh = Math.ceil(this.yscale.compute(this.tile_height) - this.yscale.compute(0))
 
-    ctx.translate(0, sy)
-    ctx.scale(1, -1)
-    ctx.translate(0, -sy)
-
-    for (let i = 0; i < sx.length; i++)
-      ctx.drawImage(this.canvas[i], sx[i], sy, sw, sh)
-
-    ctx.translate(0, sy)
-    ctx.scale(1, -1)
-    ctx.translate(0, -sy)
+    for (let i = 0; i < sy.length; i++)
+      ctx.drawImage(this.canvas[i], sx, sy[i], sw, sh)
 
     ctx.setImageSmoothingEnabled(smoothing)
 
@@ -79,29 +77,29 @@ export class WaterfallRendererView extends RendererView {
   }
 
   _update_tiles(): void {
-    // shift all tiles to the right by one
-    for (let i = 0; i < this.x.length; i++)
-      this.x[i] += 1
+    // shift all tiles down by one
+    for (let i = 0; i < this.y.length; i++)
+      this.y[i] -= 1
 
-    // if we've updated the last column in the current tile, move to the next tile
+    // if we've updated the last row in the current tile, move to the next tile
     // in the buffer (rotating the buffer if necessary)
-    this.col -= 1
-    if (this.col < 0) {
-      this.col = this.model.tile_width - 1
+    this.row -= 1
+    if (this.row < 0) {
+      this.row = this.tile_height - 1
       this.tile -= 1
       if (this.tile < 0)
-        this.tile = this.x.length - 1
-      this.x[this.tile] = -this.model.tile_width
+        this.tile = this.y.length - 1
+      this.y[this.tile] = this.model.time_length + this.tile_height
     }
 
     // apply the lastest column to the current tile image
     const buf32 = new Uint32Array(this.cmap.rgba_mapper.v_compute(this.model.latest).buffer)
-    for (let i = 0; i < this.model.gram_length; i++)
-      this.image[this.tile][i*this.model.tile_width+this.col] = buf32[i]
+    for (let i = 0; i < this.model.fft_length; i++)
+      this.image[this.tile][i+this.model.fft_length*this.row] = buf32[i]
 
     // update the tiles canvas with the image data
     const cctx = this.canvas[this.tile].getContext('2d')!
-    const image = cctx.getImageData(0, 0, this.model.tile_width, this.model.gram_length)
+    const image = cctx.getImageData(0, 0, this.model.fft_length, this.tile_height)
     image.data.set(new Uint8Array(this.image[this.tile].buffer))
     cctx.putImageData(image, 0, 0)
   }
@@ -113,9 +111,11 @@ export namespace WaterfallRenderer {
   export type Props = Renderer.Props & {
     latest:      p.Property<number[]>
     palette:     p.Property<Color[]>
-    num_grams:   p.Property<number>
-    gram_length: p.Property<number>
-    tile_width:  p.Property<number>
+    time_length: p.Property<number>
+    fft_length:  p.Property<number>
+    min_value:   p.Property<number>
+    max_value:   p.Property<number>
+    update:      p.Property<boolean>
   }
 }
 
@@ -134,9 +134,11 @@ export class WaterfallRenderer extends Renderer {
     this.define<WaterfallRenderer.Props>({
       latest:      [ p.Any ],
       palette:     [ p.Any ],
-      num_grams:   [ p.Int ],
-      gram_length: [ p.Int ],
-      tile_width:  [ p.Int ],
+      time_length: [ p.Int ],
+      fft_length:  [ p.Int ],
+      min_value:   [ p.Any ],
+      max_value:   [ p.Any ],
+      update:      [ p.Any ],
     })
 
     this.override({
