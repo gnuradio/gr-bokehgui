@@ -62,7 +62,8 @@ class time_sink_f(bokeh_plot_config):
         self.plot = figure(tools = utils.default_tools(), active_drag = 'ypan',
                            active_scroll = 'ywheel_zoom',
                            y_axis_type = y_axis_type,
-                           x_axis_type = x_axis_type)
+                           x_axis_type = x_axis_type,
+                           output_backend="webgl")
         data = dict()
         tag_data = dict()
         data['x'] = []

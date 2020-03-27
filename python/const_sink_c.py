@@ -65,7 +65,8 @@ class const_sink_c(bokeh_plot_config):
         tools.append('wheel_zoom')
         self.plot = figure(tools = tools, active_drag = 'pan',
                            active_scroll = 'wheel_zoom',
-                           y_axis_type = 'linear', x_axis_type = 'linear')
+                           y_axis_type = 'linear', x_axis_type = 'linear',
+                           output_backend="webgl")
         data = dict()
 
         tag_data = dict()

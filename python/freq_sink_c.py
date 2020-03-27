@@ -60,7 +60,8 @@ class freq_sink_c(bokeh_plot_config):
     def initialize(self, legend_list = utils.default_labels_f,
                    update_time = 100):
         self.plot = figure(tools = utils.default_tools(), active_drag = 'ypan',
-                           active_scroll = 'ywheel_zoom', )
+                           active_scroll = 'ywheel_zoom',
+                           output_backend="webgl")
         data = dict()
         data['x'] = []
 
