@@ -465,6 +465,7 @@ templates:
                                   legend_list = legend_list)
 
       self.${id}_plot.set_y_axis([${ymin}, ${ymax}])
+      self.${id}_plot.set_x_axis([${xmin}, ${xmax}])
       % if (yunit == ""):
       self.${id}_plot.set_y_label(${ylabel})
       % else:
