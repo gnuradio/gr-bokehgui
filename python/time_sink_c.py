@@ -196,5 +196,7 @@ class time_sink_c(bokeh_plot_config):
         else:
             if en:
                 self.tags[which].text_color = 'black'
+                self.tags_marker[which].visible = True
             else:
                 self.tags[which].text_color = None
+                self.tags_marker[which].visible = False
