@@ -37,6 +37,7 @@ except ImportError:
 # import any pure python here
 from .bokeh_plot_config import bokeh_plot_config
 from .checkbox import checkbox
+from .button import button
 from .const_sink_c import const_sink_c
 from .freq_sink_c import freq_sink_c
 from .freq_sink_f import freq_sink_f

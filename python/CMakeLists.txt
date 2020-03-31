@@ -42,6 +42,7 @@ GR_PYTHON_INSTALL(
     slider.py
     range_slider.py
     checkbox.py
+    button.py
     radio_button.py
     bokeh_layout.py
     utils.py
