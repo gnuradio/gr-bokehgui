@@ -35,8 +35,7 @@ templates:
     make: |+
       self.${id} = bokehgui.label(self.widget_lst, str(${id}), ${label if label!="''" else "'{}'".format(id)} +": ")
     callbacks:
-    - self.set_${id}_val(${value})
-    - self.${id}.set_value(str(${value}))
+    - self.${id}.set_value(${value})
 
 documentation: |-
     This block creates a variable with a label widget for text. Leave the label blank to use the variable id as the label.
