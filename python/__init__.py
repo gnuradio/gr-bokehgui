@@ -48,6 +48,8 @@ from .slider import slider
 from .textbox import textbox
 from .time_sink_c import time_sink_c
 from .time_sink_f import time_sink_f
+from .vec_sink_c import vec_sink_c
+from .vec_sink_f import vec_sink_f
 from .waterfall_sink_c import waterfall_sink_c
 from .waterfall_sink_f import waterfall_sink_f
 #

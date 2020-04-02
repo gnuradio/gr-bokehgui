@@ -20,6 +20,7 @@
 
 install(FILES
     bokehgui_time_sink_x.block.yml
+    bokehgui_vec_sink_x.block.yml
     bokehgui_freq_sink_x.block.yml
     bokehgui_label.block.yml
     bokehgui_slider.block.yml

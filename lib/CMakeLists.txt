@@ -24,6 +24,8 @@
 include(GrPlatform) #define LIB_SUFFIX
 
 list(APPEND bokehgui_sources
+    vec_sink_f_proc_impl.cc
+    vec_sink_c_proc_impl.cc
     time_sink_f_proc_impl.cc
     time_sink_c_proc_impl.cc
     freq_sink_f_proc_impl.cc

@@ -3,6 +3,7 @@
   - bokehgui_frequency_sink_x
   - bokehgui_time_const_x
   - bokehgui_time_sink_x
+  - bokehgui_vector_sink_x
   - bokehgui_waterfall_sink_x
 
 

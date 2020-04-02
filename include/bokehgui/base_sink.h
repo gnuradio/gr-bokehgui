@@ -61,11 +61,11 @@ namespace gr {
     {
      public:
       base_sink() {} // To allow a virtual inheritance
-      base_sink(std::string class_name, int size, const std::string &name, int nconnections)
+      base_sink(std::string class_name, int size, const std::string &name, int nconnections, unsigned int vlen = 1)
         : sync_block(class_name,
-                     io_signature::make(0, nconnections, sizeof(T)),
+                     io_signature::make(0, nconnections, sizeof(T)*vlen),
                      io_signature::make(0, 0, 0)),
-        d_size(size), d_name(name), d_nconnections(nconnections)
+        d_size(size), d_name(name), d_nconnections(nconnections), d_vlen(vlen)
       {
         d_queue_size = BOKEH_BUFFER_QUEUE_SIZE;
         d_index = 0;
@@ -74,7 +74,7 @@ namespace gr {
         set_msg_handler(pmt::mp("in"),
                         boost::bind(&base_sink<T>::handle_pdus, this, _1));
 
-        const int alignment_multiple = volk_get_alignment() / sizeof(T);
+        const int alignment_multiple = volk_get_alignment() / (sizeof(T)*d_vlen);
         set_alignment(std::max(1, alignment_multiple));
 
         set_output_multiple (d_size);
@@ -109,10 +109,10 @@ namespace gr {
           return;
         }
 
-        *nrows = d_nconnections + 1;
+        *nrows = d_nconnections + 1;  //Why the +1? why not d_buffers.front().size()?
         *size = d_buffers.front()[0].size();
 
-        float* arr = (float*) malloc(2*(*nrows)*(*size)*sizeof(float));
+        float* arr = (float*) malloc(2*(*nrows)*(*size)*sizeof(float)); // Why the 2* and the size float and not T?
         memset(arr, 0, 2*(*nrows)*(*size)*sizeof(float));
         process_plot(arr, nrows, size);
 
@@ -143,10 +143,10 @@ namespace gr {
           // We will start looking from d_index to the end of input_items
           // First check if d_index+d_size < noutput_items
           if(d_triggered) {
-            if (d_index + nitems > noutput_items) {
+            if (d_index + nitems > noutput_items) { // This should never happen, it's handled above
               nitems = noutput_items - d_index;
             }
-            if(d_buffers.size() == d_queue_size) {
+            if(d_buffers.size() == d_queue_size) {  //Make room if buffer queue is full
               d_buffers.pop();
               pop_other_queues();
             }
@@ -155,13 +155,13 @@ namespace gr {
             data_buff.reserve(d_nconnections + 1);
             d_buffers.push(data_buff);
 
-            for(int n = 0; n < d_nconnections + 1; n++) {
-              d_buffers.back().push_back(std::vector<T>(nitems, 0));
+            for(int n = 0; n < d_nconnections + 1; n++) { // Why the +1?
+              d_buffers.back().push_back(std::vector<T>(nitems*d_vlen, 0));
               if (n == d_nconnections) {
                 continue;
               }
               in = (const T*) input_items[n];
-              memcpy(&d_buffers.back()[n][0], &in[d_index], nitems*sizeof(T));
+              memcpy(&d_buffers.back()[n][0], &in[d_index*d_vlen], nitems*sizeof(T)*d_vlen);
             }
 
             work_process_other_queues(d_index, nitems);
@@ -222,6 +222,9 @@ namespace gr {
       int get_size() {
         return d_size;
       }
+      int get_vlen() {
+        return d_vlen;
+      }
       std::string get_name() {
         return d_name;
       }
@@ -239,6 +242,7 @@ namespace gr {
       std::queue<std::vector<std::vector<T> > > d_buffers;
       // Size of plot
       int d_size;
+      unsigned int d_vlen;
       // Name of the block and Title of the plot
       std::string d_name;
       // Number of connections

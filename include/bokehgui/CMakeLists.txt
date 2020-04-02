@@ -25,6 +25,8 @@ install(FILES
     api.h
     trigger_mode.h
     base_sink.h
+    vec_sink_f_proc.h
+    vec_sink_c_proc.h
     time_sink_f_proc.h
     time_sink_c_proc.h
     freq_sink_f_proc.h

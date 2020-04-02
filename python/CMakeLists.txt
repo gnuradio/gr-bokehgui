@@ -35,6 +35,8 @@ GR_PYTHON_INSTALL(
     bokeh_plot_config.py
     time_sink_f.py
     time_sink_c.py
+    vec_sink_f.py
+    vec_sink_c.py
     freq_sink_f.py
     freq_sink_c.py
     textbox.py
