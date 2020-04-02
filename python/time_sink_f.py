@@ -107,7 +107,7 @@ class time_sink_f(bokeh_plot_config):
                 self.tags_marker.append(
                         self.plot.triangle(x = 'x' + str(i), y = 'y' + str(i),
                                            source = self.tag_stream, size = 10,
-                                           fill_color = 'red')
+                                           fill_color = 'red', line_color = 'red')
                         )
 
                 self.plot.add_layout(self.tags[i])
@@ -165,7 +165,6 @@ class time_sink_f(bokeh_plot_config):
             new_tagged_data['tags' + str(i)] = temp_tags
             if len(temp_x) > max_tag_size:
                 max_tag_size = len(temp_x)
-
         self.stream.stream(new_data, rollover = self.size)
         self.tag_stream.stream(new_tagged_data, rollover = max_tag_size)
         return
