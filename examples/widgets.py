@@ -82,12 +82,12 @@ class top_block(gr.top_block):
         self.bokehgui_time_sink_f_0.set_line_width(1, 2)
         self.bokehgui_time_sink_f_0.set_layout(1, 1, 2, 2)
 
-        input_t = bokehgui.BokehLayout.widgetbox(self.widget_lst)
-        widgetbox = bokehgui.BokehLayout.WidgetLayout(input_t)
+        input_t = bokehgui.bokeh_layout.widgetbox(self.widget_lst)
+        widgetbox = bokehgui.bokeh_layout.WidgetLayout(input_t)
         widgetbox.set_layout(3, 3, 2, 2)
 
         list_obj = [widgetbox] + self.plot_lst
-        layout_t = bokehgui.BokehLayout.create_layout(list_obj)
+        layout_t = bokehgui.bokeh_layout.create_layout(list_obj)
         self.doc.add_root(layout_t)
 
         ##################################################

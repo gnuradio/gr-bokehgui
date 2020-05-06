@@ -60,7 +60,8 @@ class freq_sink_f(bokeh_plot_config):
     def initialize(self, legend_list = utils.default_labels_f,
                    update_time = 100):
         self.plot = figure(tools = utils.default_tools(), active_drag = 'ypan',
-                           active_scroll = 'ywheel_zoom', )
+                           active_scroll = 'ywheel_zoom',
+                           output_backend="webgl")
         data = dict()
         data['x'] = []
         if self.is_message:
@@ -129,11 +130,11 @@ class freq_sink_f(bokeh_plot_config):
         step = bw / self.size
 
         self.frequency_range = [0] * self.size
-        for i in range(self.size / 2):
-            self.frequency_range[i] = fc - step * (self.size / 2 - i)
-        self.frequency_range[(self.size + 1) / 2] = self.fc
-        for i in range((self.size - 1) / 2):
-            self.frequency_range[i + 1 + (self.size + 1) / 2] = fc + step * i
+        for i in range(self.size // 2):
+            self.frequency_range[i] = fc - step * (self.size // 2 - i)
+        self.frequency_range[(self.size + 1) // 2] = self.fc
+        for i in range((self.size - 1) // 2):
+            self.frequency_range[i + 1 + (self.size + 1) // 2] = fc + step * i
 
         if set_x_axis:
             self.set_plot_pos_half(self.half_plot)

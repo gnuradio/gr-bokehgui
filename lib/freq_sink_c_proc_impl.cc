@@ -53,7 +53,7 @@ namespace gr {
       : base_sink<gr_complex>("freq_sink_c_proc",
                               fftsize, name,
                               nconnections),
-      d_wintype((filter::firdes::win_type(wintype))),
+      d_wintype((fft::window::win_type(wintype))),
       d_center_freq(fc), d_bandwidth(bw)
     {
       // Perform fftshift operation
@@ -194,7 +194,7 @@ namespace gr {
     }
 
     bool
-    freq_sink_c_proc_impl::set_fft_window(filter::firdes::win_type newwintype)
+    freq_sink_c_proc_impl::set_fft_window(fft::window::win_type newwintype)
     {
       gr::thread::scoped_lock lock(d_setlock);
 
@@ -210,9 +210,9 @@ namespace gr {
     freq_sink_c_proc_impl::buildwindow()
     {
       d_window.clear();
-      if(d_wintype != filter::firdes::WIN_NONE) {
-        d_window = filter::firdes::window(d_wintype, d_size, 6.76);
-      }
+      // if(d_wintype != fft::window::WIN_NONE) {
+        d_window = fft::window::build(d_wintype, d_size, 6.76);
+      // }
     }
 
     void

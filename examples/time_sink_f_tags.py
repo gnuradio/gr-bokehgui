@@ -80,7 +80,7 @@ class top_block(gr.top_block):
         self.bokehgui_time_sink_f_0.set_line_color(1, 'red')
         self.bokehgui_time_sink_f_0.set_line_marker(0, '^')
 
-        layout_t = bokehgui.BokehLayout.create_layout(self.plot_lst)
+        layout_t = bokehgui.bokeh_layout.create_layout(self.plot_lst)
         self.doc.add_root(layout_t)
         ##################################################
         # Connections
