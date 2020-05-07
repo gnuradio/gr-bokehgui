@@ -55,7 +55,7 @@ namespace gr {
     class BOKEHGUI_API freq_sink_c_proc : virtual public base_sink<gr_complex>
     {
      public:
-      typedef boost::shared_ptr<freq_sink_c_proc> sptr;
+      typedef std::shared_ptr<freq_sink_c_proc> sptr;
 
        /*!
         * \brief Build a complex frequency sink
@@ -116,4 +116,3 @@ namespace gr {
 } // namespace gr
 
 #endif /* INCLUDED_BOKEHGUI_FREQ_SINK_C_PROC_H */
-

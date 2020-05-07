@@ -31,7 +31,7 @@ namespace gr {
     class BOKEHGUI_API waterfall_sink_c_proc : virtual public base_sink<gr_complex>
     {
     public:
-      typedef boost::shared_ptr <waterfall_sink_c_proc> sptr;
+      typedef std::shared_ptr <waterfall_sink_c_proc> sptr;
       static sptr make(int size,
                        int wintype,
                        double fc,
