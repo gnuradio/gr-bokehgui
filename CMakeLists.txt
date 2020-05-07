@@ -47,6 +47,7 @@ set(VERSION_API    0)
 set(VERSION_ABI 0)
 set(VERSION_PATCH git)
 
+set(PYTHON3_MIN_VERSION "3.6.5")
 cmake_policy(SET CMP0011 NEW)
 
 # Enable generation of compile_commands.json for code completion engines
@@ -86,14 +87,7 @@ ENDIF()
 ########################################################################
 # Install directories
 ########################################################################
-# find_package(Gnuradio "3.9" REQUIRED runtime fft)
-find_package(Gnuradio "3.8" COMPONENTS runtime fft)
-if(NOT Gnuradio_FOUND)
-    find_package(Gnuradio "3.9" COMPONENTS runtime fft)
-	if(NOT Gnuradio_FOUND)
-	    message(FATAL_ERROR "Unable to find GNURadio 3.8 or 3.9")
-	ENDIF(NOT Gnuradio_FOUND)
-ENDIF(NOT Gnuradio_FOUND)
+find_package(Gnuradio "3.9" REQUIRED runtime fft)
 include(GrVersion)
 
 include(GrPlatform) #define LIB_SUFFIX
@@ -133,9 +127,7 @@ endif(APPLE)
 # Find gnuradio build dependencies
 ########################################################################
 find_package(Doxygen)
-#find_package(PythonLibs 3)
-#find_package(Volk)
-#find_package(SWIG)
+find_package(PythonInterp ${PYTHON_MIN_VERSION} COMPONENTS Interpreter Development NumPy)
 
 
 ########################################################################
@@ -157,30 +149,6 @@ else(DOXYGEN_FOUND)
     option(ENABLE_DOXYGEN "Build docs using Doxygen" OFF)
 endif(DOXYGEN_FOUND)
 
-########################################################################
-# Setup the include and linker paths
-########################################################################
-#include_directories(
-#    ${CMAKE_SOURCE_DIR}/lib
-#    ${CMAKE_SOURCE_DIR}/include
-#    ${CMAKE_BINARY_DIR}/lib
-#    ${CMAKE_BINARY_DIR}/include
-#    ${Boost_INCLUDE_DIRS}
-#    ${CPPUNIT_INCLUDE_DIRS}
-#    ${GNURADIO_ALL_INCLUDE_DIRS}
-#    ${VOLK_INCLUDE_DIRS}
-#)
-
-#link_directories(
-#    ${Boost_LIBRARY_DIRS}
-#    ${CPPUNIT_LIBRARY_DIRS}
-#    ${GNURADIO_RUNTIME_LIBRARY_DIRS}
-#    ${VOLK_LIBRARY_DIRS}
-#)
-
-# Set component parameters
-#set(GR_BOKEHGUI_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/include CACHE INTERNAL "" FORCE)
-#set(GR_BOKEHGUI_SWIG_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/swig CACHE INTERNAL "" FORCE)
 
 ########################################################################
 # Create uninstall target
@@ -209,9 +177,6 @@ add_subdirectory(grc)
 ########################################################################
 # Install cmake search helper for this library
 ########################################################################
-#if(NOT CMAKE_MODULES_DIR)
-#  set(CMAKE_MODULES_DIR lib${LIB_SUFFIX}/cmake)
-#endif(NOT CMAKE_MODULES_DIR)
 
 install(FILES cmake/Modules/bokehguiConfig.cmake
     DESTINATION ${CMAKE_MODULES_DIR}/bokehgui
