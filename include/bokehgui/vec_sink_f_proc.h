@@ -54,7 +54,7 @@ namespace gr {
     class BOKEHGUI_API vec_sink_f_proc : virtual public base_sink<float>
     {
      public:
-      typedef boost::shared_ptr<vec_sink_f_proc> sptr;
+      typedef std::shared_ptr<vec_sink_f_proc> sptr;
 
       /*!
        * \brief Build a floating point vector sink
