@@ -21,18 +21,31 @@ from bokeh.models.widgets import Slider
 class slider():
     def __init__(self, widget_lst, label, start, end, step, callback_throttle,
                  default):
-        self.widget_lst = widget_lst
+        self.label = label
+        self.start = start
+        self.end = end
+        self.step = step
+        self.callback_throttle = callback_throttle
+        self.default = default
         self.slider = None
-        self.initialize(label, start, end, step, callback_throttle, default)
+        self.callback = None
+        # self.initialize(label, start, end, step, callback_throttle, default)
+        widget_lst.append(self)
 
-    def initialize(self, label, start, end, step, callback_throttle, default):
-        self.slider = Slider(start = start, end = end, value = default,
-                             step = step, title = label,
-                             callback_throttle = callback_throttle)
-        self.widget_lst.append(self.slider)
+    def initialize(self, widget_lst):
+        self.slider = Slider(start = self.start, end = self.end, value = self.default,
+                             step = self.step, title = self.label,
+                             callback_throttle = self.callback_throttle)
+        widget_lst.append(self.slider)
+        if self.callback is not None:
+            self.slider.on_change('value', self.callback)
 
     def add_callback(self, callback):
-        self.slider.on_change('value', callback)
+        self.callback = callback
+        if self.slider is not None:
+            self.slider.on_change('value', self.callback) #May not keep that one
 
     def set_value(self, value):
-        self.slider.value = value
+        if self.slider is not None:
+            self.slider.value = value
+        self.default = value

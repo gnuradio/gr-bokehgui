@@ -94,6 +94,68 @@ blocks:
     coordinate: [728, 172.0]
     rotation: 0
     state: enabled
+- name: ntype_cmplx
+  id: variable_bokehgui_checkbox
+  parameters:
+    comment: ''
+    'false': '200'
+    inline: 'True'
+    label: Noise Type
+    'true': '201'
+    type: int
+    value: '201'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [58, 431]
+    rotation: 0
+    state: enabled
+- name: ntype_float
+  id: variable_bokehgui_radiobutton
+  parameters:
+    comment: ''
+    inline: 'False'
+    label0: Uniform
+    label1: Gaussian
+    label2: Laplacian
+    label3: Impulse
+    label4: ''
+    labels: '[]'
+    num_opts: '4'
+    option0: '200'
+    option1: '201'
+    option2: '201'
+    option3: '203'
+    option4: '4'
+    options: '[0, 1, 2]'
+    type: int
+    value: '201'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [537, 468]
+    rotation: 0
+    state: enabled
+- name: offset
+  id: variable_bokehgui_range_slider
+  parameters:
+    comment: ''
+    end: '2'
+    label: Offsets
+    start: '-2'
+    step: '0.1'
+    throttle: '1'
+    type: real_vector
+    value: (-1, 0)
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [244, 419]
+    rotation: 0
+    state: true
 - name: samp_rate
   id: variable
   parameters:
@@ -133,7 +195,7 @@ blocks:
     comment: ''
     maxoutbuf: '0'
     minoutbuf: '0'
-    noise_type: analog.GR_GAUSSIAN
+    noise_type: ntype_cmplx
     seed: '0'
     type: complex
   states:
@@ -152,7 +214,7 @@ blocks:
     comment: ''
     maxoutbuf: '0'
     minoutbuf: '0'
-    noise_type: analog.GR_GAUSSIAN
+    noise_type: ntype_float
     seed: '0'
     type: float
   states:
@@ -172,7 +234,7 @@ blocks:
     freq: frequency
     maxoutbuf: '0'
     minoutbuf: '0'
-    offset: '0'
+    offset: offset[0]
     phase: '0'
     samp_rate: samp_rate
     type: complex
@@ -194,7 +256,7 @@ blocks:
     freq: frequency
     maxoutbuf: '0'
     minoutbuf: '0'
-    offset: '0'
+    offset: offset[1]
     phase: '0'
     samp_rate: samp_rate
     type: float
