@@ -73,7 +73,6 @@ class vec_sink_c(bokeh_plot_config):
 
         self.lines = []
         self.lines_markers = []
-        print(self.legend_list)
         for i in range(2 * nconn):
             self.lines.append(plot.line(x = 'x', y = 'y' + str(i),
                                              source = stream,

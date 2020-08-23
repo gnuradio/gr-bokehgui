@@ -102,7 +102,7 @@ class const_sink_c(bokeh_plot_config):
             self.lines_markers.append((
                 plot.scatter(x = 'x' + str(i), y = 'y' + str(i),
                                   source = stream,
-                                  legend = self.legend_list[i], ), 'o'))
+                                  legend_label = self.legend_list[i], ), 'o'))
 
             if self.tags_enabled:
                 if not self.is_message:
@@ -268,54 +268,54 @@ class const_sink_c(bokeh_plot_config):
         if marker == '*':
             self.lines_markers[i] = (
             self.plot.asterisk(x = 'x' + str(i), y = 'y' + str(i), source = self.stream,
-                    legend = self.legend_list[i], ), '*')
+                    legend_label = self.legend_list[i], ), '*')
         if marker == 'o':
             self.lines_markers[i] = (
             self.plot.circle(x = 'x' + str(i), y = 'y' + str(i), source = self.stream,
-                    legend = self.legend_list[i], ), 'o')
+                    legend_label = self.legend_list[i], ), 'o')
         if marker == 'o+':
             self.lines_markers[i] = (
             self.plot.circle_cross(x = 'x' + str(i), y = 'y' + str(i),
-                    source = self.stream, legend = self.legend_list[i], ),
+                    source = self.stream, legend_label = self.legend_list[i], ),
             'o+')
         if marker == '+':
             self.lines_markers[i] = (
             self.plot.cross(x = 'x' + str(i), y = 'y' + str(i), source = self.stream,
-                    legend = self.legend_list[i], ), '+')
+                    legend_label = self.legend_list[i], ), '+')
         if marker == 'd':
             self.lines_markers[i] = (
             self.plot.diamond(x = 'x' + str(i), y = 'y' + str(i), source = self.stream,
-                    legend = self.legend_list[i], ), 'd')
+                    legend_label = self.legend_list[i], ), 'd')
         if marker == 'd+':
             self.lines_markers[i] = (
             self.plot.diamond_cross(x = 'x' + str(i), y = 'y' + str(i),
-                    source = self.stream, legend = self.legend_list[i], ),
+                    source = self.stream, legend_label = self.legend_list[i], ),
             'd+')
         if marker == 'v':
             self.lines_markers[i] = (
             self.plot.inverted_triangle(x = 'x' + str(i), y = 'y' + str(i),
-                    source = self.stream, legend = self.legend_list[i], ), 'v')
+                    source = self.stream, legend_label = self.legend_list[i], ), 'v')
         if marker == 's':
             self.lines_markers[i] = (
             self.plot.square(x = 'x' + str(i), y = 'y' + str(i), source = self.stream,
-                    legend = self.legend_list[i], ), 's')
+                    legend_label = self.legend_list[i], ), 's')
         if marker == 's+':
             self.lines_markers[i] = (
             self.plot.square_cross(x = 'x' + str(i), y = 'y' + str(i),
-                    source = self.stream, legend = self.legend_list[i], ),
+                    source = self.stream, legend_label = self.legend_list[i], ),
             's+')
         if marker == 'sx':
             self.lines_markers[i] = (
             self.plot.square_x(x = 'x' + str(i), y = 'y' + str(i), source = self.stream,
-                    legend = self.legend_list[i], ), 'sx')
+                    legend_label = self.legend_list[i], ), 'sx')
         if marker == '^':
             self.lines_markers[i] = (
             self.plot.triangle(x = 'x' + str(i), y = 'y' + str(i), source = self.stream,
-                    legend = self.legend_list[i], ), '^')
+                    legend_label = self.legend_list[i], ), '^')
         if marker == 'x':
             self.lines_markers[i] = (
             self.plot.x(x = 'x' + str(i), y = 'y' + str(i), source = self.stream,
-                    legend = self.legend_list[i], ), 'x')
+                    legend_label = self.legend_list[i], ), 'x')
 
 
     def add_custom_tools(self):

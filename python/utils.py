@@ -52,7 +52,6 @@ def run_server(tb, sizing_mode="fixed", widget_placement=(0,0), window_size=(100
         widget_list = []
         for i in tb.plot_lst:
             i.initialize(doc, plot_list )
-        print(plot_list)
         for i in tb.widget_lst:
             i.initialize(widget_list )
         if widget_list:
@@ -63,7 +62,6 @@ def run_server(tb, sizing_mode="fixed", widget_placement=(0,0), window_size=(100
         else:
             list_obj = plot_list
         layout_t = bokehgui.bokeh_layout.create_layout(list_obj, sizing_mode, window_size)
-        print(layout_t)
         doc.add_root(layout_t)
 
 
