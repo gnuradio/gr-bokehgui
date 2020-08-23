@@ -34,8 +34,7 @@ class slider():
 
     def initialize(self, widget_lst):
         self.slider = Slider(start = self.start, end = self.end, value = self.default,
-                             step = self.step, title = self.label,
-                             callback_throttle = self.callback_throttle)
+                             step = self.step, title = self.label)
         widget_lst.append(self.slider)
         if self.callback is not None:
             self.slider.on_change('value', self.callback)
