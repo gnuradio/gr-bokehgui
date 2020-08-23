@@ -18,6 +18,7 @@
 
 from bokeh.models import ColumnDataSource, LabelSet
 from bokeh.plotting import figure
+from bokeh.models.ranges import Range1d
 from bokehgui import bokeh_plot_config, utils
 
 
@@ -28,12 +29,11 @@ class const_sink_c(bokeh_plot_config):
     time_sink_c_proc class and streams to the frontend plot.
     """
 
-    def __init__(self, doc, plot_lst, process, is_message = False):
+    def __init__(self, plot_lst, process, legend_list = utils.default_labels_c,
+                   update_time = 100, is_message = False):
         super(const_sink_c, self).__init__()
 
-        self.doc = doc
         self.process = process
-        self.plot_lst = plot_lst
 
         self.size = self.process.get_size()
         self.samp_rate = self.process.get_samp_rate()
@@ -50,20 +50,24 @@ class const_sink_c(bokeh_plot_config):
         self.tags = None
         self.update_callback = None
 
+        self.legend_list = legend_list[:]
+        self.update_time = update_time
+
+        plot_lst.append(self)
+
 
     def set_trigger_mode(self, trigger_mode, trigger_slope, level, delay,
                          channel, tag_key):
         self.process.set_trigger_mode(trigger_mode, trigger_slope, level,
                                       delay, channel, tag_key)
 
-    def initialize(self, legend_list = utils.default_labels_c,
-                   update_time = 100):
+    def initialize(self, doc, plot_lst):
         tools = utils.default_tools()
         tools.remove('ypan')
         tools.remove('ywheel_zoom')
         tools.append('pan')
         tools.append('wheel_zoom')
-        self.plot = figure(tools = tools, active_drag = 'pan',
+        plot = figure(tools = tools, active_drag = 'pan',
                            active_scroll = 'wheel_zoom',
                            y_axis_type = 'linear', x_axis_type = 'linear',
                            output_backend="webgl")
@@ -80,51 +84,77 @@ class const_sink_c(bokeh_plot_config):
             data['y' + str(i)] = []
             data['x' + str(i)] = []
 
-            tag_data['y' + str(i)] = []
             tag_data['x' + str(i)] = []
-
-        for i in range(self.nconnections):
-            tag_data['tags' + str(i)] = []
-
-        self.stream = ColumnDataSource(data)
-        self.tag_stream = ColumnDataSource(tag_data)
-
+            tag_data['y' + str(i)] = []
+            if not self.is_message:
+                tag_data['tags' + str(i)] = []
+        stream = ColumnDataSource(data)
+        self.lines = []  #TODO: de self ize
         self.lines_markers = []
-        self.legend_list = legend_list[:]
-        if not self.nconnections == 0:
-            self.tags = []
-            self.tags_marker = []
+        if self.tags_enabled:
+            tag_stream = ColumnDataSource(tag_data)
+            if not self.is_message:
+                self.tags = []
+                self.tags_marker = []
+        else:
+            tag_stream = None
         for i in range(nconnection):
             self.lines_markers.append((
-                self.plot.scatter(x = 'x' + str(i), y = 'y' + str(i),
-                                  source = self.stream,
+                plot.scatter(x = 'x' + str(i), y = 'y' + str(i),
+                                  source = stream,
                                   legend = self.legend_list[i], ), 'o'))
 
-            if not self.is_message:
-                self.tags.append(LabelSet(x = 'x' + str(i), y = 'y' + str(i),
-                                          text = 'tags' + str(i),
-                                          level = 'glyph', x_offset = -20,
-                                          y_offset = 5,
-                                          source = self.tag_stream,
-                                          text_font_style = 'bold',
-                                          text_font_size = '11pt',
-                                          render_mode = 'canvas'))
-                self.tags_marker.append(
-                        self.plot.triangle(x = 'x' + str(i), y = 'y' + str(i),
-                                           source = self.tag_stream, size = 10,
-                                           fill_color = 'red', ))
-                self.plot.add_layout(self.tags[i])
+            if self.tags_enabled:
+                if not self.is_message:
+                    self.tags.append(LabelSet(x = 'x' + str(i), y = 'y' + str(i),
+                                              text = 'tags' + str(i),
+                                              level = 'glyph', x_offset = -20,
+                                              y_offset = 5,
+                                              source = tag_stream,
+                                              text_font_style = 'bold',
+                                              text_font_size = '11pt',
+                                              render_mode = 'canvas'))
+                    self.tags_marker.append(
+                            plot.triangle(x = 'x' + str(i), y = 'y' + str(i),
+                                               source = tag_stream, size = 10,
+                                               fill_color = 'red', ))
+                    plot.add_layout(self.tags[i])
 
+        if self.title_text is not None:
+            plot.title.text = self.title_text
+        if self.y_range is not None:
+            plot.y_range = Range1d(self.y_range[0], self.y_range[1])
+        if self.x_range is not None:
+            plot.x_range = Range1d(self.x_range[0], self.x_range[1])
+        if self.y_label is not None:
+            plot.yaxis[0].axis_label = self.y_label
+        if self.x_label is not None:
+            plot.xaxis[0].axis_label = self.x_label
+        plot.xgrid.visible = self.x_grid
+        plot.ygrid.visible = self.y_grid
+        if self.en_axis_labels:
+            plot.xaxis[0].axis_label_text_color = '#000000'
+            plot.yaxis[0].axis_label_text_color = '#000000'
+        else:
+            plot.xaxis[0].axis_label_text_color = '#FFFFFF'
+            plot.yaxis[0].axis_label_text_color = '#FFFFFF'
+        plot.legend[0].visible = self.en_legend
+        plot.legend[0].click_policy = "hide"
+
+        self.plot = plot
+        self.stream = stream
         self.add_custom_tools()
-        self.plot_lst.append(self)
+        plot_lst.append(self)
 
-        if self.name:
-            self.set_title(self.name)
+        for i in range(nconnection):
+            self.use_line_marker(i,self.markers[i])
 
-        self.update_callback = self.doc.add_periodic_callback(self.update,
-                                                              update_time)
+        def callback():
+            self.update(tag_stream, stream)
 
-    def update(self):
+        doc.add_periodic_callback(callback, self.update_time)
+
+    def update(self, tag_stream, stream):
         # Call to receive from buffers
         output_items = self.process.get_plot_data()
         if not self.is_message:
@@ -167,8 +197,9 @@ class const_sink_c(bokeh_plot_config):
             if len(temp_x) > max_tag_size:
                 max_tag_size = len(temp_x)
 
-        self.stream.stream(new_data, rollover = self.size)
-        self.tag_stream.stream(new_tagged_data, rollover = max_tag_size)
+        stream.stream(new_data, rollover = self.size)
+        if tag_stream is not None:
+            tag_stream.stream(new_tagged_data, rollover = max_tag_size)
         return
 
     def set_samp_rate(self, samp_rate):
@@ -180,17 +211,19 @@ class const_sink_c(bokeh_plot_config):
             self.process.set_nsamps(newsize)
             self.size = newsize
 
-    def enable_tags(self, which = -1, en = True):
-        if which == -1:
-            for i in range(self.nconnections):
-                self.enable_tags(i, en)
-        else:
-            if en:
-                self.tags[which].text_color = 'black'
-                self.tags_marker[which].visible = True
-            else:
-                self.tags[which].text_color = None
-                self.tags_marker[which].visible = False
+    # def enable_tags(self, which = -1, en = True):
+    #     if which == -1:
+    #         for i in range(self.nconnections):
+    #             self.enable_tags(i, en)
+    #     else:
+    #         if en:
+    #             self.tags[which].text_color = 'black'
+    #             self.tags_marker[which].visible = True
+    #         else:
+    #             self.tags[which].text_color = None
+    #             self.tags_marker[which].visible = False
+    def enable_tags(self, which = -1, en = True): #This does not allow for selective enable, but the interface doesn't allow it either
+        self.tags_enabled = en
 
     def format_line(self, i, color, width, style, marker, alpha):
         self.set_line_color(i, color)
@@ -199,86 +232,91 @@ class const_sink_c(bokeh_plot_config):
         self.set_line_alpha(i, alpha)
 
     def set_line_color(self, i, color):
-        self.lines_markers[i][0].glyph.line_color = color
+        self.colors[i] = color
+        if self.plot is not None:
+            self.lines_markers[i][0].glyph.line_color = color
 
-    def get_line_color(self, i):
-        return self.lines_markers[i][0].glyph.line_color
 
     def set_line_width(self, i, width):
-        self.lines_markers[i][0].glyph.line_width = width
+        self.widths[i] = width
+        if self.plot is not None:
+            self.lines_markers[i][0].glyph.line_width = self.widths[i]
 
-    def get_line_width(self, i):
-        return self.lines_markers[i][0].glyph.line_width
-
-    def set_line_alpha(self, i, alpha):
-        self.lines_markers[i][0].glyph.line_alpha = alpha
-
-    def get_line_alpha(self, i):
-        return self.lines_markers[i][0].glyph.line_alpha
+    def set_line_style(self, i, style):
+        self.styles[i] = style
+        if self.plot is not None:
+            if style == 'None':
+                self.lines[i].visible = False
+                return
+            self.lines[i].visible = True
+            # solid, dashed, dotted, dotdash, dashdot
+            self.lines[i].glyph.line_dash = self.styles[i]
 
     def set_line_marker(self, i, marker):
+        self.markers[i] = marker
+        if self.plot is not None:
+            self.use_line_marker(i,self.markers[i])
+
+    def set_line_alpha(self, i, alpha):
+        self.alphas[i] = alpha
+        if self.plot is not None:
+            self.lines_markers[i][0].glyph.line_alpha = self.alphas[i]
+
+    def use_line_marker(self, i, marker):
         if marker == 'None':
             self.lines_markers[i] = (None, None)
         if marker == '*':
             self.lines_markers[i] = (
-                self.plot.asterisk(x = 'x' + str(i), y = 'y' + str(i),
-                                   source = self.stream,
-                                   legend = self.legend_list[i]), '*')
+            self.plot.asterisk(x = 'x' + str(i), y = 'y' + str(i), source = self.stream,
+                    legend = self.legend_list[i], ), '*')
         if marker == 'o':
             self.lines_markers[i] = (
-                self.plot.circle(x = 'x' + str(i), y = 'y' + str(i),
-                                 source = self.stream,
-                                 legend = self.legend_list[i]), 'o')
+            self.plot.circle(x = 'x' + str(i), y = 'y' + str(i), source = self.stream,
+                    legend = self.legend_list[i], ), 'o')
         if marker == 'o+':
             self.lines_markers[i] = (
-                self.plot.circle_cross(x = 'x' + str(i), y = 'y' + str(i),
-                                       source = self.stream,
-                                       legend = self.legend_list[i]), 'o+')
+            self.plot.circle_cross(x = 'x' + str(i), y = 'y' + str(i),
+                    source = self.stream, legend = self.legend_list[i], ),
+            'o+')
         if marker == '+':
             self.lines_markers[i] = (
-                self.plot.cross(x = 'x' + str(i), y = 'y' + str(i),
-                                source = self.stream,
-                                legend = self.legend_list[i]), '+')
+            self.plot.cross(x = 'x' + str(i), y = 'y' + str(i), source = self.stream,
+                    legend = self.legend_list[i], ), '+')
         if marker == 'd':
             self.lines_markers[i] = (
-                self.plot.diamond(x = 'x' + str(i), y = 'y' + str(i),
-                                  source = self.stream,
-                                  legend = self.legend_list[i]), 'd')
+            self.plot.diamond(x = 'x' + str(i), y = 'y' + str(i), source = self.stream,
+                    legend = self.legend_list[i], ), 'd')
         if marker == 'd+':
             self.lines_markers[i] = (
-                self.plot.diamond_cross(x = 'x' + str(i), y = 'y' + str(i),
-                                        source = self.stream,
-                                        legend = self.legend_list[i]), 'd+')
+            self.plot.diamond_cross(x = 'x' + str(i), y = 'y' + str(i),
+                    source = self.stream, legend = self.legend_list[i], ),
+            'd+')
         if marker == 'v':
             self.lines_markers[i] = (
-                self.plot.inverted_triangle(x = 'x' + str(i), y = 'y' + str(i),
-                                            source = self.stream,
-                                            legend = self.legend_list[i]), 'v')
+            self.plot.inverted_triangle(x = 'x' + str(i), y = 'y' + str(i),
+                    source = self.stream, legend = self.legend_list[i], ), 'v')
         if marker == 's':
             self.lines_markers[i] = (
-                self.plot.square(x = 'x' + str(i), y = 'y' + str(i),
-                                 source = self.stream,
-                                 legend = self.legend_list[i]), 's')
+            self.plot.square(x = 'x' + str(i), y = 'y' + str(i), source = self.stream,
+                    legend = self.legend_list[i], ), 's')
         if marker == 's+':
             self.lines_markers[i] = (
-                self.plot.square_cross(x = 'x' + str(i), y = 'y' + str(i),
-                                       source = self.stream,
-                                       legend = self.legend_list[i]), 's+')
+            self.plot.square_cross(x = 'x' + str(i), y = 'y' + str(i),
+                    source = self.stream, legend = self.legend_list[i], ),
+            's+')
         if marker == 'sx':
             self.lines_markers[i] = (
-                self.plot.square_x(x = 'x' + str(i), y = 'y' + str(i),
-                                   source = self.stream,
-                                   legend = self.legend_list[i]), 'sx')
+            self.plot.square_x(x = 'x' + str(i), y = 'y' + str(i), source = self.stream,
+                    legend = self.legend_list[i], ), 'sx')
         if marker == '^':
             self.lines_markers[i] = (
-                self.plot.triangle(x = 'x' + str(i), y = 'y' + str(i),
-                                   source = self.stream,
-                                   legend = self.legend_list[i]), '^')
+            self.plot.triangle(x = 'x' + str(i), y = 'y' + str(i), source = self.stream,
+                    legend = self.legend_list[i], ), '^')
         if marker == 'x':
             self.lines_markers[i] = (
-                self.plot.x(x = 'x' + str(i), y = 'y' + str(i),
-                            source = self.stream,
-                            legend = self.legend_list[i]), 'x')
+            self.plot.x(x = 'x' + str(i), y = 'y' + str(i), source = self.stream,
+                    legend = self.legend_list[i], ), 'x')
+
 
     def add_custom_tools(self):
         from bokeh.models import HoverTool, CrosshairTool

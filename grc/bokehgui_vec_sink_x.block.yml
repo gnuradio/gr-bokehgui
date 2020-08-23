@@ -506,13 +506,7 @@ templates:
                              ${nconnections}\
                              % endif
                             )
-        self.${id}_plot = bokehgui.${type.plot}(self.doc, self.plot_lst, self.${id}, is_message =\
-        % if type.t == 'message':
-           True\
-        % else:
-        False\
-        % endif
-        )
+
         labels = [${label1}, ${label2}, ${label3}, ${label4}, ${label5},
                   ${label6}, ${label7}, ${label8}, ${label9}, ${label10}]
         legend_list = []
@@ -545,8 +539,14 @@ templates:
           else:
             legend_list.append(labels[i])
         % endif
-        self.${id}_plot.initialize(update_time = ${update_time},\
-                                   legend_list = legend_list)
+
+        self.${id}_plot = bokehgui.${type.plot}(self.plot_lst, self.${id}, update_time = ${update_time}, legend_list = legend_list, is_message =\
+        % if type.t == 'message':
+           True\
+        % else:
+        False\
+        % endif
+        )
 
         self.${id}_plot.set_y_axis([${ymin}, ${ymax}])
         % if (yunit == ''):
@@ -563,7 +563,7 @@ templates:
         self.${id}_plot.set_x_values(${x_values})
         self.${id}_plot.enable_grid(${grid})
         self.${id}_plot.enable_axis_labels(${axislabels})
-        self.${id}_plot.disable_legend(not ${legend})
+        self.${id}_plot.enable_legend(${legend})
         self.${id}_plot.set_layout(*(${placement}))
         % if maxhold == 'True':
         self.${id}_plot.enable_max_hold()

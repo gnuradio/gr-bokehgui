@@ -18,6 +18,7 @@
 
 from bokeh.models import ColumnDataSource, CustomJS
 from bokeh.plotting import figure
+from bokeh.models.ranges import Range1d
 from bokehgui import bokeh_plot_config, utils
 
 
@@ -28,12 +29,11 @@ class vec_sink_c(bokeh_plot_config):
     vec_sink_c_proc class and streams to the frontend plot.
     """
 
-    def __init__(self, doc, plot_lst, process, is_message = False):
+    def __init__(self, plot_lst, process, legend_list = utils.default_labels_c,
+                   update_time = 100, is_message = False):
         super(vec_sink_c, self).__init__()
 
-        self.doc = doc
         self.process = process
-        self.plot_lst = plot_lst
 
         self.size = self.process.get_vlen()
         self.x_values = [i for i in range(self.size)]
@@ -43,17 +43,21 @@ class vec_sink_c(bokeh_plot_config):
         self.is_message = is_message
         self.plot = None
         self.stream = None
-        self.max_hold = None
+        self.max_hold_plot = None
+        self.max_hold = False
         self.legend_list = None
         self.lines_markers = None
         self.lines = None
+        self.legend_list = legend_list[:]
+        self.update_time = update_time
+
+        plot_lst.append(self)
 
     # def set_trigger_mode(self, trigger_mode, level, channel, tag_key):
     #     self.process.set_trigger_mode(trigger_mode, level, channel, tag_key)
 
-    def initialize(self, legend_list = utils.default_labels_c,
-                   update_time = 100):
-        self.plot = figure(tools = utils.default_tools(), active_drag = 'ypan',
+    def initialize(self, doc, plot_lst):
+        plot = figure(tools = utils.default_tools(), active_drag = 'ypan',
                            active_scroll = 'ywheel_zoom',
                            output_backend="webgl")
         data = dict()
@@ -65,34 +69,86 @@ class vec_sink_c(bokeh_plot_config):
         for i in range(2 * nconn):
             data['y' + str(i)] = []
 
-        self.stream = ColumnDataSource(data)
+        stream = ColumnDataSource(data)
 
         self.lines = []
         self.lines_markers = []
-        self.legend_list = legend_list[:]
         print(self.legend_list)
         for i in range(2 * nconn):
-            self.lines.append(self.plot.line(x = 'x', y = 'y' + str(i),
-                                             source = self.stream,
-                                             line_color = 'blue',
-                                             legend = self.legend_list[i]))
+            self.lines.append(plot.line(x = 'x', y = 'y' + str(i),
+                                             source = stream,
+                                             line_color = self.colors[i],
+                                             line_width = self.widths[i], line_alpha=self.alphas[i],
+                                             legend_label = self.legend_list[i]))
             self.lines_markers.append((None, None))
+            if self.styles[i] == 'None':
+                self.lines[i].visible = False
+            else:
+                self.lines[i].glyph.line_dash = self.styles[i]
 
+        if self.title_text is not None:
+            plot.title.text = self.title_text
+        if self.y_range is not None:
+            plot.y_range = Range1d(self.y_range[0], self.y_range[1])
+        if self.x_range is not None:
+            plot.x_range = Range1d(self.x_range[0], self.x_range[1])
+        if self.y_label is not None:
+            plot.yaxis[0].axis_label = self.y_label
+        if self.x_label is not None:
+            plot.xaxis[0].axis_label = self.x_label
+        plot.xgrid.visible = self.x_grid
+        plot.ygrid.visible = self.y_grid
+        if self.en_axis_labels:
+            plot.xaxis[0].axis_label_text_color = '#000000'
+            plot.yaxis[0].axis_label_text_color = '#000000'
+        else:
+            plot.xaxis[0].axis_label_text_color = '#FFFFFF'
+            plot.yaxis[0].axis_label_text_color = '#FFFFFF'
+        plot.legend[0].visible = self.en_legend
+        plot.legend[0].click_policy = "hide"
+
+        self.plot = plot
+        self.stream = stream
         self.add_custom_tools()
 
         # Add max-hold plot
-        self.max_hold = None
-        self.enable_max_hold(False)
+        max_hold_source = ColumnDataSource(
+                data = dict(x = range(self.size),
+                            y = [float("-inf")] * self.size))
+        self.max_hold_plot = plot.line(x = 'x', y = 'y',
+                                       source = max_hold_source,
+                                       line_color = 'green',
+                                       line_dash = 'dotdash',
+                                       legend_label= 'Max')
+        callback = CustomJS(args = dict(max_hold_source = max_hold_source),
+                            code = """
+                        var no_of_elem = cb_obj.data.x.length;
+                        var data = cb_obj.data;
+                        nconn = Object.getOwnPropertyNames(data).length -1;
+                        var max_data = max_hold_source.data;
+                        max_data.x = cb_obj.data.x;
+
+                        for(n = 0; n < nconn; n++) {
+                               for (i = 0; i < no_of_elem; i++) {
+                                   if(max_data['y'][i] < data['y'+n][i]) {
+                                       max_data['y'][i] = data['y'+n][i]
+                                   }
+                               }
+                        }
+                        max_hold_source.change.emit();
+                        """)
+        stream.js_on_change("streaming", callback)
+        self.max_hold_plot.visible = self.max_hold
         # max-hold plot done
 
-        self.plot_lst.append(self)
+        plot_lst.append(self)
 
-        if self.name:
-            self.set_title(self.name)
+        def callback():
+            self.update(stream)
 
-        self.doc.add_periodic_callback(self.update, update_time)
+        doc.add_periodic_callback(callback, self.update_time)
 
-    def update(self):
+    def update(self, stream):
         # Call to receive from buffers
         output_items = self.process.get_plot_data()
         # print("updating: {}, should be of size {}".format(output_items, output_items.shape))
@@ -106,7 +162,7 @@ class vec_sink_c(bokeh_plot_config):
             for i in range(2* self.nconnections): # 2 channels per input stream (complex)
                 new_data['y' + str(i)] = output_items[i]
             new_data['x'] = self.x_values
-            self.stream.stream(new_data, rollover = self.size)
+            stream.stream(new_data, rollover = self.size)
         return
 
     def set_x_values(self, values):
@@ -120,35 +176,6 @@ class vec_sink_c(bokeh_plot_config):
 
 
     def enable_max_hold(self, en = True):
-        if self.max_hold is None:
-            max_hold_source = ColumnDataSource(
-                    data = dict(x = range(self.size),
-                                y = [float("-inf")] * self.size))
-            self.max_hold = self.plot.line(x = 'x', y = 'y',
-                                           source = max_hold_source,
-                                           line_color = 'green',
-                                           line_dash = 'dotdash',
-                                           line_alpha = 0)
-            callback = CustomJS(args = dict(max_hold_source = max_hold_source),
-                                code = """
-                            var no_of_elem = cb_obj.data.x.length;
-                            var data = cb_obj.data;
-                            nconn = Object.getOwnPropertyNames(data).length -1;
-                            var max_data = max_hold_source.data;
-                            max_data.x = cb_obj.data.x;
-
-                            for(n = 0; n < nconn; n++) {
-                                   for (i = 0; i < no_of_elem; i++) {
-                                       if(max_data['y'][i] < data['y'+n][i]) {
-                                           max_data['y'][i] = data['y'+n][i]
-                                       }
-                                   }
-                            }
-                            max_hold_source.change.emit();
-                            """)
-            self.stream.js_on_change("streaming", callback)
-        if en:
-            self.max_hold.glyph.line_alpha = 1
-
-        else:
-            self.max_hold.glyph.line_alpha = 0
+        self.max_hold = en
+        if self.max_hold_plot:
+            self.max_hold_plot.visible = self.max_hold
