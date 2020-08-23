@@ -14,9 +14,9 @@ options:
     id: test_bokehgui
     max_nouts: '0'
     output_language: python
-    placement: (0,0,1,1)
+    placement: (0,0,5,1)
     qt_qss_theme: ''
-    realtime_scheduling: ''
+    realtime_scheduling: '1'
     run: 'True'
     run_command: '{python} -u {filename}'
     run_options: prompt
@@ -27,7 +27,7 @@ options:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [536, 364.0]
+    coordinate: [8, 3]
     rotation: 0
     state: enabled
 
@@ -43,7 +43,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [248, 340.0]
+    coordinate: [197, 6]
     rotation: 0
     state: enabled
 - name: frequency
@@ -52,12 +52,12 @@ blocks:
     comment: ''
     label: Frequency
     type: real
-    value: '10000'
+    value: '1000'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [728, 324.0]
+    coordinate: [367, 6]
     rotation: 0
     state: enabled
 - name: funct_probe
@@ -73,7 +73,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [728, 32]
+    coordinate: [835, 13]
     rotation: 0
     state: disabled
 - name: noise_amp
@@ -91,7 +91,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [728, 172.0]
+    coordinate: [198, 87]
     rotation: 0
     state: enabled
 - name: ntype_cmplx
@@ -108,7 +108,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [58, 431]
+    coordinate: [674, 7]
     rotation: 0
     state: enabled
 - name: ntype_float
@@ -135,7 +135,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [537, 468]
+    coordinate: [1009, 10]
     rotation: 0
     state: enabled
 - name: offset
@@ -153,19 +153,19 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [244, 419]
+    coordinate: [496, 90]
     rotation: 0
     state: true
 - name: samp_rate
   id: variable
   parameters:
     comment: ''
-    value: '32000'
+    value: '5000'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [424, 356.0]
+    coordinate: [8, 100]
     rotation: 0
     state: enabled
 - name: signal_amp
@@ -183,7 +183,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [904, 172.0]
+    coordinate: [340, 89]
     rotation: 0
     state: enabled
 - name: analog_noise_source_x_0
@@ -202,7 +202,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [16, 132.0]
+    coordinate: [68, 423]
     rotation: 0
     state: enabled
 - name: analog_noise_source_x_1
@@ -221,7 +221,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [16, 332.0]
+    coordinate: [58, 785]
     rotation: 0
     state: enabled
 - name: analog_sig_source_x_0
@@ -243,7 +243,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [16, 8]
+    coordinate: [68, 299]
     rotation: 0
     state: enabled
 - name: analog_sig_source_x_1
@@ -265,7 +265,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [16, 208]
+    coordinate: [58, 661]
     rotation: 0
     state: enabled
 - name: blocks_add_xx_0
@@ -283,7 +283,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [248, 48.0]
+    coordinate: [300, 339]
     rotation: 0
     state: enabled
 - name: blocks_add_xx_1
@@ -301,9 +301,27 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [248, 248.0]
+    coordinate: [290, 701]
     rotation: 0
     state: enabled
+- name: blocks_stream_to_vector_0
+  id: blocks_stream_to_vector
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    num_items: '64'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [906, 343]
+    rotation: 0
+    state: true
 - name: blocks_throttle_0
   id: blocks_throttle
   parameters:
@@ -320,7 +338,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [344, 60.0]
+    coordinate: [396, 351]
     rotation: 0
     state: enabled
 - name: blocks_throttle_1
@@ -339,7 +357,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [344, 260.0]
+    coordinate: [386, 713]
     rotation: 0
     state: enabled
 - name: bokehgui_frequency_sink_x_0
@@ -401,7 +419,7 @@ blocks:
     minoutbuf: '0'
     name: Complex Frequency Sink
     nconnections: '1'
-    placement: (1,0,2,1)
+    placement: (0,3,2,2)
     style1: '"solid"'
     style10: '"solid"'
     style2: '"solid"'
@@ -439,9 +457,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [536, -4.0]
+    coordinate: [602, 262]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: bokehgui_frequency_sink_x_1
   id: bokehgui_frequency_sink_x
   parameters:
@@ -496,12 +514,12 @@ blocks:
     marker7: None
     marker8: None
     marker9: None
-    maxhold: 'True'
+    maxhold: 'False'
     maxoutbuf: '0'
     minoutbuf: '0'
     name: Float Frequency Sink
     nconnections: '1'
-    placement: (3,0,2,1)
+    placement: (2,3,2,2)
     style1: '"solid"'
     style10: '"solid"'
     style2: '"solid"'
@@ -539,9 +557,106 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [536, 188.0]
+    coordinate: [608, 636]
     rotation: 0
-    state: disabled
+    state: enabled
+- name: bokehgui_time_const_x_0
+  id: bokehgui_time_const_x
+  parameters:
+    affinity: ''
+    alias: ''
+    alpha1: '1.0'
+    alpha10: '1.0'
+    alpha2: '1.0'
+    alpha3: '1.0'
+    alpha4: '1.0'
+    alpha5: '1.0'
+    alpha6: '1.0'
+    alpha7: '1.0'
+    alpha8: '1.0'
+    alpha9: '1.0'
+    axislabels: 'True'
+    color1: '"blue"'
+    color10: '"blue"'
+    color2: '"red"'
+    color3: '"green"'
+    color4: '"black"'
+    color5: '"cyan"'
+    color6: '"magenta"'
+    color7: '"yellow"'
+    color8: '"blue"'
+    color9: '"blue"'
+    comment: ''
+    entags: 'True'
+    grid: 'False'
+    label1: ''
+    label10: ''
+    label2: ''
+    label3: ''
+    label4: ''
+    label5: ''
+    label6: ''
+    label7: ''
+    label8: ''
+    label9: ''
+    legend: 'True'
+    marker1: '''o'''
+    marker10: '''o'''
+    marker2: '''o'''
+    marker3: '''o'''
+    marker4: '''o'''
+    marker5: '''o'''
+    marker6: '''o'''
+    marker7: '''o'''
+    marker8: '''o'''
+    marker9: '''o'''
+    name: '""'
+    nconnections: '1'
+    placement: (5,3,2,2)
+    size: '1024'
+    srate: samp_rate
+    style10: ''
+    style2: ''
+    style3: ''
+    style4: ''
+    style5: ''
+    style6: ''
+    style7: ''
+    style8: ''
+    style9: ''
+    tr_chan: '0'
+    tr_delay: '0'
+    tr_level: '0.0'
+    tr_mode: bokehgui.TRIG_MODE_FREE
+    tr_slope: bokehgui.TRIG_SLOPE_POS
+    tr_tag: '""'
+    type: complex
+    update_time: '100'
+    width1: '1'
+    width10: '1'
+    width2: '1'
+    width3: '1'
+    width4: '1'
+    width5: '1'
+    width6: '1'
+    width7: '1'
+    width8: '1'
+    width9: '1'
+    xlabel: I Channel
+    xmax: '100'
+    xmin: '-100'
+    xunit: '""'
+    ylabel: Q Channel
+    ymax: '100'
+    ymin: '-100'
+    yunit: '""'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [601, 512]
+    rotation: 0
+    state: true
 - name: bokehgui_time_sink_x_0
   id: bokehgui_time_sink_x
   parameters:
@@ -637,7 +752,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [536, 108.0]
+    coordinate: [601, 435]
     rotation: 0
     state: enabled
 - name: bokehgui_time_sink_x_1
@@ -735,9 +850,302 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [536, 284.0]
+    coordinate: [608, 808]
     rotation: 0
     state: enabled
+- name: bokehgui_vector_sink_x_0
+  id: bokehgui_vector_sink_x
+  parameters:
+    affinity: ''
+    alias: ''
+    alpha1: '1.0'
+    alpha10: '1.0'
+    alpha2: '1.0'
+    alpha3: '1.0'
+    alpha4: '1.0'
+    alpha5: '1.0'
+    alpha6: '1.0'
+    alpha7: '1.0'
+    alpha8: '1.0'
+    alpha9: '1.0'
+    average: '1.0'
+    axislabels: 'True'
+    color1: '"blue"'
+    color10: '"dark blue"'
+    color2: '"red"'
+    color3: '"green"'
+    color4: '"black"'
+    color5: '"cyan"'
+    color6: '"magenta"'
+    color7: '"yellow"'
+    color8: '"dark red"'
+    color9: '"dark green"'
+    comment: ''
+    grid: 'False'
+    label1: ''
+    label10: ''
+    label2: ''
+    label3: ''
+    label4: ''
+    label5: ''
+    label6: ''
+    label7: ''
+    label8: ''
+    label9: ''
+    legend: 'True'
+    marker1: None
+    marker10: None
+    marker2: None
+    marker3: None
+    marker4: None
+    marker5: None
+    marker6: None
+    marker7: None
+    marker8: None
+    marker9: None
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    name: '""'
+    nconnections: '1'
+    placement: (0,7,2,2)
+    style1: '"solid"'
+    style10: '"solid"'
+    style2: '"solid"'
+    style3: '"solid"'
+    style4: '"solid"'
+    style5: '"solid"'
+    style6: '"solid"'
+    style7: '"solid"'
+    style8: '"solid"'
+    style9: '"solid"'
+    type: complex
+    update_time: '100'
+    vec_len: '64'
+    width1: '1'
+    width10: '1'
+    width2: '1'
+    width3: '1'
+    width4: '1'
+    width5: '1'
+    width6: '1'
+    width7: '1'
+    width8: '1'
+    width9: '1'
+    x_values: list(range(64))
+    xlabel: Frequency
+    xunit: '""'
+    ylabel: Relative Gain
+    ymax: '10'
+    ymin: '-140'
+    yunit: dB
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1379, 363]
+    rotation: 0
+    state: true
+- name: bokehgui_vector_sink_x_0_0
+  id: bokehgui_vector_sink_x
+  parameters:
+    affinity: ''
+    alias: ''
+    alpha1: '1.0'
+    alpha10: '1.0'
+    alpha2: '1.0'
+    alpha3: '1.0'
+    alpha4: '1.0'
+    alpha5: '1.0'
+    alpha6: '1.0'
+    alpha7: '1.0'
+    alpha8: '1.0'
+    alpha9: '1.0'
+    average: '1.0'
+    axislabels: 'True'
+    color1: '"blue"'
+    color10: '"dark blue"'
+    color2: '"red"'
+    color3: '"green"'
+    color4: '"black"'
+    color5: '"cyan"'
+    color6: '"magenta"'
+    color7: '"yellow"'
+    color8: '"dark red"'
+    color9: '"dark green"'
+    comment: ''
+    grid: 'False'
+    label1: ''
+    label10: ''
+    label2: ''
+    label3: ''
+    label4: ''
+    label5: ''
+    label6: ''
+    label7: ''
+    label8: ''
+    label9: ''
+    legend: 'True'
+    marker1: None
+    marker10: None
+    marker2: None
+    marker3: None
+    marker4: None
+    marker5: None
+    marker6: None
+    marker7: None
+    marker8: None
+    marker9: None
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    name: '""'
+    nconnections: '1'
+    placement: (2,7,2,2)
+    style1: '"solid"'
+    style10: '"solid"'
+    style2: '"solid"'
+    style3: '"solid"'
+    style4: '"solid"'
+    style5: '"solid"'
+    style6: '"solid"'
+    style7: '"solid"'
+    style8: '"solid"'
+    style9: '"solid"'
+    type: float
+    update_time: '100'
+    vec_len: '64'
+    width1: '1'
+    width10: '1'
+    width2: '1'
+    width3: '1'
+    width4: '1'
+    width5: '1'
+    width6: '1'
+    width7: '1'
+    width8: '1'
+    width9: '1'
+    x_values: list(range(64))
+    xlabel: Frequency
+    xunit: '""'
+    ylabel: Relative Gain
+    ymax: '10'
+    ymin: '-140'
+    yunit: dB
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1374, 684]
+    rotation: 0
+    state: true
+- name: bokehgui_waterfall_sink_x_0
+  id: bokehgui_waterfall_sink_x
+  parameters:
+    affinity: ''
+    alias: ''
+    bw: samp_rate
+    color: Inferno
+    comment: ''
+    fc: '0'
+    fftsize: '1024'
+    grid: 'False'
+    int_max: '10'
+    int_min: '-140'
+    label: ''
+    legend: 'True'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    name: '""'
+    placement: (0,5,2,2)
+    type: complex
+    update_time: '100'
+    wintype: firdes.WIN_BLACKMAN_hARRIS
+    xlabel: Frequency
+    xunit: Hz
+    ylabel: Time
+    yunit: ''
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [602, 356]
+    rotation: 0
+    state: true
+- name: bokehgui_waterfall_sink_x_0_0
+  id: bokehgui_waterfall_sink_x
+  parameters:
+    affinity: ''
+    alias: ''
+    bw: samp_rate
+    color: Inferno
+    comment: ''
+    fc: '0'
+    fftsize: '1024'
+    grid: 'False'
+    int_max: '10'
+    int_min: '-140'
+    label: ''
+    legend: 'True'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    name: '""'
+    placement: (2,5,2,2)
+    type: float
+    update_time: '100'
+    wintype: firdes.WIN_BLACKMAN_hARRIS
+    xlabel: Frequency
+    xunit: Hz
+    ylabel: Time
+    yunit: ''
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [608, 731]
+    rotation: 0
+    state: true
+- name: fft_vxx_0
+  id: fft_vxx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    fft_size: '64'
+    forward: 'True'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    nthreads: '1'
+    shift: 'True'
+    type: complex
+    window: window.blackmanharris(64)
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1070, 306]
+    rotation: 0
+    state: true
+- name: logpwrfft_x_0
+  id: logpwrfft_x
+  parameters:
+    affinity: ''
+    alias: ''
+    average: 'False'
+    avg_alpha: '1.0'
+    comment: ''
+    fft_size: '64'
+    frame_rate: '30'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    ref_scale: '2'
+    sample_rate: samp_rate
+    type: float
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [942, 675]
+    rotation: 0
+    state: true
 
 connections:
 - [analog_noise_source_x_0, '0', blocks_add_xx_0, '1']
@@ -746,10 +1154,18 @@ connections:
 - [analog_sig_source_x_1, '0', blocks_add_xx_1, '0']
 - [blocks_add_xx_0, '0', blocks_throttle_0, '0']
 - [blocks_add_xx_1, '0', blocks_throttle_1, '0']
+- [blocks_stream_to_vector_0, '0', fft_vxx_0, '0']
+- [blocks_throttle_0, '0', blocks_stream_to_vector_0, '0']
 - [blocks_throttle_0, '0', bokehgui_frequency_sink_x_0, '0']
+- [blocks_throttle_0, '0', bokehgui_time_const_x_0, '0']
 - [blocks_throttle_0, '0', bokehgui_time_sink_x_0, '0']
+- [blocks_throttle_0, '0', bokehgui_waterfall_sink_x_0, '0']
 - [blocks_throttle_1, '0', bokehgui_frequency_sink_x_1, '0']
 - [blocks_throttle_1, '0', bokehgui_time_sink_x_1, '0']
+- [blocks_throttle_1, '0', bokehgui_waterfall_sink_x_0_0, '0']
+- [blocks_throttle_1, '0', logpwrfft_x_0, '0']
+- [fft_vxx_0, '0', bokehgui_vector_sink_x_0, '0']
+- [logpwrfft_x_0, '0', bokehgui_vector_sink_x_0_0, '0']
 
 metadata:
   file_format: 1
