@@ -123,12 +123,12 @@ class vec_sink_f(bokeh_plot_config):
                             code = """
                         var no_of_elem = cb_obj.data.x.length;
                         var data = cb_obj.data;
-                        nconn = Object.getOwnPropertyNames(data).length -1;
+                        const nconn = Object.getOwnPropertyNames(data).length -1;
                         var max_data = max_hold_source.data;
                         max_data.x = cb_obj.data.x;
 
-                        for(n = 0; n < nconn; n++) {
-                               for (i = 0; i < no_of_elem; i++) {
+                        for(let n = 0; n < nconn; n++) {
+                               for (let i = 0; i < no_of_elem; i++) {
                                    if(max_data['y'][i] < data['y'+n][i]) {
                                        max_data['y'][i] = data['y'+n][i]
                                    }
