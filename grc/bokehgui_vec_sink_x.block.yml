@@ -36,6 +36,13 @@ parameters:
     options: ['True', 'False']
     option_labels: ['Yes', 'No']
     hide: part
+-   id: maxhold
+    label: Max Hold
+    dtype: enum
+    default: 'True'
+    options: ['True', 'False']
+    option_labels: ['Yes', 'No']
+    hide: part
 -   id: average
     label: Average
     dtype: enum
