@@ -10,9 +10,9 @@ The module was developed as a part of Google Summer of Code 2017 by Kartik Patel
 This fork extends it for gnuradio 3.8 and updates it.
 
 ## Dependency
-1. GNU Radio 3.8.1 (should contain [commit@36a46c1](https://github.com/gnuradio/gnuradio/pull/3316))
-2. [Bokeh library v1](https://docs.bokeh.org/en/1.4.0/)
-   (Tested on v1.4.0)
+1. GNU Radio 3.8.2 (should contain [this PR](https://github.com/gnuradio/gnuradio/pull/3726))
+2. [Bokeh library](https://docs.bokeh.org/en/2.0.2/)
+   (Tested on v1.4.0 and 2.0.2) (later versions cause the waterfall display to crash)
 
 ## Installation
 ### Using PyBOMBS
@@ -30,12 +30,11 @@ $ git clone https://github.com/gnuradio/gr-bokehgui.git
 3. Build with CMake:
 ```
 $ cd gr-bokehgui/
-$ git checkout maint-3.8
+$ git checkout 3.8-bokeh-2
 $ mkdir build
 $ cd build/
 $ cmake ../
 $ make
-$ make test
 $ sudo make install
 ```
 
@@ -51,6 +50,8 @@ The output should be as follows:
 
 The following Youtube video provides quick glance over the module and basic procedures.
 [![Youtube - demo](http://img.youtube.com/vi/EyNOE9icNVc/0.jpg)](https://www.youtube.com/watch?v=EyNOE9icNVc)
+
+The `test_bokehgui.grc` example flowgraph contains all the plots and most widgets to check that everything works correctly.
 
 ## Bugs reporting:
 Kindly report any bugs or issues [on Github](https://github.com/gnuradio/gr-bokehgui/issues/).
