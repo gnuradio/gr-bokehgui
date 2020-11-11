@@ -7,10 +7,11 @@
 The module provides various sinks and widgets to allow interaction with the live GNU Radio applications remotely over the network. The module uses [Bokeh](https://docs.bokeh.org/en/1.4.0/)'s client API and streaming features. Using widgets and plots from Bokeh, the module enables the GUI for GNU Radio that renders in web browser. Just like `gr-qtgui`, it is fully integrated with GRC to allow easy use.
 
 The module was developed as a part of Google Summer of Code 2017 by Kartik Patel.
-This fork extends it for gnuradio 3.8 and updates it.
+
+## Warning: The master branch does not yet support GNU Radio 3.9 since the change to pybind11. Please use the main-3.8 branch with GNU Radio 3.8
 
 ## Dependency
-1. GNU Radio 3.8 (should contain [commit@b23bfe9](https://github.com/gnuradio/gnuradio/pull/2809))
+1. GNU Radio 3.9
 2. [Bokeh library v1](https://docs.bokeh.org/en/1.4.0/)
    (Tested on v1.4.0)
 
