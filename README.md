@@ -10,7 +10,7 @@ The module was developed as a part of Google Summer of Code 2017 by Kartik Patel
 This fork extends it for gnuradio 3.8 and updates it.
 
 ## Dependency
-1. GNU Radio 3.8.1 (should contain [commit@36a46c1](https://github.com/gnuradio/gnuradio/pull/3316))
+1. GNU Radio 3.8 (should contain [commit@36a46c1](https://github.com/gnuradio/gnuradio/pull/3316)) Warning: the commit has not been merged yet.
 2. [Bokeh library v1](https://docs.bokeh.org/en/1.4.0/)
    (Tested on v1.4.0)
 
