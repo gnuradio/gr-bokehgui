@@ -159,6 +159,7 @@ parameters:
     label: Line 1 Label
     category: Config
     dtype: string
+    default: "Signal 1"
     hide: ${ ('part' if int(nconnections) >= 1 else 'all') }
 -   id: width1
     label: Line 1 Width
@@ -193,6 +194,7 @@ parameters:
 -   id: label2
     base_key: label1
     label: Line 2 Label
+    default: "Signal 2"
     hide: ${ ('part' if int(nconnections) >= 2 else 'all') }
 -   id: width2
     label: Line 2 Width
@@ -218,6 +220,7 @@ parameters:
 -   id: label3
     label: Line 3 Label
     base_key: label1
+    default: "Signal 3"
     hide: ${ ('part' if int(nconnections) >= 3 else 'all') }
 -   id: width3
     label: Line 3 Width
@@ -243,6 +246,7 @@ parameters:
 -   id: label4
     label: Line 4 Label
     base_key: label1
+    default: "Signal 4"
     hide: ${ ('part' if int(nconnections) >= 4 else 'all') }
 -   id: width4
     label: Line 4 Width
@@ -268,6 +272,7 @@ parameters:
 -   id: label5
     label: Line 5 Label
     base_key: label1
+    default: "Signal 5"
     hide: ${ ('part' if int(nconnections) >= 5 else 'all') }
 -   id: width5
     label: Line 5 Width
@@ -293,6 +298,7 @@ parameters:
 -   id: label6
     label: Line 6 Label
     base_key: label1
+    default: "Signal 6"
     hide: ${ ('part' if int(nconnections) >= 6 else 'all') }
 -   id: width6
     label: Line 6 Width
@@ -318,6 +324,7 @@ parameters:
 -   id: label7
     label: Line 7 Label
     base_key: label1
+    default: "Signal 7"
     hide: ${ ('part' if int(nconnections) >= 7 else 'all') }
 -   id: width7
     label: Line 7 Width
@@ -343,6 +350,7 @@ parameters:
 -   id: label8
     label: Line 8 Label
     base_key: label1
+    default: "Signal 8"
     hide: ${ ('part' if int(nconnections) >= 8 else 'all') }
 -   id: width8
     label: Line 8 Width
@@ -368,6 +376,7 @@ parameters:
 -   id: label9
     label: Line 9 Label
     base_key: label1
+    default: "Signal 9"
     hide: ${ ('part' if int(nconnections) >= 9 else 'all') }
 -   id: width9
     label: Line 9 Width
@@ -393,6 +402,7 @@ parameters:
 -   id: label10
     label: Line 10 Label
     base_key: label1
+    default: "Signal 10"
     hide: ${ ('part' if int(nconnections) >= 10 else 'all') }
 -   id: width10
     label: Line 10 Width
@@ -424,6 +434,7 @@ inputs:
 asserts:
 - ${ len(placement) == 4 or len(placement) == 2 }
 - ${ all([i >= 0 for i in placement]) }
+- ${nconnections <= 5}
 
 templates:
     imports: import bokehgui
