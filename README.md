@@ -7,20 +7,14 @@
 The module provides various sinks and widgets to allow interaction with the live GNU Radio applications remotely over the network. The module uses [Bokeh](https://docs.bokeh.org/en/1.4.0/)'s client API and streaming features. Using widgets and plots from Bokeh, the module enables the GUI for GNU Radio that renders in web browser. Just like `gr-qtgui`, it is fully integrated with GRC to allow easy use.
 
 The module was developed as a part of Google Summer of Code 2017 by Kartik Patel.
-This fork extends it for gnuradio 3.8 and updates it.
+
 
 ## Dependency
-1. GNU Radio 3.8 (should contain [commit@36a46c1](https://github.com/gnuradio/gnuradio/pull/3316)) 
-2. [Bokeh library v1](https://docs.bokeh.org/en/1.4.0/)
-   (Tested on v1.4.0)
+1. GNU Radio 3.8.2
+2. [Bokeh library v1](https://docs.bokeh.org/en/1.4.0/)  (Tested on v1.4.0)
+3. [Nodejs](https://nodejs.org/en/download/package-manager/) (Tested on versions 10 and 14)
 
 ## Installation
-### Using PyBOMBS
-```
-$ pybombs install gr-bokehgui
-```
-The pybombs recipe is not up to date with the present repository, please build from source.
-
 ### Using source code
 1. Make sure that you have satisfied all dependency listed above.
 2. Clone the latest code
@@ -30,12 +24,11 @@ $ git clone https://github.com/gnuradio/gr-bokehgui.git
 3. Build with CMake:
 ```
 $ cd gr-bokehgui/
-$ git checkout maint-3.8
+$ git checkout tags/compat3.8.2
 $ mkdir build
 $ cd build/
 $ cmake ../
 $ make
-$ make test
 $ sudo make install
 ```
 

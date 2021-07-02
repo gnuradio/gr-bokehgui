@@ -86,14 +86,7 @@ ENDIF()
 ########################################################################
 # Install directories
 ########################################################################
-# find_package(Gnuradio "3.9" REQUIRED runtime fft)
-find_package(Gnuradio "3.8" COMPONENTS runtime fft)
-if(NOT Gnuradio_FOUND)
-    find_package(Gnuradio "3.9" COMPONENTS runtime fft)
-	if(NOT Gnuradio_FOUND)
-	    message(FATAL_ERROR "Unable to find GNURadio 3.8 or 3.9")
-	ENDIF(NOT Gnuradio_FOUND)
-ENDIF(NOT Gnuradio_FOUND)
+find_package(Gnuradio "3.8.2" REQUIRED runtime fft)
 include(GrVersion)
 
 include(GrPlatform) #define LIB_SUFFIX
