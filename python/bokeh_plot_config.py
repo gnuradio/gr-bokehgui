@@ -22,6 +22,25 @@ class bokeh_plot_config(object):
     def __init__(self):
         self.plot = None
         self.stream = None
+        self.title_text = None
+        self.y_range = None
+        self.x_range = None
+        self.y_label = None
+        self.x_label = None
+        self.x_grid = True
+        self.y_grid = True
+        self.en_axis_labels = True
+        self.en_legend = True
+        self.colors = ["blue", "red", "green", "black", "cyan",
+                  "magenta", "yellow", "blue", "blue", "blue"]
+        self.widths = [1, 1, 1, 1, 1,
+                  1, 1, 1, 1, 1]
+        self.styles = ["solid", "solid", "solid", "solid", "solid",
+                  "solid", "solid", "solid", "solid", "solid"]
+        self.markers = [None, None, None, None, None,
+                  None, None, None, None, None]
+        self.alphas = [1.0, 1.0, 1.0, 1.0, 1.0,
+                  1.0, 1.0, 1.0, 1.0, 1.0]
 
     def get_figure(self):
         return self.plot
@@ -37,26 +56,36 @@ class bokeh_plot_config(object):
         self.plot.add_tools(hover, crosshair)
 
     def set_title(self, name):
-        self.plot.title.text = name
+        self.title_text = name
+        if self.plot is not None:
+            plot.title.text = self.title_text
 
     def get_title(self):
-        return self.plot.title.text
+        return self.title_text
 
     def set_y_axis(self, lst):
-        from bokeh.models.ranges import Range1d
         assert (lst[0] < lst[1])
-        self.plot.y_range = Range1d(lst[0], lst[1])
+        self.y_range = lst
+        if self.plot is not None:
+            from bokeh.models.ranges import Range1d
+            plot.y_range = Range1d(self.y_range[0], self.y_range[1])
 
     def set_x_axis(self, lst):
-        from bokeh.models.ranges import Range1d
         assert (lst[0] < lst[1])
-        self.plot.x_range = Range1d(lst[0], lst[1])
+        self.x_range = lst
+        if self.plot is not None:
+            from bokeh.models.ranges import Range1d
+            plot.x_range = Range1d(self.x_range[0], self.x_range[1])
 
     def set_x_label(self, xlabel):
-        self.plot.xaxis[0].axis_label = xlabel
+        self.x_label = xlabel
+        if self.plot is not None:
+            plot.xaxis[0].axis_label = self.x_label
 
     def set_y_label(self, ylabel):
-        self.plot.yaxis[0].axis_label = ylabel
+        self.y_label = ylabel
+        if self.plot is not None:
+            plot.yaxis[0].axis_label = self.y_label
 
     def format_line(self, i, color, width, style, marker, alpha):
         self.set_line_color(i, color)
@@ -66,32 +95,38 @@ class bokeh_plot_config(object):
         self.set_line_alpha(i, alpha)
 
     def set_line_color(self, i, color):
-        self.lines[i].glyph.line_color = color
+        self.colors[i] = color
+        if self.plot is not None:
+            self.lines[i].glyph.line_color = color
 
     def get_line_color(self, i):
-        return self.lines[i].glyph.line_color
+        return self.colors[i]
 
     def set_line_width(self, i, width):
-        self.lines[i].glyph.line_width = width
+        self.widths[i] = width
+        if self.plot is not None:
+            self.lines[i].glyph.line_width = self.widths[i]
 
     def get_line_width(self, i):
-        return self.lines[i].glyph.line_width
+        return self.widths[i]
 
     def set_line_style(self, i, style):
-        if style == 'None':
-            self.lines[i].visible = False
-            return
-        self.lines[i].visible = True
-        # solid, dashed, dotted, dotdash, dashdot
-        self.lines[i].glyph.line_dash = style
+        self.styles[i] = style
+        if self.plot is not None:
+            if style == 'None':
+                self.lines[i].visible = False
+                return
+            self.lines[i].visible = True
+            # solid, dashed, dotted, dotdash, dashdot
+            self.lines[i].glyph.line_dash = self.styles[i]
 
     def get_line_style(self, i):
-        if not self.lines[i].visible:
-            return
+        # if not self.lines[i].visible:
+        #     return
         # solid, dashed, dotted, dotdash, dashdot
-        return self.lines[i].glyph.line_dash
+        return self.styles[i]
 
-    def set_line_marker(self, i, marker):
+    def use_line_marker(self, i, marker):
         if marker == 'None':
             self.lines_markers[i] = (None, None)
         if marker == '*':
@@ -146,43 +181,48 @@ class bokeh_plot_config(object):
             self.plot.x(x = 'x', y = 'y' + str(i), source = self.stream,
                     legend = self.legend_list[i], ), 'x')
 
+    def set_line_marker(self, i, marker):
+        self.markers[i] = marker
+        if self.plot is not None:
+            self.use_line_marker(i,self.markers[i])
+
     def get_line_marker(self, i):
-        return self.lines_markers[i][1]
+        return self.markers[i]
 
     def set_line_alpha(self, i, alpha):
-        self.lines[i].glyph.line_alpha = alpha
+        self.alphas[i] = alpha
+        if self.plot is not None:
+            self.lines[i].glyph.line_alpha = self.alphas[i]
 
     def get_line_alpha(self, i):
-        return self.lines[i].glyph.line_alpha
+        return self.alphas[i]
 
     def enable_x_grid(self, en = True):
-        if en:
-            self.plot.xgrid[0].grid_line_alpha = 1
-        else:
-            self.plot.xgrid[0].grid_line_alpha = 0
+        self.x_grid = en
+        if self.plot is not None:
+            self.plot.xgrid.visible = self.x_grid
 
     def enable_y_grid(self, en = True):
-        if en:
-            self.plot.ygrid.grid_line_alpha = 1
-        else:
-            self.plot.ygrid.grid_line_alpha = 0
+        self.y_grid = en
+        if self.plot is not None:
+            self.plot.ygrid.visible = self.y_grid
 
     def enable_grid(self, en = True):
         self.enable_x_grid(en)
         self.enable_y_grid(en)
 
     def enable_axis_labels(self, en = True):
-        if en:
-            self.plot.xaxis[0].axis_label_text_color = '#000000'
-            self.plot.yaxis[0].axis_label_text_color = '#000000'
-        else:
-            self.plot.xaxis[0].axis_label_text_color = '#FFFFFF'
-            self.plot.yaxis[0].axis_label_text_color = '#FFFFFF'
+        self.en_axis_labels = en
+        if self.plot is not None:
+            if self.en_axis_labels:
+                self.plot.xaxis[0].axis_label_text_color = '#000000'
+                self.plot.yaxis[0].axis_label_text_color = '#000000'
+            else:
+                self.plot.xaxis[0].axis_label_text_color = '#FFFFFF'
+                self.plot.yaxis[0].axis_label_text_color = '#FFFFFF'
 
-    def disable_legend(self, en = True):
-        if en:
-            self.plot.legend[0].visible = False
-            self.plot.legend[0].click_policy = "hide"
-        else:
-            self.plot.legend[0].visible = True
+    def enable_legend(self, en = True):
+        self.en_legend = en
+        if self.plot is not None:
+            self.plot.legend[0].visible = self.en_legend
             self.plot.legend[0].click_policy = "hide"

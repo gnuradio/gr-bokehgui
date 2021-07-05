@@ -20,14 +20,22 @@ from bokeh.models.widgets import CheckboxGroup
 
 class checkbox():
     def __init__(self, widget_lst, default_value, label, inline = True):
-        self.widget_lst = widget_lst
+        self.label = label
+        self.default_value = default_value
+        self.inline = inline
         self.checkbox = None
-        self.initialize(default_value, label, inline)
+        self.callback = None
+        # self.initialize(default_value, label, inline)
+        widget_lst.append(self)
 
-    def initialize(self, default_value, label, inline):
-        self.checkbox = CheckboxGroup(active = default_value, labels = [label],
-                                      inline = inline)
-        self.widget_lst.append(self.checkbox)
+    def initialize(self, widget_lst):
+        self.checkbox = CheckboxGroup(active = self.default_value, labels = [self.label],
+                                      inline = self.inline)
+        widget_lst.append(self.checkbox)
+        if self.callback is not None:
+            self.checkbox.on_click(self.callback)
 
     def add_callback(self, callback):
-        self.checkbox.on_click(callback)
+        self.callback = callback
+        if self.checkbox is not None:
+            self.checkbox.on_click(self.callback)
