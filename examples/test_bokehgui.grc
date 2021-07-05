@@ -1,7 +1,6 @@
 options:
   parameters:
     author: Kartik Patel
-    catch_exceptions: 'True'
     category: '[GRC Hier Blocks]'
     cmake_opt: ''
     comment: ''
@@ -16,13 +15,14 @@ options:
     output_language: python
     placement: (0,0,5,1)
     qt_qss_theme: ''
-    realtime_scheduling: '1'
+    realtime_scheduling: ''
     run: 'True'
     run_command: '{python} -u {filename}'
     run_options: prompt
-    sizing_mode: fixed
+    sizing_mode: stretch_both
     thread_safe_setters: ''
     title: Test GRC for Bokeh GUI
+    window_size: (1000,1000)
   states:
     bus_sink: false
     bus_source: false
@@ -903,6 +903,7 @@ blocks:
     marker7: None
     marker8: None
     marker9: None
+    maxhold: 'True'
     maxoutbuf: '0'
     minoutbuf: '0'
     name: '""'
@@ -995,6 +996,7 @@ blocks:
     marker7: None
     marker8: None
     marker9: None
+    maxhold: 'True'
     maxoutbuf: '0'
     minoutbuf: '0'
     name: '""'
