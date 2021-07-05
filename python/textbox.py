@@ -21,16 +21,25 @@ from bokeh.models.widgets import TextInput
 
 class textbox:
     def __init__(self, widget_lst, default_value, label):
-        self.widget_lst = widget_lst
+        self.label = label
+        self.value = default_value
         self.textinput = None
-        self.initialize(default_value, label)
+        self.callback = None
+        # self.initialize(default_value, label)
+        widget_lst.append(self)
 
-    def initialize(self, default_value, label):
-        self.textinput = TextInput(value = default_value, title = label)
-        self.widget_lst.append(self.textinput)
-
+    def initialize(self, widget_lst):
+        self.textinput = TextInput(value = self.value, title = self.label)
+        widget_lst.append(self.textinput)
+        if self.callback is not None:
+            self.textinput.on_change('value', self.callback)
+            
     def add_callback(self, callback):
-        self.textinput.on_change('value', callback)
+        self.callback = callback
+        if self.textinput is not None:
+            self.textinput.on_change('value', self.callback)
 
     def set_value(self, value):
-        self.textinput.value = str(value)
+        self.value = str(value)
+        if self.textinput is not None:
+            self.textinput.value = self.value

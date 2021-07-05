@@ -219,8 +219,8 @@ class Layout:
                         "arrangements of plots")
 
 
-def create_layout(lst, sizing_mode = "fixed"):
+def create_layout(lst, sizing_mode = "fixed", window_size=(1000,1000)):
     # lst -> [obj] having obj.layout
     layout = Layout(lst)
-    return layout.evaluate(sizing_mode = sizing_mode, height = 700.0,
-                           width = 1210.0)
+    return layout.evaluate(sizing_mode = sizing_mode, height = window_size[0],
+                           width = window_size[1])

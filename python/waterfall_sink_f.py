@@ -29,12 +29,13 @@ class waterfall_sink_f(bokeh_plot_config):
     waterfall_sink_f_proc class and streams to the frontend plot.
     """
 
-    def __init__(self, doc, plot_lst, proc, is_message = False):
+    def __init__(self, plot_lst, proc, legend_list = utils.default_labels_f,
+                   update_time = 100, values_range = (-200, 10),
+                   time_per_sample = 0.1, number_of_samples = 200,
+                   palette = 'Inferno', is_message = False):
         super(waterfall_sink_f, self).__init__()
 
-        self.doc = doc
         self.process = proc
-        self.plot_lst = plot_lst
 
         self.size = self.process.get_size()
         self.wintype = self.process.get_wintype()
@@ -44,8 +45,8 @@ class waterfall_sink_f(bokeh_plot_config):
         self.bw = self.process.get_bandwidth()
 
         self.is_message = is_message
-        self.nrows = 200
-        self.time_per_sample = 0.1
+        self.nrows = number_of_samples
+        self.time_per_sample = time_per_sample
         self.frequency_range = None
         self.set_frequency_range(self.fc, self.bw, set_y_axis = False,
                                  notify_process = False)
@@ -53,38 +54,41 @@ class waterfall_sink_f(bokeh_plot_config):
         self.plot = None
         self.waterfall_renderer = None
 
-    def initialize(self, legend_list = utils.default_labels_f,
-                   update_time = 100, values_range = (-200, 10),
-                   time_per_sample = 0.1, number_of_samples = 200,
-                   palette = 'Inferno'):
-        self.nrows = number_of_samples
-        self.time_per_sample = time_per_sample
+        self.legend_list = legend_list[:]
+        self.update_time = update_time
+        self.values_range = values_range
+        self.palette = palette
 
-        self.plot = figure(tools = ['save', 'reset'],
+        plot_lst.append(self)
+
+    def initialize(self, doc, plot_lst):
+
+        plot = figure(tools = ['save', 'reset'],
                            y_range = [0, self.nrows],
                            x_range = [self.frequency_range[0],
                                       self.frequency_range[-1]],
                                       output_backend="webgl")
-        self.plot.yaxis.formatter = FuncTickFormatter(code = """
+        plot.yaxis.formatter = FuncTickFormatter(code = """
                            return (%s - tick)*%s
-                           """ % (self.nrows, time_per_sample))
+                           """ % (self.nrows, self.time_per_sample))
 
         self.waterfall_renderer = []
         for i in range(self.nconnections):
             self.waterfall_renderer.append(
-                WaterfallRenderer(palette = utils.PALETTES[palette],
+                WaterfallRenderer(palette = utils.PALETTES[self.palette],
                                   time_length = self.nrows,
                                   fft_length = self.size,
-                                  min_value = values_range[0],
-                                  max_value = values_range[-1]))
-            self.plot.renderers.append(self.waterfall_renderer[i])
+                                  min_value = self.values_range[0],
+                                  max_value = self.values_range[-1]))
+            plot.renderers.append(self.waterfall_renderer[i])
 
-        self.plot_lst.append(self)
+        self.plot = plot
+        plot_lst.append(self)
 
-        if self.name:
-            self.set_title(self.name)
+        def callback():
+            self.update( )
 
-        self.doc.add_periodic_callback(self.update, update_time)
+        doc.add_periodic_callback(callback, self.update_time)
 
     def update(self):
         output_items = self.process.get_plot_data()

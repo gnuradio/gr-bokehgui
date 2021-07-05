@@ -21,14 +21,20 @@ from bokeh.models import Button, Toggle
 
 class button():
     def __init__(self, widget_lst, label):
-        self.widget_lst = widget_lst
+        self.label = label
         self.button = None
-        self.initialize(label)
+        self.callback = None
+        # self.initialize(default_value, label, inline)
+        widget_lst.append(self)
 
-    def initialize(self, label):
+    def initialize(self, widget_lst):
         # self.button = Button(label = label) # Using a simple button doesn't trigger callbacks for some reason
-        self.button = Toggle(label = label)
-        self.widget_lst.append(self.button)
+        self.button = Toggle(label = self.label)
+        widget_lst.append(self.button)
+        if self.callback is not None:
+            self.button.on_click(self.callback)
 
     def add_callback(self, callback):
-        self.button.on_click(callback)
+        self.callback = callback
+        if self.button is not None:
+            self.button.on_click(self.callback)
