@@ -1071,7 +1071,7 @@ blocks:
     bus_structure: null
     coordinate: [602, 356]
     rotation: 0
-    state: true
+    state: enabled
 - name: bokehgui_waterfall_sink_x_0_0
   id: bokehgui_waterfall_sink_x
   parameters:
@@ -1104,7 +1104,7 @@ blocks:
     bus_structure: null
     coordinate: [608, 731]
     rotation: 0
-    state: true
+    state: enabled
 - name: fft_vxx_0
   id: fft_vxx
   parameters:

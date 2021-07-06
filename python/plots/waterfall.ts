@@ -54,8 +54,8 @@ export class WaterfallRendererView extends RendererView {
     this.connect(this.model.change, this.request_render)
   }
 
-  render(): void {
-    const ctx = this.plot_view.canvas_view.ctx
+  protected _render(): void {
+    const ctx = this.layer.ctx
     ctx.save()
 
     const smoothing = ctx.getImageSmoothingEnabled()
