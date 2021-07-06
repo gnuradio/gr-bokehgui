@@ -11,8 +11,7 @@ The module was irst developed as a part of Google Summer of Code 2017 by Kartik 
 
 ## Dependency
 1. GNU Radio 3.8.3
-2. [Bokeh library](https://docs.bokeh.org/en/2.0.2/)
-   (Tested on v1.4.0 and 2.0.2) (later versions cause the waterfall display to crash)
+2. [Bokeh library between 2.1.0 and 2.2.3](https://docs.bokeh.org/en/2.2.3/) (earlier and later versions cause the waterfall display to crash, the rest is fine)
 
 ## Installation
 
@@ -25,7 +24,7 @@ $ git clone https://github.com/gnuradio/gr-bokehgui.git
 3. Build with CMake:
 ```
 $ cd gr-bokehgui/
-$ git checkout tags/compatbokeh2.0
+$ git checkout tags/compatbokeh2.2
 $ mkdir build
 $ cd build/
 $ cmake ../
