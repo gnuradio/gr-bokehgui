@@ -4,14 +4,14 @@
 ## Overview
 <img align="right" src="https://wiki.gnuradio.org/images/2/2f/Gnuradio_logo_icon.png?054f8" width="12%" />
 
-The module provides various sinks and widgets to allow interaction with the live GNU Radio applications remotely over the network. The module uses [Bokeh](https://docs.bokeh.org/en/1.4.0/)'s client API and streaming features. Using widgets and plots from Bokeh, the module enables the GUI for GNU Radio that renders in web browser. Just like `gr-qtgui`, it is fully integrated with GRC to allow easy use.
+The module provides various sinks and widgets to allow interaction with the live GNU Radio applications remotely over the network. The module uses [Bokeh](https://docs.bokeh.org/en/2.3.2/)'s client API and streaming features. Using widgets and plots from Bokeh, the module enables the GUI for GNU Radio that renders in web browser. Just like `gr-qtgui`, it is fully integrated with GRC to allow easy use.
 
-The module was irst developed as a part of Google Summer of Code 2017 by Kartik Patel.
+The module was first developed as a part of Google Summer of Code 2017 by Kartik Patel.
 
 
 ## Dependency
 1. GNU Radio 3.8.3
-2. [Bokeh library between 2.1.0 and 2.2.3](https://docs.bokeh.org/en/2.2.3/) (earlier and later versions cause the waterfall display to crash, the rest is fine)
+2. [Bokeh library above 2.3.1](https://docs.bokeh.org/en/2.3.2/) (earlier versions cause the waterfall display to crash)
 
 ## Installation
 
@@ -24,7 +24,7 @@ $ git clone https://github.com/gnuradio/gr-bokehgui.git
 3. Build with CMake:
 ```
 $ cd gr-bokehgui/
-$ git checkout tags/compatbokeh2.2
+$ git checkout maint-3.8
 $ mkdir build
 $ cd build/
 $ cmake ../
