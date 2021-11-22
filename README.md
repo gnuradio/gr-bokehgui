@@ -12,6 +12,7 @@ The module was first developed as a part of Google Summer of Code 2017 by Kartik
 ## Dependency
 1. GNU Radio 3.8.3
 2. [Bokeh library above 2.3.1](https://docs.bokeh.org/en/2.3.2/) (earlier versions cause the waterfall display to crash)
+3. NodeJs >= 14 (To use the waterfall plot)
 
 ## Installation
 
