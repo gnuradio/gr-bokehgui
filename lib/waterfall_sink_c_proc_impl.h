@@ -34,7 +34,7 @@ namespace gr {
       std::vector<float> d_window;
       double d_center_freq, d_bandwidth;
       bool d_shift;
-      fft::fft_complex* d_fft;
+      fft::fft_complex_fwd* d_fft;
       std::vector<float> d_fbuf;
       double d_time_per_fft;
 
@@ -62,8 +62,11 @@ namespace gr {
       void set_size(int);
       void buildwindow();
 
+      int get_buff_size();
+      int get_buff_cols();
+
       // Virtual functions inherited from base_sink
-      void get_plot_data (float** output_items, int* nrows, int* size);
+      float * get_plot_data ();
       void process_plot(float* arr, int* nrows, int* size);
       void pop_other_queues();
       void verify_datatype_PDU(const gr_complex*, pmt::pmt_t, size_t);

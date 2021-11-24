@@ -26,6 +26,8 @@ if(NOT PYTHONINTERP_FOUND)
     return()
 endif()
 
+add_subdirectory(bindings)
+
 ########################################################################
 # Install python sources
 ########################################################################
@@ -60,7 +62,6 @@ GR_PYTHON_INSTALL(
     plots/bokehgui.py
     DESTINATION ${GR_PYTHON_DIR}/bokehgui/plots
 )
-
 install(FILES plots/waterfall.ts
   DESTINATION ${GR_PYTHON_DIR}/bokehgui/plots
   PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
@@ -75,7 +76,7 @@ install(FILES scripts/check-port.sh
 include(GrTest)
 
 set(GR_TEST_TARGET_DEPS gnuradio-bokehgui)
-set(GR_TEST_PYTHON_DIRS ${CMAKE_BINARY_DIR}/swig)
+GR_ADD_TEST(qa_time_sink_c_proc ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_time_sink_c_proc.py)
 GR_ADD_TEST(qa_time_sink_f ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_time_sink_f.py)
 GR_ADD_TEST(qa_time_sink_c ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_time_sink_c.py)
 GR_ADD_TEST(qa_freq_sink_f ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_freq_sink_f.py)

@@ -33,7 +33,7 @@ namespace gr {
        std::vector<float> d_window;
        double d_center_freq, d_bandwidth;
        bool d_shift;
-       fft::fft_complex* d_fft;
+       fft::fft_complex_fwd* d_fft;
        std::vector<float> d_fbuf;
        unsigned int d_tmpbuflen;
        std::vector<float> d_tmpbuf;
