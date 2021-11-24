@@ -89,7 +89,7 @@ export class WaterfallRendererView extends RendererView {
       this.tile -= 1
       if (this.tile < 0)
         this.tile = this.y.length - 1
-      this.y[this.tile] = this.model.time_length + this.tile_height
+      this.y[this.tile] = this.model.time_length //- this.tile_height
     }
 
     // apply the lastest column to the current tile image

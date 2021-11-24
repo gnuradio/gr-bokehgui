@@ -60,7 +60,7 @@ class waterfall_sink_f(bokeh_plot_config):
         self.nrows = number_of_samples
         self.time_per_sample = time_per_sample
 
-        self.plot = figure(tools = ['save', 'reset'],
+        self.plot = figure(tools = utils.default_tools(),
                            y_range = [0, self.nrows],
                            x_range = [self.frequency_range[0],
                                       self.frequency_range[-1]],
