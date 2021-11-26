@@ -70,7 +70,7 @@ class vec_sink_c(bokeh_plot_config):
         self.lines = []
         self.lines_markers = []
         self.legend_list = legend_list[:]
-        print(self.legend_list)
+
         for i in range(2 * nconn):
             self.lines.append(self.plot.line(x = 'x', y = 'y' + str(i),
                                              source = self.stream,
@@ -111,7 +111,7 @@ class vec_sink_c(bokeh_plot_config):
 
     def set_x_values(self, values):
         if len(values) != self.size:
-            print("Error: x values has not the size of the input vector")
+            print(f"Error: x values has not the size ({len(values)}) of the input vector ({self.size})")
             return
         self.x_values = values
     # def set_x_values(self, start, step):
