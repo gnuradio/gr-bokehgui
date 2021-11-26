@@ -91,3 +91,5 @@ ENV/
 *.swp
 
 .unittests/
+
+examples/test_bokehgui.py

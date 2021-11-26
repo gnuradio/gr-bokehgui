@@ -20,14 +20,22 @@ from bokeh.models.widgets import RadioGroup
 
 class radiobutton():
     def __init__(self, widget_lst, default_value, label, inline = True):
-        self.widget_lst = widget_lst
+        self.label = label
+        self.default_value = default_value
+        self.inline = inline
         self.radiobutton = None
-        self.initialize(default_value, label, inline)
+        self.callback = None
+        # self.initialize(default_value, label, inline)
+        widget_lst.append(self)
 
-    def initialize(self, default_value, label, inline):
-        self.radiobutton = RadioGroup(active = default_value, labels = label,
-                                      inline = inline)
-        self.widget_lst.append(self.radiobutton)
+    def initialize(self, widget_lst):
+        self.radiobutton = RadioGroup(active = self.default_value, labels = self.label,
+                                      inline = self.inline)
+        widget_lst.append(self.radiobutton)
+        if self.callback is not None:
+            self.radiobutton.on_click(self.callback)
 
     def add_callback(self, callback):
-        self.radiobutton.on_click(callback)
+        self.callback = callback
+        if self.radiobutton is not None:
+            self.radiobutton.on_click(self.callback)
