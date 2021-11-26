@@ -25,13 +25,13 @@ frontend plotting library `Bokeh` plots the data. The widget callbacks are
 handled by `Bokeh` and corresponding callback functions are defined in each
 sinks.
 '''
-from __future__ import unicode_literals
+import os
 
-# import swig generated symbols into the bokehgui namespace
+# import pybind11 generated symbols into the bokehgui namespace
 try:
     # this might fail if the module is python-only
-    from .bokehgui_swig import *
-except ImportError:
+    from .bokehgui_python import *
+except ModuleNotFoundError:
     pass
 
 # import any pure python here
@@ -52,4 +52,3 @@ from .vec_sink_c import vec_sink_c
 from .vec_sink_f import vec_sink_f
 from .waterfall_sink_c import waterfall_sink_c
 from .waterfall_sink_f import waterfall_sink_f
-#

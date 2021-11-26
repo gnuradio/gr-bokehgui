@@ -54,7 +54,7 @@ namespace gr {
       // Perform fftshift operation;
       // This is usually desired when plotting
       d_shift = true;
-      d_fft = new fft::fft_complex(d_size, true);
+      d_fft = new fft::fft_complex_fwd(d_size, true);
 
       // Used to save FFT values temporarily
       d_fbuf = std::vector<float> (d_size, 0);
@@ -225,7 +225,7 @@ namespace gr {
 
         // Reset FFTW plan for new size
         delete d_fft;
-        d_fft = new fft::fft_complex(d_size, true);
+        d_fft = new fft::fft_complex_fwd(d_size, true);
 
         d_fbuf = std::vector<float> (d_size, 0);
         d_tmpbuflen = (unsigned int)(floor(d_size/2.0));

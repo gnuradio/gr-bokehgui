@@ -110,7 +110,7 @@ class vec_sink_f(bokeh_plot_config):
 
     def set_x_values(self, values):
         if len(values) != self.size:
-            print("Error: x values has not the size of the input vector")
+            print(f"Error: x values has not the size ({len(values)}) of the input vector ({self.size})")
             return
         self.x_values = values
     # def set_x_values(self, start, step):

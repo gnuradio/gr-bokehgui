@@ -43,11 +43,10 @@ list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_SOURCE_DIR}/cmake/Modules)
 
 # Set the version information here
 set(VERSION_MAJOR 1)
-set(VERSION_API    0)
-set(VERSION_ABI 0)
-set(VERSION_PATCH git)
+set(VERSION_API   0)
+set(VERSION_ABI   0)
+set(VERSION_PATCH 0)
 
-set(PYTHON3_MIN_VERSION "3.6.5")
 cmake_policy(SET CMP0011 NEW)
 
 # Enable generation of compile_commands.json for code completion engines
@@ -63,13 +62,12 @@ if((CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR
     add_definitions(-fvisibility=hidden)
 endif()
 
-
 IF(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-    SET(CMAKE_CXX_STANDARD 11)
+    SET(CMAKE_CXX_STANDARD 14)
 ELSEIF(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-    SET(CMAKE_CXX_STANDARD 11)
+    SET(CMAKE_CXX_STANDARD 14)
 ELSEIF(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-    SET(CMAKE_CXX_STANDARD 11)
+    SET(CMAKE_CXX_STANDARD 14)
 ELSE()
     message(WARNING "C++ standard could not be set because compiler is not GNU, Clang or MSVC.")
 ENDIF()
@@ -87,6 +85,7 @@ ENDIF()
 ########################################################################
 # Install directories
 ########################################################################
+include(FindPkgConfig)
 find_package(Gnuradio "3.9" REQUIRED runtime fft)
 include(GrVersion)
 
@@ -127,8 +126,6 @@ endif(APPLE)
 # Find gnuradio build dependencies
 ########################################################################
 find_package(Doxygen)
-find_package(PythonInterp ${PYTHON_MIN_VERSION} COMPONENTS Interpreter Development NumPy)
-
 
 ########################################################################
 # Check if boheh module exists
@@ -139,6 +136,18 @@ if(NOT BOKEH_FOUND)
     message(FATAL_ERROR "Bokeh library required to compile gr-bokehgui")
 endif()
 
+########################################################################
+# PyBind11 Related
+########################################################################
+
+find_package(pybind11 REQUIRED)
+execute_process(
+    COMMAND "${PYTHON_EXECUTABLE}" -c
+    "try:\n import numpy\n import os\n inc_path = numpy.get_include()\n if os.path.exists(os.path.join(inc_path, 'numpy', 'arrayobject.h')):\n  print(inc_path, end='')\nexcept:\n pass"
+    OUTPUT_VARIABLE PYTHON_NUMPY_INCLUDE_DIR)
+# format path in CMake-style for consistency with other path variables
+# (a consistent style helps conda builds by using the same path separators)
+file(TO_CMAKE_PATH "${PYTHON_NUMPY_INCLUDE_DIR}" PYTHON_NUMPY_INCLUDE_DIR)
 
 ########################################################################
 # Setup doxygen option
@@ -148,7 +157,6 @@ if(DOXYGEN_FOUND)
 else(DOXYGEN_FOUND)
     option(ENABLE_DOXYGEN "Build docs using Doxygen" OFF)
 endif(DOXYGEN_FOUND)
-
 
 ########################################################################
 # Create uninstall target
@@ -162,7 +170,6 @@ add_custom_target(uninstall
     ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake
     )
 
-
 ########################################################################
 # Add subdirectories
 ########################################################################
@@ -170,9 +177,14 @@ add_subdirectory(include/bokehgui)
 add_subdirectory(lib)
 add_subdirectory(apps)
 add_subdirectory(docs)
-add_subdirectory(swig)
-add_subdirectory(python)
-add_subdirectory(grc)
+# NOTE: manually update below to use GRC to generate C++ flowgraphs w/o python
+if(ENABLE_PYTHON)
+  message(STATUS "PYTHON and GRC components are enabled")
+  add_subdirectory(python)
+  add_subdirectory(grc)
+else(ENABLE_PYTHON)
+  message(STATUS "PYTHON and GRC components are disabled")
+endif(ENABLE_PYTHON)
 
 ########################################################################
 # Install cmake search helper for this library

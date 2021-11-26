@@ -45,7 +45,7 @@ namespace gr {
      * by the child-class. If the functions are irrelevant for the child-class
      * then implementation of a blank function is required.
      *
-     * This class maintains a queue of 2D array is maintained. Each 2D array
+     * This class maintains a queue of 2D arrays. Each 2D array
      * is of size \p nconnection \p x \p d_size. For each call to get the
      * data from Python, first element of queue is sent.
      *
@@ -101,26 +101,36 @@ namespace gr {
        * \param size Pointer to integer value representing number of elements
        *             in a row. Generally \p d_size
        */
-      void get_plot_data (float** output_items, int* nrows, int* size) {
+      float * get_plot_data () {
         gr::thread::scoped_lock lock(d_setlock);
         if (!d_buffers.size()) {
-          *size = 0;
-          *nrows = d_nconnections + 1;
-          return;
+          int size = 0;
+          int nrows = d_nconnections + 1;
+          float* arr = (float*) malloc(2*(nrows)*(size)*sizeof(float));
+          return arr;
         }
 
-        *nrows = d_nconnections + 1;  //Why the +1? why not d_buffers.front().size()?
-        *size = d_buffers.front()[0].size();
+        int nrows = d_nconnections + 1;  //Why the +1? why not d_buffers.front().size()?
+        int size = d_buffers.front()[0].size();
 
-        float* arr = (float*) malloc(2*(*nrows)*(*size)*sizeof(float)); // Why the 2* and the size float and not T?
-        memset(arr, 0, 2*(*nrows)*(*size)*sizeof(float));
-        process_plot(arr, nrows, size);
-
-        *output_items = arr;
+        float* arr = (float*) malloc(2*(nrows)*(size)*sizeof(float)); // Why the 2* and the size float and not T?
+        memset(arr, 0, 2*(nrows)*(size)*sizeof(float));
+        process_plot(arr, &nrows, &size);
 
         d_buffers.pop();
 
-        return;
+        return arr;
+      }
+
+      int get_buff_size(){
+        if (!d_buffers.size()) {
+          return 0;
+        }
+        return d_buffers.front()[0].size();
+      }
+
+      int get_buff_cols(){
+        return (sizeof(T)/sizeof(float))*d_nconnections;
       }
 
       int work(int noutput_items,
@@ -131,7 +141,7 @@ namespace gr {
         // Consume all possible set of data. Each with nitems
         for(int d_index = 0; d_index < noutput_items;) {
           int nitems = std::min(d_size, noutput_items - d_index);
-          // TODO: See how to include auto/normal triggeres
+          // TODO: See how to include auto/normal triggers
           if(d_trigger_mode == TRIG_MODE_TAG) {
             _test_trigger_tags(d_index, nitems);
           }

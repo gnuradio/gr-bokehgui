@@ -43,7 +43,7 @@ namespace gr {
       d_center_freq(fc), d_bandwidth(bw), d_nrows(200)
     {
       d_shift = true;
-      d_fft = new fft::fft_complex(d_size, true);
+      d_fft = new fft::fft_complex_fwd(d_size, true);
 
       // Used to save FFT values
       d_fbuf = std::vector<float> (d_size, 0);
@@ -66,34 +66,47 @@ namespace gr {
       d_fbuf = std::vector<float>();
     }
 
-    void
-    waterfall_sink_c_proc_impl::get_plot_data (float** output_items, int* nrows, int* size) {
+    float *
+    waterfall_sink_c_proc_impl::get_plot_data () {
       // Reimplementation of get_plot_data to handle
       // multiple rows to be sent in case of PDU message
       gr::thread::scoped_lock lock(d_setlock);
+      int nrows = 0;
       if (!d_buffers.size()) {
-        *size = 0;
-        *nrows = d_nconnections + 1;
-        return;
+        int size = 0;
+        nrows = d_nconnections + 1;
+        float* arr = (float*) malloc(2*(nrows)*(size)*sizeof(float));
+        return arr;
       }
       if (d_nconnections) {
-        *nrows = d_nconnections + 1;
+        nrows = d_nconnections + 1;
       }
       else {
-        *nrows = d_nrows;
+        nrows = d_nrows;
       }
-      *size = d_buffers.front()[0].size();
+      int size = d_buffers.front()[0].size();
 
-      float* arr = (float*) malloc(2*(*nrows)*(*size)*sizeof(float));
-      memset(arr, 0, 2*(*nrows)*(*size)*sizeof(float));
+      float* arr = (float*) malloc(2*(nrows)*(size)*sizeof(float));
+      memset(arr, 0, 2*(nrows)*(size)*sizeof(float));
 
-      process_plot(arr, nrows, size);
-
-      *output_items = arr;
+      process_plot(arr, &nrows, &size);
 
       d_buffers.pop();
 
-      return;
+      return arr;
+    }
+
+    int waterfall_sink_c_proc_impl::get_buff_size(){
+      return d_buffers.front()[0].size();
+    }
+
+    int waterfall_sink_c_proc_impl::get_buff_cols(){
+      if (d_nconnections) {
+        return d_nconnections + 1;
+      }
+      else {
+        return d_nrows;
+      }
     }
 
     void
@@ -208,7 +221,7 @@ namespace gr {
         buildwindow();
 
         delete d_fft;
-        d_fft = new fft::fft_complex(d_size, true);
+        d_fft = new fft::fft_complex_fwd(d_size, true);
 
         d_fbuf = std::vector<float> (d_size, 0);
 
@@ -282,5 +295,3 @@ namespace gr {
     }
   } /* namespace bokehgui */
 } /* namespace gr */
-
-

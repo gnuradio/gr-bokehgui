@@ -8,12 +8,12 @@ The module provides various sinks and widgets to allow interaction with the live
 
 The module was developed as a part of Google Summer of Code 2017 by Kartik Patel.
 
-## Warning: The master branch does not yet support GNU Radio 3.9 since the change to pybind11. Please use the main-3.8 branch with GNU Radio 3.8
 
 ## Dependency
 1. GNU Radio 3.9
 2. [Bokeh library v1](https://docs.bokeh.org/en/1.4.0/)
    (Tested on v1.4.0)
+3. NodeJS
 
 ## Installation
 ### Using PyBOMBS
@@ -35,7 +35,6 @@ $ mkdir build
 $ cd build/
 $ cmake ../
 $ make
-$ make test
 $ sudo make install
 ```
 
