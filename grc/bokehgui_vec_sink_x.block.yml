@@ -43,6 +43,13 @@ parameters:
     options: ['1.0', '0.2', '0.1', '0.05']
     option_labels: [None, Low, Medium, High]
     hide: part
+-   id: maxhold
+    label: Max Hold
+    dtype: enum
+    default: 'False'
+    options: ['True', 'False']
+    option_labels: ['Yes', 'No']
+    hide: part
 -   id: ymin
     label: Y min
     dtype: real
@@ -566,7 +573,7 @@ templates:
         self.${id}_plot.disable_legend(not ${legend})
         self.${id}_plot.set_layout(*(${placement}))
         % if maxhold == 'True':
-        self.${id}_plot.enable_max_hold()
+        self.${id}_plot.enable_max_hold(${maxhold})
         % endif
         colors = [${color1}, ${color2}, ${color3}, ${color4}, ${color5},
                   ${color6}, ${color7}, ${color8}, ${color9}, ${color10}]
@@ -603,6 +610,7 @@ templates:
     # - set_title(${which}, ${title})
     # - set_color(${which}, ${color})
     - self.${id}_plot.set_y_axis([${ymin}, ${ymax}])
+    - self.${id}_plot.enable_max_hold(${maxhold})
 
 documentation: ""
 
