@@ -68,6 +68,7 @@ def run_server(tb, sizing_mode="fixed", widget_placement=(0,0), window_size=(100
     handler = bh.FunctionHandler(make_doc)
     app = ba.Application(handler)
     server = Server(app)
+    print(f"Please open a browser at the following address: localhost:{server.port}")
     server.run_until_shutdown()
     return #server_proc, str(int(port))
 
