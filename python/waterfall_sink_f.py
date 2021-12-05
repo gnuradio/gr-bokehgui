@@ -63,7 +63,7 @@ class waterfall_sink_f(bokeh_plot_config):
 
     def initialize(self, doc, plot_lst):
 
-        self.plot = figure(tools = utils.default_tools(),
+        plot = figure(tools = utils.default_tools(),
                            y_range = [0, self.nrows],
                            x_range = [self.frequency_range[0],
                                       self.frequency_range[-1]],

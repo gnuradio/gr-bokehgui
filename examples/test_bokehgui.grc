@@ -1,6 +1,7 @@
 options:
   parameters:
     author: Kartik Patel
+    catch_exceptions: 'True'
     category: '[GRC Hier Blocks]'
     cmake_opt: ''
     comment: ''
@@ -75,7 +76,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [672, 4.0]
+    coordinate: [200, 92.0]
     rotation: 0
     state: enabled
 - name: ntype_cmplx
@@ -137,7 +138,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [496, 90]
+    coordinate: [336, 108.0]
     rotation: 0
     state: true
 - name: samp_rate
@@ -415,7 +416,7 @@ blocks:
     minoutbuf: '0'
     name: Complex Frequency Sink
     nconnections: '1'
-    placement: (2,0,1,1)
+    placement: (5,0,1,1)
     style1: '"solid"'
     style10: '"solid"'
     style2: '"solid"'
@@ -515,7 +516,7 @@ blocks:
     minoutbuf: '0'
     name: Float Frequency Sink
     nconnections: '1'
-    placement: (4,0,1,1)
+    placement: (7,0,1,1)
     style1: '"solid"'
     style10: '"solid"'
     style2: '"solid"'
@@ -1053,7 +1054,7 @@ blocks:
     maxoutbuf: '0'
     minoutbuf: '0'
     name: '"Complex waterfall"'
-    placement: (1,0,1,1)
+    placement: (8,0,1,1)
     type: complex
     update_time: int(1000*(1/up_freq))
     wintype: window.WIN_BLACKMAN_hARRIS
@@ -1086,7 +1087,7 @@ blocks:
     maxoutbuf: '0'
     minoutbuf: '0'
     name: '""'
-    placement: (3,0,1,1)
+    placement: (9,0,1,1)
     type: float
     update_time: int(1000*(1/up_freq))
     wintype: window.WIN_BLACKMAN_hARRIS
@@ -1144,7 +1145,7 @@ blocks:
     bus_structure: null
     coordinate: [872, 308.0]
     rotation: 0
-    state: true
+    state: enabled
 
 connections:
 - [analog_noise_source_x_0, '0', blocks_add_xx_0, '1']
