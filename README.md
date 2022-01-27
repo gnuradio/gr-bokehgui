@@ -24,7 +24,6 @@ $ git clone https://github.com/gnuradio/gr-bokehgui.git
 3. Build with CMake:
 ```
 $ cd gr-bokehgui/
-$ git checkout 3.9-bokeh-2
 $ mkdir build
 $ cd build/
 $ cmake ../
