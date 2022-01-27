@@ -1,9 +1,15 @@
 #!/bin/bash
 
-netstat -netul | awk '{ print $4 }' | awk -F':' '{ print $NF }' | tail -n +3 > temp_netstat
+# Use netstat if available, else try ss command
+if ! command -v netstat &> /dev/null
+then
+	ss -netul | awk '{ print $5 }' | awk -F':' '{ print $NF }' | tail -n +3 > temp_netstat
+else
+	netstat -netul | awk '{ print $4 }' | awk -F':' '{ print $NF }' | tail -n +3 > temp_netstat
+fi
 
 TEMP=temp_netstat
-port_server_assign=0
+port_server_assign=5006
 
 for port in {5006..70000}
 do

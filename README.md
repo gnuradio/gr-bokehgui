@@ -13,6 +13,7 @@ The module was first developed as a part of Google Summer of Code 2017 by Kartik
 1. GNU Radio 3.9.5 or 3.10
 2. [Bokeh library above 2.3.1](https://docs.bokeh.org/en/2.3.2/) (earlier versions cause the waterfall display to crash)
 3. NodeJS >= 14
+4. Netstat or ss to check open ports (optionnal)
 
 ## Installation
 ### Using source code

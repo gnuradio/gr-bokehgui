@@ -36,8 +36,8 @@ default_labels_c = ["Re{{Data {0}}}".format(i // 2) if i % 2 == 0
 
 
 def run_server(tb, sizing_mode="fixed", widget_placement=(0,0), window_size=(1000,1000)):
-    port = subprocess.check_output([os.path.abspath(
-        os.path.dirname(__file__)) + "/scripts/check-port.sh"])
+    port = int(subprocess.check_output([os.path.abspath(
+        os.path.dirname(__file__)) + "/scripts/check-port.sh"]))
 
 
     # app = ba.Application(ba.handlers.ScriptHandler(os.path.abspath(os.path.dirname(__file__)) + "/plots/bokehgui.py"]))
@@ -67,7 +67,7 @@ def run_server(tb, sizing_mode="fixed", widget_placement=(0,0), window_size=(100
 
     handler = bh.FunctionHandler(make_doc)
     app = ba.Application(handler)
-    server = Server(app)
+    server = Server(app, port=port, allow_websocket_origin=["*"])
     print(f"Please open a browser at the following address: localhost:{server.port}")
     server.run_until_shutdown()
     return #server_proc, str(int(port))
