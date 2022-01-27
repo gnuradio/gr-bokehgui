@@ -4,24 +4,17 @@
 ## Overview
 <img align="right" src="https://wiki.gnuradio.org/images/2/2f/Gnuradio_logo_icon.png?054f8" width="12%" />
 
-The module provides various sinks and widgets to allow interaction with the live GNU Radio applications remotely over the network. The module uses [Bokeh](https://docs.bokeh.org/en/1.4.0/)'s client API and streaming features. Using widgets and plots from Bokeh, the module enables the GUI for GNU Radio that renders in web browser. Just like `gr-qtgui`, it is fully integrated with GRC to allow easy use.
+The module provides various sinks and widgets to allow interaction with the live GNU Radio applications remotely over the network. The module uses [Bokeh](https://docs.bokeh.org/en/2.4.2/)'s client API and streaming features. Using widgets and plots from Bokeh, the module enables the GUI for GNU Radio that renders in web browser. Just like `gr-qtgui`, it is fully integrated with GRC to allow easy use.
 
-The module was developed as a part of Google Summer of Code 2017 by Kartik Patel.
+The module was first developed as a part of Google Summer of Code 2017 by Kartik Patel.
 
 
 ## Dependency
-1. GNU Radio 3.9
-2. [Bokeh library v1](https://docs.bokeh.org/en/1.4.0/)
-   (Tested on v1.4.0)
-3. NodeJS
+1. GNU Radio 3.9.5 or 3.10
+2. [Bokeh library above 2.3.1](https://docs.bokeh.org/en/2.3.2/) (earlier versions cause the waterfall display to crash)
+3. NodeJS >= 14
 
 ## Installation
-### Using PyBOMBS
-```
-$ pybombs install gr-bokehgui
-```
-The pybombs recipe is not up to date with the present repository, please build from source.
-
 ### Using source code
 1. Make sure that you have satisfied all dependency listed above.
 2. Clone the latest code
@@ -31,6 +24,7 @@ $ git clone https://github.com/gnuradio/gr-bokehgui.git
 3. Build with CMake:
 ```
 $ cd gr-bokehgui/
+$ git checkout 3.9-bokeh-2
 $ mkdir build
 $ cd build/
 $ cmake ../
@@ -50,6 +44,8 @@ The output should be as follows:
 
 The following Youtube video provides quick glance over the module and basic procedures.
 [![Youtube - demo](http://img.youtube.com/vi/EyNOE9icNVc/0.jpg)](https://www.youtube.com/watch?v=EyNOE9icNVc)
+
+The `test_bokehgui.grc` example flowgraph contains all the plots and most widgets to check that everything works correctly.
 
 ## Bugs reporting:
 Kindly report any bugs or issues [on Github](https://github.com/gnuradio/gr-bokehgui/issues/).

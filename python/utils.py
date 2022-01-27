@@ -19,7 +19,11 @@
 import os
 import subprocess
 import bokeh.palettes as bp
-
+import bokeh.application as ba
+import bokeh.application as ba
+import bokeh.application.handlers as bh
+from bokeh.server.server import Server
+import bokehgui
 
 def default_tools():
     return ['box_zoom', 'ypan', 'ywheel_zoom', 'save', 'reset']
@@ -29,14 +33,44 @@ default_labels_c = ["Re{{Data {0}}}".format(i // 2) if i % 2 == 0
                     else "Im{{Data {0}}}".format(i // 2) for i in range(10)]
 
 
-def create_server():
+
+
+def run_server(tb, sizing_mode="fixed", widget_placement=(0,0), window_size=(1000,1000)):
     port = subprocess.check_output([os.path.abspath(
         os.path.dirname(__file__)) + "/scripts/check-port.sh"])
-    server_proc = subprocess.Popen(["bokeh", "serve", "--port", str(int(port)),
-                                    "--allow-websocket-origin=*",
-                                    os.path.abspath(os.path.dirname(
-                                        __file__)) + "/plots/bokehgui.py"])
-    return server_proc, str(int(port))
+
+
+    # app = ba.Application(ba.handlers.ScriptHandler(os.path.abspath(os.path.dirname(__file__)) + "/plots/bokehgui.py"]))
+    # server_proc = subprocess.Popen(["bokeh", "serve", "--port", str(int(port)),
+    #                                 "--allow-websocket-origin=*",
+    #                                 os.path.abspath(os.path.dirname(
+    #                                     __file__)) + "/plots/bokehgui.py"])
+
+    def make_doc(doc):
+        doc.title = tb.name()
+        plot_list = []
+        widget_list = []
+        for i in tb.plot_lst:
+            i.initialize(doc, plot_list )
+        for i in tb.widget_lst:
+            i.initialize(widget_list )
+        if widget_list:
+            input_t = bokehgui.bokeh_layout.widgetbox(widget_list)
+            widgetbox = bokehgui.bokeh_layout.WidgetLayout(input_t)
+            widgetbox.set_layout(*widget_placement)
+            list_obj = [widgetbox] + plot_list
+        else:
+            list_obj = plot_list
+        layout_t = bokehgui.bokeh_layout.create_layout(list_obj, sizing_mode, window_size)
+        doc.add_root(layout_t)
+
+
+    handler = bh.FunctionHandler(make_doc)
+    app = ba.Application(handler)
+    server = Server(app)
+    print(f"Please open a browser at the following address: localhost:{server.port}")
+    server.run_until_shutdown()
+    return #server_proc, str(int(port))
 
 PALETTES = {
     'Inferno':bp.all_palettes['Inferno'][256],
