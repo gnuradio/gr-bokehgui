@@ -29,6 +29,7 @@ install(FILES
     bokehgui_button.block.yml
     bokehgui_radio_button.block.yml
     bokehgui_textbox.block.yml
+    bokehgui_dropdown.block.yml
     bokehgui_waterfall_sink_x.block.yml
     bokehgui_const_sink_x.block.yml
     DESTINATION share/gnuradio/grc/blocks)
