@@ -170,6 +170,7 @@ templates:
 
     callbacks:
     - self.set_${id}(${value})
-    - self.${id}_slider.set_value(${value})
+    - self.${id}_dropdown.set_value(${value})
+    - self.${id}_dropdown.set_label(${value})
 
 file_format: 1

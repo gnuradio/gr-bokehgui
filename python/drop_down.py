@@ -19,34 +19,42 @@
 from bokeh.models.widgets import Select
 
 class dropdown():
+
     def __init__(self, widget_lst, title, value, options, width, height):
+        self.previous_label = ''
         self.title = title
         self.options = options
         self.value = value
         self.width = width
         self.height = height
         self.dropdown = None
-  #      self.dropdown = None
-        # self.initialize(default_value, label, inline)
         widget_lst.append(self)
 
     def initialize(self, widget_lst):
+        if self.previous_label == '':
+            label = self.value
+            self.previous_label = self.value
+        else:
+            label = self.previous_label
         if self.width > 0 and self.height > 0:
-            self.dropdown = Select(title = self.title, value = self.value,
+            self.dropdown = Select(title = self.title, value = label,
                                       options = self.options, width = self.width, height = self.height)
         else:
-            self.dropdown = Select(title = self.title, value = self.value,
+            self.dropdown = Select(title = self.title, value = label,
                                       options = self.options)
         widget_lst.append(self.dropdown)
         if self.callback is not None:
-            self.dropdown.on_change('value', self.callback)
+            self.dropdown.on_change('value', self.callback,self.set_label)
 
     def add_callback(self, callback):
         self.callback = callback
         if self.dropdown is not None:
-            self.dropdown.on_change('value', self.callback)
+            self.dropdown.on_change('value', self.callback, self.set_label)
             
     def set_value(self, value):
-        if self.slider is not None:
+        if self.dropdown is not None:
             self.dropdown.value = value
         self.value = value
+        
+    def set_label (self, attr, old, new):
+        self.previous_label = new
