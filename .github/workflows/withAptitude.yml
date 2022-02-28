@@ -61,7 +61,7 @@ jobs:
           sudo apt update
           sudo apt install -qy libiio-dev libad9361-dev libspdlog-dev python3-packaging
 
-      - name: Install the tangled web 
+      - name: Other possible requirements (enable as needed)
         if: false
         run: |
           sudo apt install -qy build-essential npm nodejs cmake cmake-curses-gui ninja-build python3-pip
@@ -102,7 +102,6 @@ jobs:
       - name: Install bokeh and bokehjs
         if: ${{ matrix.bokeh == '2.3.1.' }}
         run: |
-          pip install bokeh
           cd build
           npm init -y
           npm install
@@ -120,6 +119,7 @@ jobs:
 
       - name: Build gr-bokehgui with CMake
         run: |
+          gnuradio-config-info --print-all >~/artifacts/gnuradio.log
           python3 -m bokeh info >~/artifacts/bokeh.log
           mkdir -p build && cd build
           cmake ..
