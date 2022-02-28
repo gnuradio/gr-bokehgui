@@ -14,39 +14,55 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        python-version: [ '3.8'  ]
+        gr: [3.9., 3.10.]
+        bokeh: [2.3.1., 2.4.2.]
+      fail-fast: false
     env:
        TMPTMPDIR: /tmp
        OS_CHOICE: ${{ matrix.os }}
        
     # Steps represent a sequence of tasks that will be executed as part of the job
-    name: gr-bokeh on ${{ matrix.os }} with python ${{ matrix.python-version }} 
+    name: gr-bokeh with gnuradio ${{ matrix.gr }} and bokeh ${{ matrix.bokeh }} on ${{ matrix.os }}
     steps:
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: ${{ matrix.python-version }}
-          architecture: x64
-       
-      - name: Make a place to store logs
-        run:  mkdir -p ~/artifacts
-
-      - name: Security first
+      - name: Essential housekeeping
         run: |
-          mkdir ~/logs
+          mkdir -p ~/artifacts
           sudo apt update
+          
+      - name: Security first
+        if: true
+        run: |
           sudo apt install -y software-properties-common apt-utils 
           sudo apt install -y unattended-upgrades
           sudo unattended-upgrade -d >~/artifacts/securityFirst.log
 
-      - name: Ensure third-party apt support is installed
+      - name: Performance second
+        if: true
+        run:  sudo apt upgrade -qy
+
+      - name: Build essentials 
+        if: true
         run: |
-          if [ "${OS_CHOICE}" = "ubuntu-latest" ]; then
-             sudo add-apt-repository -y ppa:gnuradio/gnuradio-releases-3.9
-          fi
+          sudo apt install -qy build-essential cmake cmake-curses-gui ninja-build
+          sudo apt install -qy texinfo gawk g++ swig
+          sudo apt install -qy npm nodejs
+          sudo npm install -g npm@8.5
+ 
+      - name: Install GNUradio PPA 3.9
+        if: ${{ matrix.os == 'ubuntu-latest'  && matrix.gr == '3.9.' }}
+        run: |
+          sudo add-apt-repository -y ppa:gnuradio/gnuradio-releases-3.9
           sudo apt update
 
+      - name: Install GNUradio PPA 3.10
+        if: ${{ matrix.os == 'ubuntu-latest'  && matrix.gr == '3.10.' }}
+        run: |
+          sudo add-apt-repository -y ppa:gnuradio/gnuradio-releases
+          sudo apt update
+          sudo apt install -qy libiio-dev libad9361-dev libspdlog-dev python3-packaging
+
       - name: Install the tangled web 
+        if: false
         run: |
           sudo apt install -qy build-essential npm nodejs cmake cmake-curses-gui ninja-build python3-pip
           sudo apt install -qy lrzip cmake g++ libboost-all-dev libgmp-dev swig python3-numpy \
@@ -65,16 +81,18 @@ jobs:
         run: |
           sudo apt install -y gnuradio gnuradio-dev
 
-      - name: Install npm 
+      - name: Blacklist default version of Python 2
+        if: true
         run: |
-          sudo apt install -y npm nodejs
-          echo sudo npm install -g npm@8.5 node@16
-          echo sudo chown -R 1000:1000 "/root/.npm"
-
+          sudo apt remove --purge -y python || true
+          sudo apt autoremove 
+          python3 -m pip install --user --upgrade pip
+          
       - name: Checkout the current branch
         uses: actions/checkout@master
 
-      - name: Checkout 2.3.1? of bokehjs
+      - name: Checkout 2.3.1 of bokehjs
+        if: ${{ matrix.bokeh == '2.3.1.' }}
         uses: actions/checkout@master
         with:
           repository: bokeh/bokeh
@@ -82,6 +100,7 @@ jobs:
           path: 'build'
           
       - name: Install bokeh and bokehjs
+        if: ${{ matrix.bokeh == '2.3.1.' }}
         run: |
           pip install bokeh
           cd build
@@ -92,19 +111,29 @@ jobs:
           cd ../bokehjs
           npm install
           popd
-          python3 ./setup.py install --build-js
-          python3 -m bokeh info >~/artifacts/bokeh.log
-          
+          python3 ./setup.py install --build-js || sudo python3 ./setup.py install --install-js 
+
+      - name: use pip to install bokeh
+        if: ${{ matrix.bokeh == '2.4.2.' }}
+        run: |
+          pip install bokeh
+
       - name: Build gr-bokehgui with CMake
         run: |
-          cd build
+          python3 -m bokeh info >~/artifacts/bokeh.log
+          mkdir -p build && cd build
           cmake ..
           cmake --build .
-          sudo cmake --build . --target install
+          sudo cmake --build . --target install          
           
+      - name: Did it work?
+        run: |
+          cd examples
+          grcc tutorial.grc
+          cp tutorial.py ~/artifacts
           
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: log files
+          name: artifacts gr=${{matrix.gr}} bokeh=${{matrix.bokeh}} 
           path: ~/artifacts/
