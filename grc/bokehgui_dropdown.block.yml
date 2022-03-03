@@ -45,12 +45,12 @@ parameters:
 -   id: value
     label: Default Value
     dtype: ${ type }
-    default: 'True'
+    default: ''
 -   id: def_label
-    label: Default label
+    label: Default Label
     dtype: string
 -   id: options
-    label: Options
+    label: Values
     dtype: raw
     default: '[0, 1, 2]'
     hide: ${ ('all' if int(num_opts) else 'none') }
