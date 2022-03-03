@@ -1,4 +1,4 @@
-# Not cross-platform, but works
+# Rely on Aptitude to install dependencies and latest security updates
 
 name: withAptitude
 
@@ -17,9 +17,6 @@ jobs:
         gr: [3.9., 3.10.]
         bokeh: [2.3.1., 2.4.2.]
       fail-fast: false
-    env:
-       TMPTMPDIR: /tmp
-       OS_CHOICE: ${{ matrix.os }}
        
     # Steps represent a sequence of tasks that will be executed as part of the job
     name: gr-bokeh with gnuradio ${{ matrix.gr }} and bokeh ${{ matrix.bokeh }} on ${{ matrix.os }}
@@ -48,18 +45,29 @@ jobs:
           sudo apt install -qy npm nodejs
           sudo npm install -g npm@8.5
  
+      - name: Install GNUradio PPA 3.8
+        if: ${{ startswith(matrix.os,'ubuntu') && matrix.gr == '3.8.' }}
+        run: |
+          sudo add-apt-repository -y ppa:gnuradio/gnuradio-releases-3.8
+          sudo apt update
+
       - name: Install GNUradio PPA 3.9
-        if: ${{ matrix.os == 'ubuntu-latest'  && matrix.gr == '3.9.' }}
+        if: ${{ startswith(matrix.os,'ubuntu')  && matrix.gr == '3.9.' }}
         run: |
           sudo add-apt-repository -y ppa:gnuradio/gnuradio-releases-3.9
           sudo apt update
 
       - name: Install GNUradio PPA 3.10
-        if: ${{ matrix.os == 'ubuntu-latest'  && matrix.gr == '3.10.' }}
+        if: ${{ startswith(matrix.os,'ubuntu')  && matrix.gr == '3.10.' }}
         run: |
           sudo add-apt-repository -y ppa:gnuradio/gnuradio-releases
           sudo apt update
           sudo apt install -qy libiio-dev libad9361-dev libspdlog-dev python3-packaging
+
+      - name: Additions
+        if: true
+        run: |
+          sudo apt install -qy liborc-dev
 
       - name: Other possible requirements (enable as needed)
         if: false
@@ -86,21 +94,23 @@ jobs:
         run: |
           sudo apt remove --purge -y python || true
           sudo apt autoremove 
+          sudo apt install -y python3-pip
           python3 -m pip install --user --upgrade pip
+          pip install setuptools
           
       - name: Checkout the current branch
         uses: actions/checkout@master
 
-      - name: Checkout 2.3.1 of bokehjs
-        if: ${{ matrix.bokeh == '2.3.1.' }}
+      - name: Checkout ${{ matrix.bokeh }} of bokeh/bokehjs
+        if: ${{ matrix.bokeh != '2.x.' }}
         uses: actions/checkout@master
         with:
           repository: bokeh/bokeh
-          ref: refs/tags/2.3.1
+          ref: refs/tags/${{ matrix.bokeh }}
           path: 'build'
           
       - name: Install bokeh and bokehjs
-        if: ${{ matrix.bokeh == '2.3.1.' }}
+        if: ${{ matrix.bokeh != '2.x.' }}
         run: |
           cd build
           npm init -y
@@ -113,13 +123,16 @@ jobs:
           python3 ./setup.py install --build-js || sudo python3 ./setup.py install --install-js 
 
       - name: use pip to install bokeh
-        if: ${{ matrix.bokeh == '2.4.2.' }}
+        if: ${{ matrix.bokeh == '2.x.' }}
         run: |
           pip install bokeh
 
       - name: Build gr-bokehgui with CMake
         run: |
-          gnuradio-config-info --print-all >~/artifacts/gnuradio.log
+          gnuradio-config-info --version  >~/artifacts/gnuradio.log
+          gnuradio-config-info --prefix --prefs >>~/artifacts/gnuradio.log
+          gnuradio-config-info --enabled-components >>~/artifacts/gnuradio.log
+          gnuradio-config-info --cc --cxx --cflags >>~/artifacts/gnuradio.log
           python3 -m bokeh info >~/artifacts/bokeh.log
           mkdir -p build && cd build
           cmake ..
@@ -135,5 +148,5 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: artifacts gr=${{matrix.gr}} bokeh=${{matrix.bokeh}} 
+          name: gr=${{matrix.gr}}_bokeh=${{matrix.bokeh}}_os=${{matrix.os}}
           path: ~/artifacts/
