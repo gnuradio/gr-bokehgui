@@ -15,7 +15,7 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         gr: [3.9., 3.10.]
-        bokeh: [2.3.1., 2.x.]
+        bokeh: [2.3.1, 2.x.]
       fail-fast: false
        
     # Steps represent a sequence of tasks that will be executed as part of the job
