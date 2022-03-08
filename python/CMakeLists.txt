@@ -48,6 +48,7 @@ GR_PYTHON_INSTALL(
     checkbox.py
     button.py
     radio_button.py
+    drop_down.py
     bokeh_layout.py
     utils.py
     waterfall_sink_f.py

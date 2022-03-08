@@ -43,6 +43,7 @@ from .freq_sink_c import freq_sink_c
 from .freq_sink_f import freq_sink_f
 from .label import label
 from .radio_button import radiobutton
+from .drop_down import dropdown
 from .range_slider import range_slider
 from .slider import slider
 from .textbox import textbox
