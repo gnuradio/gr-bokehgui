@@ -50,8 +50,7 @@ namespace gr {
       d_fbuf = std::vector<float> (d_size, 0);
 
       message_port_register_in(pmt::mp("freq"));
-      set_msg_handler(pmt::mp("freq"),
-                      boost::bind(&waterfall_sink_f_proc_impl::handle_set_freq, this, _1));
+      set_msg_handler(pmt::mp("freq"), [this](pmt::pmt_t msg) { this->handle_set_freq(msg); });
 
       buildwindow();
 

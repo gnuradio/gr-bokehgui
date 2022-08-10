@@ -46,8 +46,7 @@ namespace gr {
     {
 
       // message_port_register_in(pmt::mp("freq"));
-      // set_msg_handler(pmt::mp("freq"),
-      //                 boost::bind(&vec_sink_f_proc_impl::handle_set_freq, this, _1));
+      // set_msg_handler(pmt::mp("freq"), [this](pmt::pmt_t msg) { this->handle_set_freq(msg); });
 
 
       d_trigger_mode = TRIG_MODE_FREE;

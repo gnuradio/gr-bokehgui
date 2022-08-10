@@ -50,14 +50,11 @@ ExperimentalAutoDetectBinPacking: false
 ForEachMacros:
   - foreach
   - Q_FOREACH
-  - BOOST_FOREACH
 IncludeCategories:
   - Regex:           '^"(gnuradio)/'
     Priority:        1
   - Regex:           '^<(gnuradio)/'
     Priority:        2
-  - Regex:           '^<(boost)/'
-    Priority:        98
   - Regex:           '^<[a-z]*>$'
     Priority:        99
   - Regex:           '^".*"$'
