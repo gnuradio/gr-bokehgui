@@ -23,10 +23,13 @@
 #define INCLUDED_BOKEHGUI_BASE_SINK_PROC_H
 
 #include <queue>
+#include <boost/bind/bind.hpp>
 #include <bokehgui/api.h>
 #include <gnuradio/sync_block.h>
 #include <bokehgui/trigger_mode.h>
 #include <volk/volk.h>
+
+using namespace boost::placeholders;
 
 namespace gr {
   namespace bokehgui {

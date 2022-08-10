@@ -22,7 +22,10 @@
 #endif
 
 #include <string.h>
+#include <boost/bind/bind.hpp>
 #include "vec_sink_f_proc_impl.h"
+
+using namespace boost::placeholders;
 
 namespace gr {
   namespace bokehgui {
