@@ -500,11 +500,7 @@ inputs:
     dtype: ${ type.t }
     vlen: ${ vec_len }
     multiplicity: ${ (0 if type.t == 'message' else nconnections) }
-
-outputs:
--   domain: message
-    id: freq
-    optional: true
+    
 asserts:
 - ${ len(placement) == 4 or len(placement) == 2 }
 - ${ all([i >= 0 for i in placement]) }

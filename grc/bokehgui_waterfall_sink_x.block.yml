@@ -82,7 +82,7 @@ parameters:
     hide: part
 -   id: update_time
     label: Update Period
-    dtype: real
+    dtype: int
     default: '100'
     hide: part
 -   id: placement
@@ -114,8 +114,6 @@ inputs:
     dtype: ${ type.t }
     multiplicity: ${ (0 if type.t == 'message' else 1) }
     optional: true
-
-outputs:
 -   domain: message
     id: freq
     optional: true
