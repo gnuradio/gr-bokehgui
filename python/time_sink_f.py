@@ -100,7 +100,8 @@ class time_sink_f(bokeh_plot_config):
             self.lines.append(plot.line(x = 'x', y = 'y' + str(i),
                               source = stream, line_color = self.colors[i],
                               line_width = self.widths[i], line_alpha=self.alphas[i],
-                              legend_label = self.legend_list[i]))
+                              legend_label = self.legend_list[i],
+                              name='y' + str(i)))
             self.lines_markers.append((None, None))
             if self.styles[i] == 'None':
                 self.lines[i].visible = False
