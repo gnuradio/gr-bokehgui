@@ -222,7 +222,7 @@ class freq_sink_f(bokeh_plot_config):
     def set_plot_pos_half(self, en):
         self.half_plot = en
         if en:
-            self.set_x_axis([0, self.fc + self.bw / 2])
+            self.set_x_axis([self.fc, self.fc + self.bw / 2])
         else:
             self.set_x_axis([self.fc - self.bw / 2, self.fc + self.bw / 2])
 

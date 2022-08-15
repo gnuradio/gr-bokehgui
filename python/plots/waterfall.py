@@ -19,6 +19,10 @@ class WaterfallRenderer(Renderer):
 
     max_value = Float()
 
-    update = Bool()
+    fmin = Float()
+
+    fmax = Float()
+
+    # update = Bool()
 
     level = Override(default = "glyph")

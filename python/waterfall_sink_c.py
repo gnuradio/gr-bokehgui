@@ -48,11 +48,11 @@ class waterfall_sink_c(bokeh_plot_config):
         self.nrows = number_of_samples
         self.time_per_sample = time_per_sample
         self.frequency_range = None
+        self.waterfall_renderer = None
         self.set_frequency_range(self.fc, self.bw, set_y_axis = False,
                                  notify_process = False)
 
         self.plot = None
-        self.waterfall_renderer = None
 
         self.legend_list = legend_list[:]
         self.update_time = update_time
@@ -80,7 +80,9 @@ class waterfall_sink_c(bokeh_plot_config):
                                   time_length = self.nrows,
                                   fft_length = self.size,
                                   min_value = self.values_range[0],
-                                  max_value = self.values_range[-1]))
+                                  max_value = self.values_range[-1],
+                                  fmin = self.frequency_range[0],
+                                  fmax = self.frequency_range[-1]))
             plot.renderers.append(self.waterfall_renderer[i])
 
         self.plot = plot
@@ -112,9 +114,9 @@ class waterfall_sink_c(bokeh_plot_config):
 
                 for i in range(self.nrows):
                     self.waterfall_renderer[0].latest = output_items[i]
-                    print(self.waterfall_renderer[0].update)
-                    self.waterfall_renderer[0].update = \
-                            not self.waterfall_renderer[0].update
+                    # print(self.waterfall_renderer[0].update)
+                    # self.waterfall_renderer[0].update = \
+                    #         not self.waterfall_renderer[0].update
         return
 
     def set_frequency_range(self, fc, bw, set_y_axis = True,
@@ -133,8 +135,13 @@ class waterfall_sink_c(bokeh_plot_config):
         for i in range((self.size - 1) // 2):
             self.frequency_range[i + 1 + (self.size + 1) // 2] = fc + step * i
 
+        if self.waterfall_renderer is not None:
+            for i in range(self.nconnections):
+                self.waterfall_renderer[i].fmin = self.frequency_range[0]
+                self.waterfall_renderer[i].fmax = self.frequency_range[-1]
+
         if set_y_axis:
-            self.set_y_axis([fc - bw / 2, fc + bw / 2])
+            self.set_x_axis([fc - bw / 2, fc + bw / 2])
 
     def set_center_freq(self, fc):
         if self.fc != fc:
