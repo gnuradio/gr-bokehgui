@@ -17,6 +17,7 @@
 # Boston, MA 02110-1301, USA.
 
 from .bokeh_layout import Rectangle
+from bokeh.models.ranges import Range1d
 
 class bokeh_plot_config(object):
     def __init__(self):
@@ -64,7 +65,7 @@ class bokeh_plot_config(object):
     def set_title(self, name):
         self.title_text = name
         if self.plot is not None:
-            plot.title.text = self.title_text
+            self.plot.title.text = self.title_text
 
     def get_title(self):
         return self.title_text
@@ -73,25 +74,24 @@ class bokeh_plot_config(object):
         assert (lst[0] < lst[1])
         self.y_range = lst
         if self.plot is not None:
-            from bokeh.models.ranges import Range1d
-            plot.y_range = Range1d(self.y_range[0], self.y_range[1])
+            self.plot.y_range = Range1d(self.y_range[0], self.y_range[1])
 
     def set_x_axis(self, lst):
         assert (lst[0] < lst[1])
         self.x_range = lst
         if self.plot is not None:
-            from bokeh.models.ranges import Range1d
-            plot.x_range = Range1d(self.x_range[0], self.x_range[1])
+            self.plot.x_range.start = self.x_range[0]
+            self.plot.x_range.end = self.x_range[1]
 
     def set_x_label(self, xlabel):
         self.x_label = xlabel
         if self.plot is not None:
-            plot.xaxis[0].axis_label = self.x_label
+            self.plot.xaxis[0].axis_label = self.x_label
 
     def set_y_label(self, ylabel):
         self.y_label = ylabel
         if self.plot is not None:
-            plot.yaxis[0].axis_label = self.y_label
+            self.plot.yaxis[0].axis_label = self.y_label
 
     def format_line(self, i, color, width, style, marker, alpha):
         self.set_line_color(i, color)

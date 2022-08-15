@@ -16,14 +16,14 @@ export class WaterfallRendererView extends RendererView {
   private cmap: LinearColorMapper
   private xscale: Scale
   private yscale: Scale
-  private min_freq: number
-  private max_freq: number
+  // private min_freq: number
+  // private max_freq: number
   private tile_height: number
 
   initialize(): void {
     super.initialize()
 
-    this.model.update = false
+    // this.model.update = false
 
     const N = 11
     this.tile_height = this.model.time_length / 10
@@ -45,8 +45,8 @@ export class WaterfallRendererView extends RendererView {
     this.cmap = new LinearColorMapper({palette: this.model.palette, low: this.model.min_value, high: this.model.max_value})
     this.xscale = this.plot_view.frame.xscales.default
     this.yscale = this.plot_view.frame.yscales.default
-    this.min_freq = this.plot_view.frame.x_range.start
-    this.max_freq = this.plot_view.frame.x_range.end
+    // this.min_freq = this.plot_view.frame.x_range.start
+    // this.max_freq = this.plot_view.frame.x_range.end
   }
 
   connect_signals(): void {
@@ -63,9 +63,9 @@ export class WaterfallRendererView extends RendererView {
 
     this._update_tiles()
 
-    const sx = this.xscale.compute(this.min_freq)
+    const sx = this.xscale.compute(this.model.fmin)  // Perhaps source of translation issues with center freq changes
     const sy = this.yscale.v_compute(this.y)
-    const sw = Math.ceil(this.xscale.compute(this.max_freq) - this.xscale.compute(this.min_freq))
+    const sw = Math.ceil(this.xscale.compute(this.model.fmax) - this.xscale.compute(this.model.fmin))
     const sh = Math.ceil(this.yscale.compute(this.tile_height) - this.yscale.compute(0))
 
     for (let i = 0; i < sy.length; i++)
@@ -115,7 +115,9 @@ export namespace WaterfallRenderer {
     fft_length:  p.Property<number>
     min_value:   p.Property<number>
     max_value:   p.Property<number>
-    update:      p.Property<boolean>
+    fmin:   p.Property<number>
+    fmax:   p.Property<number>
+    // update:      p.Property<boolean>
   }
 }
 
@@ -138,7 +140,9 @@ export class WaterfallRenderer extends Renderer {
       fft_length:  [ Int ],
       min_value:   [ Any ],
       max_value:   [ Any ],
-      update:      [ Any ],
+      fmin:   [ Any ],
+      fmax:   [ Any ],
+      // update:      [ Any ],
     }))
 
 

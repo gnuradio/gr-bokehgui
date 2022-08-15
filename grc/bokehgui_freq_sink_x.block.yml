@@ -431,8 +431,6 @@ inputs:
     dtype: ${ type.t }
     multiplicity: ${ (0 if type.t == 'message' else nconnections) }
     optional: true
-
-outputs:
 -   domain: message
     id: freq
     optional: true
