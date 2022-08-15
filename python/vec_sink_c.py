@@ -79,7 +79,8 @@ class vec_sink_c(bokeh_plot_config):
                                              source = stream,
                                              line_color = self.colors[i],
                                              line_width = self.widths[i], line_alpha=self.alphas[i],
-                                             legend_label = self.legend_list[i]))
+                                             legend_label = self.legend_list[i],
+                                             name='y' + str(i)))
             self.lines_markers.append((None, None))
             if self.styles[i] == 'None':
                 self.lines[i].visible = False

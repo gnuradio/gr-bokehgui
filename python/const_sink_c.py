@@ -102,7 +102,8 @@ class const_sink_c(bokeh_plot_config):
             self.lines_markers.append((
                 plot.scatter(x = 'x' + str(i), y = 'y' + str(i),
                                   source = stream,
-                                  legend_label = self.legend_list[i], ), 'o'))
+                                  legend_label = self.legend_list[i],
+                                  name='y' + str(i)), 'o'))
 
             if self.tags_enabled:
                 if not self.is_message:
