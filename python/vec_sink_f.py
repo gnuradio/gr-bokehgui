@@ -58,8 +58,9 @@ class vec_sink_f(bokeh_plot_config):
 
     def initialize(self, doc, plot_lst):
         plot = figure(tools = utils.default_tools(), active_drag = 'ypan',
-                           active_scroll = 'ywheel_zoom',
-                           output_backend="webgl")
+                      active_scroll = 'ywheel_zoom',
+                      output_backend="webgl",
+                      title=self.name)
         data = dict()
         data['x'] = []
         if self.is_message:
