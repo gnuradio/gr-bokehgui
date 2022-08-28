@@ -52,8 +52,9 @@ void bind_base_sink_template(py::module& m, const char* classname)
         )
 
         .def("get_plot_data", [](base_sink &m){
+          int buff_size = m.get_buff_size();
           return py::array_t<float>(
-            {m.get_buff_cols(), m.get_buff_size()}, // shape
+            {m.get_buff_cols(), buff_size}, // shape
             m.get_plot_data() // the data pointer
           );
         });

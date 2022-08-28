@@ -105,12 +105,6 @@ void bind_waterfall_sink_f_proc(py::module& m)
         )
 
 
-        .def("get_plot_data", [](waterfall_sink_f_proc &m){
-          return py::array_t<float>(
-            {m.get_buff_cols(), m.get_buff_size()}, // shape
-            m.get_plot_data() // the data pointer
-          );
-        });
         // .def_buffer([] (waterfall_sink_f_proc &m) -> py::buffer_info {
         //     return py::buffer_info(
         //     m.get_plot_data(),                      /* Pointer to buffer */

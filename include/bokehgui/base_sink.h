@@ -123,6 +123,7 @@ namespace gr {
 
       int get_buff_size(){
         if (!d_buffers.size()) {
+          // printf("The buffer is empty, returning 0\n");
           return 0;
         }
         return d_buffers.front()[0].size();
