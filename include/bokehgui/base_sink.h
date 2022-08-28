@@ -129,6 +129,10 @@ namespace gr {
         return d_buffers.front()[0].size();
       }
 
+      int get_buff_num_items(){
+        return d_buffers.size();
+      }
+
       int get_buff_cols(){
         return (sizeof(T)/sizeof(float))*d_nconnections;
       }

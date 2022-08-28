@@ -51,6 +51,10 @@ void bind_base_sink_template(py::module& m, const char* classname)
             D(base_sink,get_nconnections)
         )
 
+        .def("get_buff_num_items",&base_sink::get_buff_num_items,
+            D(base_sink,get_buff_num_items)
+        )
+
         .def("get_plot_data", [](base_sink &m){
           int buff_size = m.get_buff_size();
           return py::array_t<float>(
