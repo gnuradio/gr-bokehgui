@@ -116,11 +116,10 @@ class time_sink_f(bokeh_plot_config):
                                               y_offset = 5,
                                               source = tag_stream,
                                               text_font_style = 'bold',
-                                              text_font_size = '11pt',
-                                              render_mode = 'canvas'))
+                                              text_font_size = '11pt'))
                     self.tags_marker.append(
-                            plot.triangle(x = 'x' + str(i), y = 'y' + str(i),
-                                               source = tag_stream, size = 10,
+                            plot.scatter(x = 'x' + str(i), y = 'y' + str(i),
+                                               source = tag_stream, size = 10, marker="triangle",
                                                fill_color = 'red', line_color = 'red')
                             )
 
