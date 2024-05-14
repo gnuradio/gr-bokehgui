@@ -128,7 +128,7 @@ templates:
 
       self.${id}_radiobutton = bokehgui.radiobutton(self.widget_lst, None, self._${id}_labels, inline = ${inline})
       self.${id}_radiobutton.add_callback(
-                lambda new: self.set_${id}(${type.conv}(self._${id}_options[new])))
+                lambda attr, old, new: self.set_${id}(${type.conv}(self._${id}_options[new])))
 
     callbacks:
     - self.set_${id}(${value})

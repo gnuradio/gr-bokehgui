@@ -4,14 +4,14 @@
 ## Overview
 <img align="right" src="https://wiki.gnuradio.org/images/2/2f/Gnuradio_logo_icon.png?054f8" width="12%" />
 
-The module provides various sinks and widgets to allow interaction with the live GNU Radio applications remotely over the network. The module uses [Bokeh](https://docs.bokeh.org/en/2.4.2/)'s client API and streaming features. Using widgets and plots from Bokeh, the module enables the GUI for GNU Radio that renders in web browser. Just like `gr-qtgui`, it is fully integrated with GRC to allow easy use.
+The module provides various sinks and widgets to allow interaction with the live GNU Radio applications remotely over the network. The module uses [Bokeh](https://docs.bokeh.org/en/3.4.1/)'s client API and streaming features. Using widgets and plots from Bokeh, the module enables the GUI for GNU Radio that renders in web browser. Just like `gr-qtgui`, it is fully integrated with GRC to allow easy use.
 
 The module was first developed as a part of Google Summer of Code 2017 by Kartik Patel.
 
 
 ## Dependency
 1. GNU Radio 3.9.5 or 3.10
-2. [Bokeh library above 2.3.1, and below 3.0](https://docs.bokeh.org/en/2.3.2/) (earlier versions cause the waterfall display to crash, and WidgetBox has been removed in later versions)
+2. [Bokeh library above 3.0](https://docs.bokeh.org/en/3.4.1/) (earlier versions cause the waterfall display to crash, and WidgetBox has been removed in later versions)
 3. NodeJS >= 14
 4. Netstat or ss to check open ports (optionnal)
 
@@ -31,9 +31,6 @@ $ cmake ../
 $ make
 $ sudo make install
 ```
-
-## Working with the module
-The complete tutorial for the module is available [here](http://kartikpatel.in/GSoC2017/tutorial/). The tutorial covers setting up guide, using sinks and widgets in GRC and guide to the placement of the elements.
 
 ## Quick Glance
 For the following flowgraph:

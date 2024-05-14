@@ -133,59 +133,12 @@ class bokeh_plot_config(object):
         return self.styles[i]
 
     def use_line_marker(self, i, marker):
-        if marker == 'None':
+        if marker is None or marker == 'None':
             self.lines_markers[i] = (None, None)
-        if marker == '*':
+        else:
             self.lines_markers[i] = (
-            self.plot.asterisk(x = 'x', y = 'y' + str(i), source = self.stream,
-                    legend = self.legend_list[i], ), '*')
-        if marker == 'o':
-            self.lines_markers[i] = (
-            self.plot.circle(x = 'x', y = 'y' + str(i), source = self.stream,
-                    legend = self.legend_list[i], ), 'o')
-        if marker == 'o+':
-            self.lines_markers[i] = (
-            self.plot.circle_cross(x = 'x', y = 'y' + str(i),
-                    source = self.stream, legend = self.legend_list[i], ),
-            'o+')
-        if marker == '+':
-            self.lines_markers[i] = (
-            self.plot.cross(x = 'x', y = 'y' + str(i), source = self.stream,
-                    legend = self.legend_list[i], ), '+')
-        if marker == 'd':
-            self.lines_markers[i] = (
-            self.plot.diamond(x = 'x', y = 'y' + str(i), source = self.stream,
-                    legend = self.legend_list[i], ), 'd')
-        if marker == 'd+':
-            self.lines_markers[i] = (
-            self.plot.diamond_cross(x = 'x', y = 'y' + str(i),
-                    source = self.stream, legend = self.legend_list[i], ),
-            'd+')
-        if marker == 'v':
-            self.lines_markers[i] = (
-            self.plot.inverted_triangle(x = 'x', y = 'y' + str(i),
-                    source = self.stream, legend = self.legend_list[i], ), 'v')
-        if marker == 's':
-            self.lines_markers[i] = (
-            self.plot.square(x = 'x', y = 'y' + str(i), source = self.stream,
-                    legend = self.legend_list[i], ), 's')
-        if marker == 's+':
-            self.lines_markers[i] = (
-            self.plot.square_cross(x = 'x', y = 'y' + str(i),
-                    source = self.stream, legend = self.legend_list[i], ),
-            's+')
-        if marker == 'sx':
-            self.lines_markers[i] = (
-            self.plot.square_x(x = 'x', y = 'y' + str(i), source = self.stream,
-                    legend = self.legend_list[i], ), 'sx')
-        if marker == '^':
-            self.lines_markers[i] = (
-            self.plot.triangle(x = 'x', y = 'y' + str(i), source = self.stream,
-                    legend = self.legend_list[i], ), '^')
-        if marker == 'x':
-            self.lines_markers[i] = (
-            self.plot.x(x = 'x', y = 'y' + str(i), source = self.stream,
-                    legend = self.legend_list[i], ), 'x')
+            self.plot.scatter(x = 'x', y = 'y' + str(i), source = self.stream,
+                    legend_label = self.legend_list[i], marker = marker), marker)
 
     def set_line_marker(self, i, marker):
         self.markers[i] = marker

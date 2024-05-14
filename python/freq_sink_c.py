@@ -20,6 +20,7 @@ from bokeh.models import ColumnDataSource, CustomJS
 from bokeh.plotting import figure
 from bokeh.models.ranges import Range1d
 from bokehgui import bokeh_plot_config, utils
+import numpy as np
 
 
 class freq_sink_c(bokeh_plot_config):
@@ -29,8 +30,14 @@ class freq_sink_c(bokeh_plot_config):
     freq_sink_c_proc class and streams to the frontend plot.
     """
 
-    def __init__(self, plot_lst, process, legend_list = utils.default_labels_f,
-                   update_time = 100, is_message = False):
+    def __init__(
+        self,
+        plot_lst,
+        process,
+        legend_list=utils.default_labels_f,
+        update_time=100,
+        is_message=False,
+    ):
         super(freq_sink_c, self).__init__()
 
         self.process = process
@@ -44,8 +51,9 @@ class freq_sink_c(bokeh_plot_config):
 
         self.is_message = is_message
         self.frequency_range = None
-        self.set_frequency_range(self.fc, self.bw, set_x_axis = False,
-                                 notify_process = False)
+        self.set_frequency_range(
+            self.fc, self.bw, set_x_axis=False, notify_process=False
+        )
 
         self.plot = None
         self.stream = None
@@ -64,33 +72,42 @@ class freq_sink_c(bokeh_plot_config):
         self.process.set_trigger_mode(trigger_mode, level, channel, tag_key)
 
     def initialize(self, doc, plot_lst):
-        plot = figure(tools = utils.default_tools(), active_drag = 'ypan',
-                           active_scroll = 'ywheel_zoom',
-                           output_backend="webgl",
-                           title=self.name)
+        plot = figure(
+            tools=utils.default_tools(),
+            active_drag="ypan",
+            active_scroll="ywheel_zoom",
+            output_backend="webgl",
+            title=self.name,
+        )
         data = dict()
-        data['x'] = []
+        data["x"] = []
 
         if self.is_message:
             nconn = 1
         else:
             nconn = self.nconnections
         for i in range(nconn):
-            data['y' + str(i)] = []
+            data["y" + str(i)] = []
 
         stream = ColumnDataSource(data)
 
         self.lines = []
         self.lines_markers = []
         for i in range(self.nconnections):
-            self.lines.append(plot.line(x = 'x', y = 'y' + str(i),
-                                        source = stream,
-                                        line_color = self.colors[i],
-                                        line_width = self.widths[i], line_alpha=self.alphas[i],
-                                        legend_label = self.legend_list[i],
-                                        name='y' + str(i)))
+            self.lines.append(
+                plot.line(
+                    x="x",
+                    y="y" + str(i),
+                    source=stream,
+                    line_color=self.colors[i],
+                    line_width=self.widths[i],
+                    line_alpha=self.alphas[i],
+                    legend_label=self.legend_list[i],
+                    name="y" + str(i),
+                )
+            )
             self.lines_markers.append((None, None))
-            if self.styles[i] == 'None':
+            if self.styles[i] == "None":
                 self.lines[i].visible = False
             else:
                 self.lines[i].glyph.line_dash = self.styles[i]
@@ -108,11 +125,11 @@ class freq_sink_c(bokeh_plot_config):
         plot.xgrid.visible = self.x_grid
         plot.ygrid.visible = self.y_grid
         if self.en_axis_labels:
-            plot.xaxis[0].axis_label_text_color = '#000000'
-            plot.yaxis[0].axis_label_text_color = '#000000'
+            plot.xaxis[0].axis_label_text_color = "#000000"
+            plot.yaxis[0].axis_label_text_color = "#000000"
         else:
-            plot.xaxis[0].axis_label_text_color = '#FFFFFF'
-            plot.yaxis[0].axis_label_text_color = '#FFFFFF'
+            plot.xaxis[0].axis_label_text_color = "#FFFFFF"
+            plot.yaxis[0].axis_label_text_color = "#FFFFFF"
         plot.legend[0].visible = self.en_legend
         plot.legend[0].click_policy = "hide"
 
@@ -122,15 +139,21 @@ class freq_sink_c(bokeh_plot_config):
 
         # Add max-hold plot
         max_hold_source = ColumnDataSource(
-                data = dict(x = range(self.size),
-                            y = [float("-inf")] * self.size))
-        self.max_hold_plot = plot.line(x = 'x', y = 'y',
-                                       source = max_hold_source,
-                                       line_color = 'green',
-                                       line_dash = 'dotdash',
-                                       legend_label= 'Max')
-        callback = CustomJS(args = dict(max_hold_source = max_hold_source),
-                            code = """
+            data=dict(
+                x=np.arange(self.size), y=np.full(self.size, -np.inf, dtype=np.float32)
+            )
+        )
+        self.max_hold_plot = plot.line(
+            x="x",
+            y="y",
+            source=max_hold_source,
+            line_color="green",
+            line_dash="dotdash",
+            legend_label="Max",
+        )
+        callback_js = CustomJS(
+            args=dict(max_hold_source=max_hold_source),
+            code="""
                         var no_of_elem = cb_obj.data.x.length;
                         var data = cb_obj.data;
                         const nconn = Object.getOwnPropertyNames(data).length -1;
@@ -145,8 +168,9 @@ class freq_sink_c(bokeh_plot_config):
                                }
                         }
                         max_hold_source.change.emit();
-                        """)
-        stream.js_on_change("streaming", callback)
+                        """,
+        )
+        stream.js_on_change("streaming", callback_js)
         self.max_hold_plot.visible = self.max_hold
         # max-hold plot done
 
@@ -169,19 +193,18 @@ class freq_sink_c(bokeh_plot_config):
             fftsize = self.process.get_size()
             if self.fc != fc or self.bw != bw or self.size != fftsize:
                 self.size = fftsize
-                self.set_frequency_range(fc, bw, notify_process = False)
+                self.set_frequency_range(fc, bw, notify_process=False)
 
             new_data = dict()
             for i in range(self.nconnections + 1):
                 if (not self.is_message) and i == self.nconnections:
                     continue
-                new_data['y' + str(i)] = output_items[i]
-            new_data['x'] = self.frequency_range
-            stream.stream(new_data, rollover = self.size)
+                new_data["y" + str(i)] = output_items[i]
+            new_data["x"] = self.frequency_range
+            stream.stream(new_data, rollover=self.size)
         return
 
-    def set_frequency_range(self, fc, bw, set_x_axis = True,
-                            notify_process = True):
+    def set_frequency_range(self, fc, bw, set_x_axis=True, notify_process=True):
         self.fc = fc
         self.bw = bw
         if notify_process:
@@ -220,7 +243,7 @@ class freq_sink_c(bokeh_plot_config):
         self.size = fftsize
         self.process.fftresize(fftsize)
 
-    def enable_max_hold(self, en = True):
+    def enable_max_hold(self, en=True):
         self.max_hold = en
         if self.max_hold_plot:
             self.max_hold_plot.visible = self.max_hold
