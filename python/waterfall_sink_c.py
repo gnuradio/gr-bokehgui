@@ -16,7 +16,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street,
 # Boston, MA 02110-1301, USA.
 
-from bokeh.models import FuncTickFormatter
+from bokeh.models import CustomJSTickFormatter
 from bokeh.plotting import figure
 from bokehgui import bokeh_plot_config, utils
 from bokehgui.plots import WaterfallRenderer
@@ -69,7 +69,7 @@ class waterfall_sink_c(bokeh_plot_config):
                                       self.frequency_range[-1]],
                                       output_backend="webgl",
                                       title=self.name)
-        plot.yaxis.formatter = FuncTickFormatter(code = """
+        plot.yaxis.formatter = CustomJSTickFormatter(code = """
                            return (%s - tick)*%s
                            """ % (self.nrows, self.time_per_sample))
 
@@ -108,7 +108,7 @@ class waterfall_sink_c(bokeh_plot_config):
                     self.waterfall_renderer[i].latest = list(output_items[i])
             else:
                 self.time_per_sample = self.process.get_time_per_fft()
-                self.plot.xaxis.formatter = FuncTickFormatter(code = """
+                self.plot.xaxis.formatter = CustomJSTickFormatter(code = """
                                    return tick*%s
                                    """ % self.time_per_sample)
 
