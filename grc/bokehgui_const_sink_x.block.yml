@@ -60,22 +60,22 @@ parameters:
 -   id: ymin
     label: Y min
     dtype: float
-    default: '-100'
+    default: '-10'
     hide: part
 -   id: ymax
     label: Y max
     dtype: float
-    default: '100'
+    default: '10'
     hide: part
 -   id: xmin
     label: X min
     dtype: float
-    default: '-100'
+    default: '-10'
     hide: part
 -   id: xmax
     label: X max
     dtype: float
-    default: '100'
+    default: '10'
     hide: part
 -   id: nconnections
     label: Number of Inputs
