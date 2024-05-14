@@ -179,8 +179,8 @@ parameters:
     label: Line 1 Marker
     category: Config
     dtype: enum
-    options: ['''o''', '''*''', '''o+''', '''+''', '''d''', '''d+''', '''v''', '''s''',
-        '''s+''', '''sx''', '''^''', '''x''']
+    options: ['''circle''', '''asterisk''', '''circle_cross''', '''cross''', '''diamond''', '''diamond_cross''', '''inverted_triangle''',
+        '''square''', '''square_cross''', '''square_x''', '''triangle''', '''x''']
     option_labels: [Circle, Star, Circle Plus, Plus, Diamond, Diamond Plus, Down Triangle,
         Square, Square Plus, Square Cross, Triangle, X-Cross]
     hide: ${ ('part' if int(nconnections) >= 1 else 'all') }
