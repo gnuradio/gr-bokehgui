@@ -53,7 +53,7 @@ templates:
       self.${id}_checkbox = bokehgui.checkbox(self.widget_lst, _${id}_choices_inv[${false}], ${label if label!="''" else "'{}'".format(id)} + ": ", inline = ${inline})
       % endif
       self.${id}_checkbox.add_callback(
-        lambda new: self.set_${id}(${type.conv}(_${id}_choices[str(new)])))
+        lambda attr, old, new: self.set_${id}(${type.conv}(_${id}_choices[str(new)])))
     callbacks:
     - self.set_${id}(${value})
 

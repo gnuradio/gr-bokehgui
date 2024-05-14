@@ -33,9 +33,9 @@ class radiobutton():
                                       inline = self.inline)
         widget_lst.append(self.radiobutton)
         if self.callback is not None:
-            self.radiobutton.on_click(self.callback)
+            self.radiobutton.on_change('active', self.callback)
 
     def add_callback(self, callback):
         self.callback = callback
         if self.radiobutton is not None:
-            self.radiobutton.on_click(self.callback)
+            self.radiobutton.on_change('active', self.callback)
