@@ -17,7 +17,7 @@
 # Boston, MA 02110-1301, USA.
 
 import bokeh.layouts as bk_layouts
-from bokeh.layouts import Spacer, WidgetBox, widgetbox
+from bokeh.layouts import Spacer, Column, column
 
 
 class WidgetLayout:
@@ -96,7 +96,7 @@ class Layout:
                     self.max_row == self.list[0].layout.end_row and \
                     self.min_col == self.list[0].layout.col and \
                     self.max_col == self.list[0].layout.end_col:
-                if isinstance(figure, WidgetBox):
+                if isinstance(figure, Column):
                     figure.height = int(height)
                     figure.width = int(width)
                 else:
