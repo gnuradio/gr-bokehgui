@@ -40,4 +40,7 @@
  static const char *__doc_gr_bokehgui_base_sink_get_nconnections = R"doc()doc";
 
 
+ static const char *__doc_gr_bokehgui_base_sink_get_buff_num_items = R"doc()doc";
+
+
  static const char *__doc_gr_bokehgui_base_sink_get_plot_data = R"doc()doc";

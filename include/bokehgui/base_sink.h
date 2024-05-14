@@ -123,9 +123,14 @@ namespace gr {
 
       int get_buff_size(){
         if (!d_buffers.size()) {
+          // printf("The buffer is empty, returning 0\n");
           return 0;
         }
         return d_buffers.front()[0].size();
+      }
+
+      int get_buff_num_items(){
+        return d_buffers.size();
       }
 
       int get_buff_cols(){
