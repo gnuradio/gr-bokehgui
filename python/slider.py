@@ -37,12 +37,12 @@ class slider():
                              step = self.step, title = self.label)
         widget_lst.append(self.slider)
         if self.callback is not None:
-            self.slider.on_change('value', self.callback)
+            self.slider.on_change('value_throttled', self.callback)
 
     def add_callback(self, callback):
         self.callback = callback
         if self.slider is not None:
-            self.slider.on_change('value', self.callback) #May not keep that one
+            self.slider.on_change('value_throttled', self.callback) #May not keep that one
 
     def set_value(self, value):
         if self.slider is not None:
