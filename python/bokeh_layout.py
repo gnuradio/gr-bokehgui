@@ -100,8 +100,8 @@ class Layout:
                     figure.height = int(height)
                     figure.width = int(width)
                 else:
-                    figure.plot_height = int(height)
-                    figure.plot_width = int(width)
+                    figure.height = int(height)
+                    figure.height = int(width)
                 return figure
 
         if do_vertical_cut:
