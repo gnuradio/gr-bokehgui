@@ -67,7 +67,7 @@ class waterfall_sink_c(bokeh_plot_config):
                            y_range = [0, self.nrows],
                            x_range = [self.frequency_range[0],
                                       self.frequency_range[-1]],
-                                      output_backend="webgl",
+                                      output_backend="canvas",
                                       title=self.name)
         plot.yaxis.formatter = CustomJSTickFormatter(code = """
                            return (%s - tick)*%s
