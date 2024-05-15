@@ -70,7 +70,7 @@ class const_sink_c(bokeh_plot_config):
         plot = figure(tools = tools, active_drag = 'pan',
                            active_scroll = 'wheel_zoom',
                            y_axis_type = 'linear', x_axis_type = 'linear',
-                           output_backend="webgl",
+                           output_backend="canvas",
                            title=self.name)
         data = dict()
 

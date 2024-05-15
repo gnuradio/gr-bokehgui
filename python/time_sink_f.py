@@ -69,7 +69,7 @@ class time_sink_f(bokeh_plot_config):
                            active_scroll = 'ywheel_zoom',
                            y_axis_type = y_axis_type,
                            x_axis_type = x_axis_type,
-                           output_backend="webgl",
+                           output_backend="canvas",
                            title=self.name)
         data = dict()
         tag_data = dict()

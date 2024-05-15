@@ -68,7 +68,7 @@ class vec_sink_f(bokeh_plot_config):
             tools=utils.default_tools(),
             active_drag="ypan",
             active_scroll="ywheel_zoom",
-            output_backend="webgl",
+            output_backend="canvas",
             title=self.name,
         )
         data = dict()
