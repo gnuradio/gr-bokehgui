@@ -11,7 +11,7 @@ The module was first developed as a part of Google Summer of Code 2017 by Kartik
 
 ## Dependency
 1. GNU Radio 3.9.5 or 3.10
-2. [Bokeh library above 3.0](https://docs.bokeh.org/en/3.4.1/) (earlier versions cause the waterfall display to crash, and WidgetBox has been removed in later versions)
+2. [Bokeh library >= 3.5](https://docs.bokeh.org/en/3.6.0/)
 3. NodeJS >= 14
 4. Netstat or ss to check open ports (optionnal)
 
