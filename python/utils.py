@@ -55,7 +55,7 @@ def run_server(tb, sizing_mode="fixed", widget_placement=(0,0), window_size=(100
         for i in tb.widget_lst:
             i.initialize(widget_list )
         if widget_list:
-            input_t = bokehgui.bokeh_layout.widgetbox(widget_list)
+            input_t = bokehgui.bokeh_layout.column(widget_list)
             widgetbox = bokehgui.bokeh_layout.WidgetLayout(input_t)
             widgetbox.set_layout(*widget_placement)
             list_obj = [widgetbox] + plot_list

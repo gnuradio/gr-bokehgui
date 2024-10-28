@@ -70,7 +70,7 @@ class const_sink_c(bokeh_plot_config):
         plot = figure(tools = tools, active_drag = 'pan',
                            active_scroll = 'wheel_zoom',
                            y_axis_type = 'linear', x_axis_type = 'linear',
-                           output_backend="webgl",
+                           output_backend="canvas",
                            title=self.name)
         data = dict()
 
@@ -102,10 +102,9 @@ class const_sink_c(bokeh_plot_config):
         for i in range(nconnection):
             self.lines_markers.append((
                 plot.scatter(x = 'x' + str(i), y = 'y' + str(i),
-                                  source = stream,
+                                  source = stream, marker = self.markers[0],
                                   legend_label = self.legend_list[i],
-                                  name='y' + str(i)), 'o'))
-
+                                  name='y' + str(i)), self.markers[0]))
             if self.tags_enabled:
                 if not self.is_message:
                     self.tags.append(LabelSet(x = 'x' + str(i), y = 'y' + str(i),
@@ -114,10 +113,9 @@ class const_sink_c(bokeh_plot_config):
                                               y_offset = 5,
                                               source = tag_stream,
                                               text_font_style = 'bold',
-                                              text_font_size = '11pt',
-                                              render_mode = 'canvas'))
+                                              text_font_size = '11pt'))
                     self.tags_marker.append(
-                            plot.triangle(x = 'x' + str(i), y = 'y' + str(i),
+                            plot.scatter(x = 'x' + str(i), y = 'y' + str(i),  marker="triangle",
                                                source = tag_stream, size = 10,
                                                fill_color = 'red', ))
                     plot.add_layout(self.tags[i])
@@ -147,9 +145,6 @@ class const_sink_c(bokeh_plot_config):
         self.stream = stream
         self.add_custom_tools()
         plot_lst.append(self)
-
-        for i in range(nconnection):
-            self.use_line_marker(i,self.markers[i])
 
         def callback():
             self.update(tag_stream, stream)
@@ -265,60 +260,12 @@ class const_sink_c(bokeh_plot_config):
             self.lines_markers[i][0].glyph.line_alpha = self.alphas[i]
 
     def use_line_marker(self, i, marker):
-        if marker == 'None':
+        if marker is None or marker == 'None':
             self.lines_markers[i] = (None, None)
-        if marker == '*':
+        else:
             self.lines_markers[i] = (
-            self.plot.asterisk(x = 'x' + str(i), y = 'y' + str(i), source = self.stream,
-                    legend_label = self.legend_list[i], ), '*')
-        if marker == 'o':
-            self.lines_markers[i] = (
-            self.plot.circle(x = 'x' + str(i), y = 'y' + str(i), source = self.stream,
-                    legend_label = self.legend_list[i], ), 'o')
-        if marker == 'o+':
-            self.lines_markers[i] = (
-            self.plot.circle_cross(x = 'x' + str(i), y = 'y' + str(i),
-                    source = self.stream, legend_label = self.legend_list[i], ),
-            'o+')
-        if marker == '+':
-            self.lines_markers[i] = (
-            self.plot.cross(x = 'x' + str(i), y = 'y' + str(i), source = self.stream,
-                    legend_label = self.legend_list[i], ), '+')
-        if marker == 'd':
-            self.lines_markers[i] = (
-            self.plot.diamond(x = 'x' + str(i), y = 'y' + str(i), source = self.stream,
-                    legend_label = self.legend_list[i], ), 'd')
-        if marker == 'd+':
-            self.lines_markers[i] = (
-            self.plot.diamond_cross(x = 'x' + str(i), y = 'y' + str(i),
-                    source = self.stream, legend_label = self.legend_list[i], ),
-            'd+')
-        if marker == 'v':
-            self.lines_markers[i] = (
-            self.plot.inverted_triangle(x = 'x' + str(i), y = 'y' + str(i),
-                    source = self.stream, legend_label = self.legend_list[i], ), 'v')
-        if marker == 's':
-            self.lines_markers[i] = (
-            self.plot.square(x = 'x' + str(i), y = 'y' + str(i), source = self.stream,
-                    legend_label = self.legend_list[i], ), 's')
-        if marker == 's+':
-            self.lines_markers[i] = (
-            self.plot.square_cross(x = 'x' + str(i), y = 'y' + str(i),
-                    source = self.stream, legend_label = self.legend_list[i], ),
-            's+')
-        if marker == 'sx':
-            self.lines_markers[i] = (
-            self.plot.square_x(x = 'x' + str(i), y = 'y' + str(i), source = self.stream,
-                    legend_label = self.legend_list[i], ), 'sx')
-        if marker == '^':
-            self.lines_markers[i] = (
-            self.plot.triangle(x = 'x' + str(i), y = 'y' + str(i), source = self.stream,
-                    legend_label = self.legend_list[i], ), '^')
-        if marker == 'x':
-            self.lines_markers[i] = (
-            self.plot.x(x = 'x' + str(i), y = 'y' + str(i), source = self.stream,
-                    legend_label = self.legend_list[i], ), 'x')
-
+            self.plot.scatter(x = 'x' + str(i), y = 'y' + str(i), source = self.stream,
+                    legend_label = self.legend_list[i], marker = marker), marker)
 
     def add_custom_tools(self):
         from bokeh.models import HoverTool, CrosshairTool

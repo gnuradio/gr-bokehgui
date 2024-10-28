@@ -33,9 +33,9 @@ class checkbox():
                                       inline = self.inline)
         widget_lst.append(self.checkbox)
         if self.callback is not None:
-            self.checkbox.on_click(self.callback)
+            self.checkbox.on_change('active', self.callback)
 
     def add_callback(self, callback):
         self.callback = callback
         if self.checkbox is not None:
-            self.checkbox.on_click(self.callback)
+            self.checkbox.on_change('active', self.callback)

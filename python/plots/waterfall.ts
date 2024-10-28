@@ -43,23 +43,23 @@ export class WaterfallRendererView extends RendererView {
     this.row = 0
     this.tile = 0
     this.cmap = new LinearColorMapper({palette: this.model.palette, low: this.model.min_value, high: this.model.max_value})
-    this.xscale = this.plot_view.frame.xscales.default
-    this.yscale = this.plot_view.frame.yscales.default
+    this.xscale = this.plot_view.frame.x_scale
+    this.yscale = this.plot_view.frame.y_scale
     // this.min_freq = this.plot_view.frame.x_range.start
     // this.max_freq = this.plot_view.frame.x_range.end
   }
 
   connect_signals(): void {
     super.connect_signals()
-    this.connect(this.model.change, this.request_render)
+    this.connect(this.model.change, this.request_paint)
   }
 
-  protected _render(): void {
+  protected _paint(): void {
     const ctx = this.layer.ctx
     ctx.save()
 
-    const smoothing = ctx.getImageSmoothingEnabled()
-    ctx.setImageSmoothingEnabled(false)
+    const smoothing = ctx.imageSmoothingEnabled
+    ctx.imageSmoothingEnabled = false
 
     this._update_tiles()
 
@@ -71,7 +71,7 @@ export class WaterfallRendererView extends RendererView {
     for (let i = 0; i < sy.length; i++)
       ctx.drawImage(this.canvases[i], sx, sy[i], sw, sh)
 
-    ctx.setImageSmoothingEnabled(smoothing)
+    ctx.imageSmoothingEnabled = smoothing
 
     ctx.restore()
   }

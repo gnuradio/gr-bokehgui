@@ -68,7 +68,7 @@ class time_sink_c(bokeh_plot_config):
                            active_scroll = 'ywheel_zoom',
                            y_axis_type = y_axis_type,
                            x_axis_type = x_axis_type,
-                           output_backend="webgl",
+                           output_backend="canvas",
                            title=self.name)
         data = dict()
         tag_data = dict()
@@ -117,11 +117,10 @@ class time_sink_c(bokeh_plot_config):
                                               y_offset = 5,
                                               source = tag_stream,
                                               text_font_style = 'bold',
-                                              text_font_size = '11pt',
-                                              render_mode = 'canvas'))
+                                              text_font_size = '11pt'))
                     self.tags_marker.append(
-                            plot.triangle(x = 'x' + str(i), y = 'y' + str(i),
-                                               source = tag_stream, size = 10,
+                            plot.scatter(x = 'x' + str(i), y = 'y' + str(i),
+                                               source = tag_stream, size = 10, marker="triangle",
                                                fill_color = 'red', line_color = 'red' )
                            )
                 plot.add_layout(self.tags[i])
@@ -152,7 +151,7 @@ class time_sink_c(bokeh_plot_config):
         self.add_custom_tools()
         plot_lst.append(self)
 
-        for i in range(nconnection):
+        for i in range(2*nconnection):
             self.use_line_marker(i,self.markers[i])
 
         def callback():
