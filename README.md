@@ -32,6 +32,14 @@ $ make
 $ sudo make install
 ```
 
+If you're running Linux, then always remember to do the following command after installing any library:
+```
+$ sudo ldconfig
+```
+
+## Working with the module
+The complete tutorial for the module is available [here](http://kartikpatel.in/GSoC2017/tutorial/). The tutorial covers setting up guide, using sinks and widgets in GRC and guide to the placement of the elements.
+
 ## Quick Glance
 For the following flowgraph:
 ![tutorial.grc - flowgraph](http://kartikpatel.in/GSoC2017/images/tutorial/tutorial.grc.png)<br>
