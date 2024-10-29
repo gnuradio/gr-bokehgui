@@ -59,7 +59,8 @@ namespace gr {
       void set_size(int newsize);
       void handle_set_freq(pmt::pmt_t);
       void _test_trigger_tags(int, int);
-      void _test_trigger_norm(int, std::vector<std::vector<float> >);
+      void _test_trigger_norm(int, int, gr_vector_const_void_star);
+      // void _test_trigger_norm(int, std::vector<std::vector<float> >);  Not supported Currently. TODO: Support proper triggering here
 
       double get_center_freq();
       double get_bandwidth();

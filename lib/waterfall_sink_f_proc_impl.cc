@@ -251,6 +251,12 @@ namespace gr {
     }
 
     void
+    waterfall_sink_f_proc_impl::_test_trigger_norm(int start, int nitems, gr_vector_const_void_star inputs)
+    {
+      d_triggered = true;
+    }
+
+    void
     waterfall_sink_f_proc_impl::pop_other_queues() {
     }
 

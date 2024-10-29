@@ -57,6 +57,7 @@ namespace gr {
 
       void set_frequency_range(double, double);
       void _test_trigger_tags(int, int);
+      void _test_trigger_norm(int, int, gr_vector_const_void_star);
       double get_center_freq();
       double get_bandwidth();
       double get_time_per_fft();

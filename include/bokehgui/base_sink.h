@@ -143,13 +143,17 @@ namespace gr {
         gr::thread::scoped_lock lock(d_setlock);
         const T *in;
         // Consume all possible set of data. Each with nitems
-        for(int d_index = 0; d_index < noutput_items;) {
+        for(d_index = 0; d_index < noutput_items;) {
           int nitems = std::min(d_size, noutput_items - d_index);
           // TODO: See how to include auto/normal triggers
           if(d_trigger_mode == TRIG_MODE_TAG) {
             _test_trigger_tags(d_index, nitems);
           }
           // TODO: else normal trigger
+          else if (d_trigger_mode != TRIG_MODE_FREE)
+          {
+            _test_trigger_norm(d_index, nitems, input_items);
+          }
 
           // The d_triggered and d_index is set.
           // We will now check if triggered.
@@ -157,9 +161,12 @@ namespace gr {
           // We will start looking from d_index to the end of input_items
           // First check if d_index+d_size < noutput_items
           if(d_triggered) {
-            if (d_index + nitems > noutput_items) { // This should never happen, it's handled above
-              nitems = noutput_items - d_index;
+            if (d_index + d_size > noutput_items) { // This should never happen, it's handled above, except if trigger active, with delay
+              // So we don't consume the corresponding items, only up to the new index, since that would lead to undersized buffers
+              d_triggered = false;
+              return d_index;
             }
+            nitems = d_size; // We've remove the edge case with buffer not full enough
             if(d_buffers.size() == d_queue_size) {  //Make room if buffer queue is full
               d_buffers.pop();
               pop_other_queues();
@@ -246,6 +253,7 @@ namespace gr {
         return d_nconnections;
       }
       virtual void _test_trigger_tags(int, int) = 0;
+      virtual void _test_trigger_norm(int, int, gr_vector_const_void_star) = 0;
       virtual void pop_other_queues() = 0;
       virtual void verify_datatype_PDU(const T*, pmt::pmt_t, size_t) = 0;
       virtual void process_plot(float* arr, int* nrows, int* size) = 0;

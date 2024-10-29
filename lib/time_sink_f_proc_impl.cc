@@ -221,6 +221,7 @@ namespace gr {
     time_sink_f_proc_impl::_test_trigger_norm(int start, int nitems, gr_vector_const_void_star inputs)
     {
       int trigger_index;
+      start = std::max(start, d_trigger_delay);
       const float *in = (const float*)inputs[d_trigger_channel];
       for(trigger_index = start;
           trigger_index < nitems + start;
@@ -231,8 +232,13 @@ namespace gr {
         // channel number, and slope direction
         if(_test_trigger_slope(&in[trigger_index])) {
           d_triggered = true;
-          d_index = trigger_index;
+          d_index = trigger_index - d_trigger_delay;
           d_trigger_count = 0;
+          if (d_index < 0)
+          {
+            d_logger->warn("Trigger asked for a negative delay: {} - {} = {}", trigger_index, d_trigger_delay, d_index);
+            d_index = 0;
+          }
           break;
         }
       }
@@ -243,6 +249,8 @@ namespace gr {
         d_triggered = true;
         d_trigger_count = 0;
       }
+
+      // d_logger->warn("d_index is now {}", d_index);
     }
 
     void

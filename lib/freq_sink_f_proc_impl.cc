@@ -263,28 +263,34 @@ namespace gr {
     }
 
     void
-    freq_sink_f_proc_impl::_test_trigger_norm(int nitems, std::vector<std::vector<float> > inputs)
+    freq_sink_f_proc_impl::_test_trigger_norm(int start, int nitems, gr_vector_const_void_star inputs)
     {
-      const float *in = &inputs[d_trigger_channel][0];
-      for(int i = 0; i < nitems; i++) {
-        d_trigger_count++;
-
-        // Test if trigger has occurred based on the FFT magnitude and
-        // channel number. Test if any value is > the level in dBx
-        if(in[i] > d_trigger_level) {
-          d_triggered = true;
-          d_trigger_count = 0;
-          break;
-        }
-      }
-
-      // If using auto trigger mode, trigger peridically even
-      // without a trigger event
-      if((d_trigger_mode == TRIG_MODE_AUTO) && (d_trigger_count > d_size)) {
-        d_triggered = true;
-        d_trigger_count = 0;
-      }
+      d_triggered = true;
     }
+
+    // void
+    // freq_sink_f_proc_impl::_test_trigger_norm(int nitems, std::vector<std::vector<float> > inputs)
+    // {
+    //   const float *in = &inputs[d_trigger_channel][0];
+    //   for(int i = 0; i < nitems; i++) {
+    //     d_trigger_count++;
+
+    //     // Test if trigger has occurred based on the FFT magnitude and
+    //     // channel number. Test if any value is > the level in dBx
+    //     if(in[i] > d_trigger_level) {
+    //       d_triggered = true;
+    //       d_trigger_count = 0;
+    //       break;
+    //     }
+    //   }
+
+    //   // If using auto trigger mode, trigger peridically even
+    //   // without a trigger event
+    //   if((d_trigger_mode == TRIG_MODE_AUTO) && (d_trigger_count > d_size)) {
+    //     d_triggered = true;
+    //     d_trigger_count = 0;
+    //   }
+    // }
 
     void
     freq_sink_f_proc_impl::pop_other_queues() {
