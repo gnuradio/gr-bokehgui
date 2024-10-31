@@ -38,6 +38,8 @@ namespace gr {
        unsigned int d_tmpbuflen;
        std::vector<float> d_tmpbuf;
 
+       std::queue<std::vector<std::vector<float> > > d_buffer_queue;
+
        // Some freq_sink specific trigger
        float d_trigger_level;
        int d_trigger_count;
@@ -46,6 +48,9 @@ namespace gr {
       freq_sink_c_proc_impl(int fftsize, int wintype, double fc, double bw, const std::string &name, int nconnections);
       ~freq_sink_c_proc_impl();
 
+      int work(int noutput_items,
+            gr_vector_const_void_star &input_items,
+            gr_vector_void_star &output_items);
       void set_trigger_mode(trigger_mode mode,
                             float level,
                             int channel,
@@ -60,15 +65,20 @@ namespace gr {
       void handle_set_freq(pmt::pmt_t);
       void _test_trigger_tags(int, int);
       void _test_trigger_norm(int, int, gr_vector_const_void_star);
-      // void _test_trigger_norm(int, std::vector<std::vector<float> >);  Not supported Currently. TODO: Support proper triggering here
+      void _test_trigger_norm(int, std::vector<std::vector<float> >); // Not supported Currently. TODO: Support proper triggering here
 
       double get_center_freq();
       double get_bandwidth();
       int get_wintype();
+      int get_buff_cols();
+      int get_buff_num_items();
+      int get_buff_size();
 
       // Virtual functions inherited from base_sink
+      float * get_plot_data();
       void process_plot(float* arr, int* nrows, int* size);
       void pop_other_queues();
+      void clear_queue();
       void verify_datatype_PDU(const gr_complex*, pmt::pmt_t, size_t);
       void work_process_other_queues(int start, int nitems);
     };

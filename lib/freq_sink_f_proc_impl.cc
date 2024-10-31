@@ -105,9 +105,8 @@ namespace gr {
     freq_sink_f_proc_impl::process_plot(float* arr, int* nrows, int* size) {
       if (d_nconnections != 0) { // Not message input. Ignore nconnections+1-th row!
         for(int n = 0; n < *nrows -1; n++) {
-          fft(&d_fbuf[0], &d_buffers.front()[n][0], *size);
           for(int x = 0; x < *size; x++) {
-            arr[n*(*size) + x] = d_fbuf[x];
+            arr[n*(*size) + x] = d_buffers.front()[n][x];
           }
         }
       }
@@ -268,29 +267,74 @@ namespace gr {
       d_triggered = true;
     }
 
-    // void
-    // freq_sink_f_proc_impl::_test_trigger_norm(int nitems, std::vector<std::vector<float> > inputs)
-    // {
-    //   const float *in = &inputs[d_trigger_channel][0];
-    //   for(int i = 0; i < nitems; i++) {
-    //     d_trigger_count++;
+    void
+    freq_sink_f_proc_impl::_test_trigger_norm(int nitems, std::vector<std::vector<float> > inputs)
+    {
+      const float *in = &inputs[d_trigger_channel][0];
+      for(int i = 0; i < nitems; i++) {
+        d_trigger_count++;
 
-    //     // Test if trigger has occurred based on the FFT magnitude and
-    //     // channel number. Test if any value is > the level in dBx
-    //     if(in[i] > d_trigger_level) {
-    //       d_triggered = true;
-    //       d_trigger_count = 0;
-    //       break;
-    //     }
-    //   }
+        // Test if trigger has occurred based on the FFT magnitude and
+        // channel number. Test if any value is > the level in dBx
+        if(in[i] > d_trigger_level) {
+          d_triggered = true;
+          d_trigger_count = 0;
+          break;
+        }
+      }
 
-    //   // If using auto trigger mode, trigger peridically even
-    //   // without a trigger event
-    //   if((d_trigger_mode == TRIG_MODE_AUTO) && (d_trigger_count > d_size)) {
-    //     d_triggered = true;
-    //     d_trigger_count = 0;
-    //   }
-    // }
+      // If using auto trigger mode, trigger peridically even
+      // without a trigger event
+      if((d_trigger_mode == TRIG_MODE_AUTO) && (d_trigger_count > d_size*30)) {
+        d_triggered = true;
+        d_trigger_count = 0;
+      }
+    }
+
+    int freq_sink_f_proc_impl::work(int noutput_items,
+            gr_vector_const_void_star &input_items,
+            gr_vector_void_star &output_items) {
+      gr::thread::scoped_lock lock(d_setlock);
+
+      // Consume all possible set of data. Each with d_size
+      for(d_index = 0; d_index < noutput_items-d_size;) {
+
+        // We always neet to compute the FFT here to allow triggering
+        std::vector<std::vector<float>> data_buff(d_nconnections, std::vector<float>(d_size));
+        for(int n = 0; n < d_nconnections; n++){
+          fft(&data_buff[n][0], &((const float*)input_items[n])[d_index], d_size);
+        }
+
+        // Include auto/normal triggers
+        if(d_trigger_mode == TRIG_MODE_TAG) {
+          _test_trigger_tags(d_index, d_size);
+        }
+        // Eelse normal trigger
+        else if (d_trigger_mode != TRIG_MODE_FREE)
+        {
+          _test_trigger_norm(d_size, data_buff);
+        }
+
+        // The d_triggered and d_index is set.
+        // We will now check if triggered.
+        // If it is triggered then we check the trigger_index = d_index
+        // We will start looking from d_index to the end of input_items
+        // First check if d_index+d_size < noutput_items
+        if(d_triggered) {
+          if(d_buffers.size() == d_queue_size) {  //Make room if buffer queue is full
+            d_buffers.pop();
+            pop_other_queues();
+          }
+
+          d_buffers.push(data_buff);
+          work_process_other_queues(d_index, d_size);
+          if(d_trigger_mode != TRIG_MODE_FREE)
+            d_triggered = false;
+        }
+        d_index += d_size;
+      }
+      return d_index;
+    }
 
     void
     freq_sink_f_proc_impl::pop_other_queues() {

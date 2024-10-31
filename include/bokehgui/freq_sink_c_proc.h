@@ -75,6 +75,9 @@ namespace gr {
       static sptr make(int fftsize, int wintype, double fc, double bw, const std::string &name, int nconnections);
 
       virtual void reset() = 0;
+      virtual float * get_plot_data() = 0;
+      virtual int get_buff_size() = 0;
+      virtual int get_buff_cols() = 0;
 
       virtual double get_center_freq() = 0;
       virtual double get_bandwidth() = 0;
