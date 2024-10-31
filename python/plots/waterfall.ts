@@ -65,8 +65,8 @@ export class WaterfallRendererView extends RendererView {
 
     const sx = this.xscale.compute(this.model.fmin)  // Perhaps source of translation issues with center freq changes
     const sy = this.yscale.v_compute(this.y)
-    const sw = Math.ceil(this.xscale.compute(this.model.fmax) - this.xscale.compute(this.model.fmin))
-    const sh = Math.ceil(this.yscale.compute(this.tile_height) - this.yscale.compute(0))
+    const sw = Math.round(this.xscale.compute(this.model.fmax) - this.xscale.compute(this.model.fmin))
+    const sh = Math.round(this.yscale.compute(this.tile_height) - this.yscale.compute(0))
 
     for (let i = 0; i < sy.length; i++)
       ctx.drawImage(this.canvases[i], sx, sy[i], sw, sh)
