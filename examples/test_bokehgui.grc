@@ -47,6 +47,24 @@ blocks:
     coordinate: [808, 4.0]
     rotation: 0
     state: enabled
+- name: delay
+  id: variable_bokehgui_slider
+  parameters:
+    comment: ''
+    end: '0.02'
+    label: Trigger delay
+    start: '0'
+    step: '0.0001'
+    throttle: '1'
+    type: real
+    value: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1024, 460.0]
+    rotation: 0
+    state: enabled
 - name: frequency
   id: variable_bokehgui_textbox
   parameters:
@@ -59,6 +77,42 @@ blocks:
     bus_source: false
     bus_structure: null
     coordinate: [392, 4.0]
+    rotation: 0
+    state: enabled
+- name: level
+  id: variable_bokehgui_slider
+  parameters:
+    comment: ''
+    end: '1'
+    label: Trigger level
+    start: '-1'
+    step: '0.01'
+    throttle: '1'
+    type: real
+    value: '0.05'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [864, 460.0]
+    rotation: 0
+    state: enabled
+- name: level_fft
+  id: variable_bokehgui_slider
+  parameters:
+    comment: ''
+    end: '20'
+    label: Trigger level FFT
+    start: '-80'
+    step: '1'
+    throttle: '1'
+    type: real
+    value: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1168, 460.0]
     rotation: 0
     state: enabled
 - name: noise_amp
@@ -76,7 +130,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [200, 92.0]
+    coordinate: [224, 100.0]
     rotation: 0
     state: enabled
 - name: ntype_cmplx
@@ -120,7 +174,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1009, 10]
+    coordinate: [1408, 12.0]
     rotation: 0
     state: enabled
 - name: offset
@@ -138,14 +192,14 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [336, 108.0]
+    coordinate: [360, 100.0]
     rotation: 0
     state: true
 - name: samp_rate
   id: variable
   parameters:
     comment: ''
-    value: '5000'
+    value: '50000'
   states:
     bus_sink: false
     bus_source: false
@@ -163,7 +217,7 @@ blocks:
     step: '0.01'
     throttle: '10'
     type: real
-    value: '10.0'
+    value: '0.1'
   states:
     bus_sink: false
     bus_source: false
@@ -175,7 +229,7 @@ blocks:
   id: variable
   parameters:
     comment: "Update frequency \nof the Bokeh plots"
-    value: '1'
+    value: '5'
   states:
     bus_sink: false
     bus_source: false
@@ -231,9 +285,10 @@ blocks:
     freq: frequency
     maxoutbuf: '0'
     minoutbuf: '0'
-    offset: offset[0]
+    offset: offset[0] + 1j* offset[1]
     phase: '0'
     samp_rate: samp_rate
+    showports: 'False'
     type: complex
     waveform: analog.GR_COS_WAVE
   states:
@@ -256,6 +311,7 @@ blocks:
     offset: offset[1]
     phase: '0'
     samp_rate: samp_rate
+    showports: 'False'
     type: float
     waveform: analog.GR_COS_WAVE
   states:
@@ -280,7 +336,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [288, 232.0]
+    coordinate: [248, 224.0]
     rotation: 0
     state: enabled
 - name: blocks_add_xx_1
@@ -298,7 +354,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [288, 520.0]
+    coordinate: [248, 520.0]
     rotation: 0
     state: enabled
 - name: blocks_stream_to_vector_0
@@ -319,6 +375,48 @@ blocks:
     coordinate: [808, 168.0]
     rotation: 0
     state: enabled
+- name: blocks_throttle2_0
+  id: blocks_throttle2
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    ignoretag: 'True'
+    limit: items
+    maximum: '0.1'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    samples_per_second: samp_rate
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [304, 332.0]
+    rotation: 0
+    state: enabled
+- name: blocks_throttle2_1
+  id: blocks_throttle2
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    ignoretag: 'True'
+    limit: time
+    maximum: '0.1'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    samples_per_second: samp_rate
+    type: float
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [376, 644.0]
+    rotation: 0
+    state: enabled
 - name: blocks_throttle_0
   id: blocks_throttle
   parameters:
@@ -337,7 +435,7 @@ blocks:
     bus_structure: null
     coordinate: [384, 244.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: blocks_throttle_1
   id: blocks_throttle
   parameters:
@@ -356,7 +454,7 @@ blocks:
     bus_structure: null
     coordinate: [384, 532.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: bokehgui_frequency_sink_x_0
   id: bokehgui_frequency_sink_x
   parameters:
@@ -401,7 +499,7 @@ blocks:
     label8: ''
     label9: ''
     legend: 'True'
-    marker1: None
+    marker1: '''+'''
     marker10: None
     marker2: None
     marker3: None
@@ -412,8 +510,6 @@ blocks:
     marker8: None
     marker9: None
     maxhold: 'True'
-    maxoutbuf: '0'
-    minoutbuf: '0'
     name: Complex Frequency Sink
     nconnections: '1'
     placement: (5,0,1,1)
@@ -428,8 +524,8 @@ blocks:
     style8: '"solid"'
     style9: '"solid"'
     tr_chan: '0'
-    tr_level: '0.0'
-    tr_mode: bokehgui.TRIG_MODE_FREE
+    tr_level: level_fft
+    tr_mode: bokehgui.TRIG_MODE_NORM
     tr_tag: '""'
     type: complex
     update_time: int(1000*(1/up_freq))
@@ -501,7 +597,7 @@ blocks:
     label8: ''
     label9: ''
     legend: 'True'
-    marker1: None
+    marker1: '''d'''
     marker10: None
     marker2: None
     marker3: None
@@ -512,8 +608,6 @@ blocks:
     marker8: None
     marker9: None
     maxhold: 'False'
-    maxoutbuf: '0'
-    minoutbuf: '0'
     name: Float Frequency Sink
     nconnections: '1'
     placement: (7,0,1,1)
@@ -528,8 +622,8 @@ blocks:
     style8: '"solid"'
     style9: '"solid"'
     tr_chan: '0'
-    tr_level: '0.0'
-    tr_mode: bokehgui.TRIG_MODE_FREE
+    tr_level: level_fft
+    tr_mode: bokehgui.TRIG_MODE_NORM
     tr_tag: '""'
     type: float
     update_time: int(1000*(1/up_freq))
@@ -597,16 +691,16 @@ blocks:
     label8: ''
     label9: ''
     legend: 'True'
-    marker1: '''o'''
-    marker10: '''o'''
-    marker2: '''o'''
-    marker3: '''o'''
-    marker4: '''o'''
-    marker5: '''o'''
-    marker6: '''o'''
-    marker7: '''o'''
-    marker8: '''o'''
-    marker9: '''o'''
+    marker1: '''diamond_cross'''
+    marker10: '''circle'''
+    marker2: '''circle'''
+    marker3: '''circle'''
+    marker4: '''circle'''
+    marker5: '''circle'''
+    marker6: '''circle'''
+    marker7: '''circle'''
+    marker8: '''circle'''
+    marker9: '''circle'''
     name: '""'
     nconnections: '1'
     placement: (2,1,2,2)
@@ -623,8 +717,8 @@ blocks:
     style9: ''
     tr_chan: '0'
     tr_delay: '0'
-    tr_level: '0.0'
-    tr_mode: bokehgui.TRIG_MODE_FREE
+    tr_level: level
+    tr_mode: bokehgui.TRIG_MODE_NORM
     tr_slope: bokehgui.TRIG_SLOPE_POS
     tr_tag: '""'
     type: complex
@@ -640,12 +734,12 @@ blocks:
     width8: '1'
     width9: '1'
     xlabel: I Channel
-    xmax: '100'
-    xmin: '-100'
+    xmax: '10'
+    xmin: '-10'
     xunit: '""'
     ylabel: Q Channel
-    ymax: '100'
-    ymin: '-100'
+    ymax: '10'
+    ymin: '-10'
     yunit: '""'
   states:
     bus_sink: false
@@ -694,9 +788,9 @@ blocks:
     label8: ''
     label9: ''
     legend: 'True'
-    marker1: None
+    marker1: '''circle'''
     marker10: None
-    marker2: None
+    marker2: '''square'''
     marker3: None
     marker4: None
     marker5: None
@@ -707,7 +801,7 @@ blocks:
     name: Complex Time Sink
     nconnections: '1'
     placement: (0,1,2,2)
-    size: '1000'
+    size: '687'
     srate: samp_rate
     style1: '"solid"'
     style10: '"solid"'
@@ -720,9 +814,9 @@ blocks:
     style8: '"solid"'
     style9: '"solid"'
     tr_chan: '0'
-    tr_delay: '0'
-    tr_level: '0.0'
-    tr_mode: bokehgui.TRIG_MODE_FREE
+    tr_delay: delay
+    tr_level: level
+    tr_mode: bokehgui.TRIG_MODE_NORM
     tr_slope: bokehgui.TRIG_SLOPE_POS
     tr_tag: '""'
     type: complex
@@ -749,7 +843,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [576, 340.0]
+    coordinate: [576, 364.0]
     rotation: 0
     state: enabled
 - name: bokehgui_time_sink_x_1
@@ -781,7 +875,7 @@ blocks:
     comment: ''
     entags: 'True'
     grid: 'False'
-    label1: ''
+    label1: elo
     label10: ''
     label2: ''
     label3: ''
@@ -792,7 +886,7 @@ blocks:
     label8: ''
     label9: ''
     legend: 'True'
-    marker1: None
+    marker1: '''square_x'''
     marker10: None
     marker2: None
     marker3: None
@@ -818,9 +912,9 @@ blocks:
     style8: '"solid"'
     style9: '"solid"'
     tr_chan: '0'
-    tr_delay: '0'
-    tr_level: '0.0'
-    tr_mode: bokehgui.TRIG_MODE_FREE
+    tr_delay: delay
+    tr_level: level
+    tr_mode: bokehgui.TRIG_MODE_AUTO
     tr_slope: bokehgui.TRIG_SLOPE_POS
     tr_tag: '""'
     type: float
@@ -847,7 +941,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [576, 628.0]
+    coordinate: [576, 644.0]
     rotation: 0
     state: enabled
 - name: bokehgui_vector_sink_x_0
@@ -901,8 +995,6 @@ blocks:
     marker8: None
     marker9: None
     maxhold: 'True'
-    maxoutbuf: '0'
-    minoutbuf: '0'
     name: '"Float vector"'
     nconnections: '1'
     placement: (2,3,2,2)
@@ -994,8 +1086,6 @@ blocks:
     marker8: None
     marker9: None
     maxhold: 'True'
-    maxoutbuf: '0'
-    minoutbuf: '0'
     name: '"Complex vector sink"'
     nconnections: '1'
     placement: (0,3,2,2)
@@ -1051,8 +1141,6 @@ blocks:
     int_min: '-140'
     label: ''
     legend: 'True'
-    maxoutbuf: '0'
-    minoutbuf: '0'
     name: '"Complex waterfall"'
     placement: (8,0,1,1)
     type: complex
@@ -1084,9 +1172,7 @@ blocks:
     int_min: '-140'
     label: ''
     legend: 'True'
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    name: '""'
+    name: '"Float Waterfall"'
     placement: (9,0,1,1)
     type: float
     update_time: int(1000*(1/up_freq))
@@ -1099,7 +1185,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [576, 556.0]
+    coordinate: [576, 548.0]
     rotation: 0
     state: enabled
 - name: fft_vxx_0
@@ -1152,9 +1238,19 @@ connections:
 - [analog_noise_source_x_1, '0', blocks_add_xx_1, '1']
 - [analog_sig_source_x_0, '0', blocks_add_xx_0, '0']
 - [analog_sig_source_x_1, '0', blocks_add_xx_1, '0']
+- [blocks_add_xx_0, '0', blocks_throttle2_0, '0']
 - [blocks_add_xx_0, '0', blocks_throttle_0, '0']
+- [blocks_add_xx_1, '0', blocks_throttle2_1, '0']
 - [blocks_add_xx_1, '0', blocks_throttle_1, '0']
 - [blocks_stream_to_vector_0, '0', fft_vxx_0, '0']
+- [blocks_throttle2_0, '0', blocks_stream_to_vector_0, '0']
+- [blocks_throttle2_0, '0', bokehgui_frequency_sink_x_0, '0']
+- [blocks_throttle2_0, '0', bokehgui_time_const_x_0, '0']
+- [blocks_throttle2_0, '0', bokehgui_time_sink_x_0, '0']
+- [blocks_throttle2_0, '0', bokehgui_waterfall_sink_x_0, '0']
+- [blocks_throttle2_0, '0', logpwrfft_x_0, '0']
+- [blocks_throttle2_1, '0', bokehgui_frequency_sink_x_1, '0']
+- [blocks_throttle2_1, '0', bokehgui_time_sink_x_1, '0']
 - [blocks_throttle_0, '0', blocks_stream_to_vector_0, '0']
 - [blocks_throttle_0, '0', bokehgui_frequency_sink_x_0, '0']
 - [blocks_throttle_0, '0', bokehgui_time_const_x_0, '0']
@@ -1169,3 +1265,4 @@ connections:
 
 metadata:
   file_format: 1
+  grc_version: 3.10.9.2

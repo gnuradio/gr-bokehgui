@@ -50,6 +50,9 @@ namespace gr {
                             int nconnections);
       ~freq_sink_f_proc_impl();
 
+      int work(int noutput_items,
+            gr_vector_const_void_star &input_items,
+            gr_vector_void_star &output_items);
       void set_trigger_mode(trigger_mode mode,
                             float level,
                             int channel,
@@ -63,7 +66,8 @@ namespace gr {
       void set_size(int newsize);
       void handle_set_freq(pmt::pmt_t);
       void _test_trigger_tags(int, int);
-      void _test_trigger_norm(int, std::vector<std::vector<float> >);
+      void _test_trigger_norm(int, int, gr_vector_const_void_star);
+      void _test_trigger_norm(int, std::vector<std::vector<float> >); // Not supported Currently. TODO: Support proper triggering here
 
       double get_center_freq();
       double get_bandwidth();

@@ -49,6 +49,7 @@ namespace gr {
       void work_process_other_queues(int start, int nitems);
 
       void _test_trigger_tags(int, int);
+      void _test_trigger_norm(int, int, gr_vector_const_void_star); // TODO: Support proper triggering here
       void set_size(const int newsize);
 
     };

@@ -220,6 +220,7 @@ namespace gr {
     time_sink_c_proc_impl::_test_trigger_norm(int start, int nitems, gr_vector_const_void_star inputs)
     {
       int trigger_index;
+      start = std::max(start, d_trigger_delay);
       const gr_complex *cBuff = (const gr_complex*) inputs[d_trigger_channel];
       for(trigger_index = start; trigger_index < start + nitems; trigger_index++) {
         d_trigger_count++;
@@ -228,8 +229,13 @@ namespace gr {
         // channel number, and slope direction
         if(_test_trigger_slope(&cBuff[trigger_index])) {
           d_triggered = true;
-          d_index = trigger_index;
+          d_index = trigger_index - d_trigger_delay;
           d_trigger_count = 0;
+          if (d_index < 0)
+          {
+            d_logger->warn("Trigger asked for a negative delay: {} - {} = {}", trigger_index, d_trigger_delay, d_index);
+            d_index = 0;
+          }
           break;
         }
       }

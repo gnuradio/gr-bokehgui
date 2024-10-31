@@ -16,7 +16,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street,
 # Boston, MA 02110-1301, USA.
 
-from bokeh.models import ColumnDataSource, CustomJS
+from bokeh.models import ColumnDataSource, CustomJS, CustomAction
 from bokeh.plotting import figure
 from bokeh.models.ranges import Range1d
 from bokehgui import bokeh_plot_config, utils
@@ -172,6 +172,24 @@ class freq_sink_c(bokeh_plot_config):
         )
         stream.js_on_change("streaming", callback_js)
         self.max_hold_plot.visible = self.max_hold
+
+        reset_action = CustomAction(
+            # icon=r"/path/to/icon.png", # TODO: Put some actual icon, and understand how to specify the path
+            callback = CustomJS(
+                args=dict(max_hold_source=max_hold_source),
+                code='''
+                    var max_data = max_hold_source.data;
+                    var no_of_elem = max_hold_source.data.y.length;
+
+                    for (let i = 0; i < no_of_elem; i++) {
+                        max_data['y'][i] = -Infinity
+                    }
+                    max_hold_source.change.emit();
+                '''
+            ),
+            description='Reset Max'
+        )
+        plot.add_tools(reset_action)
         # max-hold plot done
 
         plot_lst.append(self)

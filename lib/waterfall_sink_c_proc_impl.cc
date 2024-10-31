@@ -244,6 +244,12 @@ namespace gr {
     waterfall_sink_c_proc_impl::_test_trigger_tags(int start, int nitems)
     {
       d_triggered = true;
+    }    
+
+    void
+    waterfall_sink_c_proc_impl::_test_trigger_norm(int start, int nitems, gr_vector_const_void_star inputs)
+    {
+      d_triggered = true;
     }
 
     void

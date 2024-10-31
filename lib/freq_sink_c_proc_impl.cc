@@ -87,6 +87,10 @@ namespace gr {
 
       d_fbuf = std::vector<float> ();
       d_tmpbuf = std::vector<float> ();
+
+
+      while(!d_buffer_queue.empty())
+        d_buffer_queue.pop();
     }
 
     void
@@ -107,13 +111,49 @@ namespace gr {
       _reset();
     }
 
+    float * freq_sink_c_proc_impl::get_plot_data () {
+        gr::thread::scoped_lock lock(d_setlock);
+        if (!d_buffer_queue.size()) {
+          int size = 0;
+          int nrows = d_nconnections + 1;
+          float* arr = (float*) malloc(2*(nrows)*(size)*sizeof(float));
+          return arr;
+        }
+
+        int nrows = d_nconnections + 1;  //Why the +1? why not d_buffer_queue.front().size()?
+        int size = d_buffer_queue.front()[0].size();
+
+        float* arr = (float*) malloc((nrows)*(size)*sizeof(float)); // Why the 2* and the size float and not T?
+        memset(arr, 0, (nrows)*(size)*sizeof(float));
+        process_plot(arr, &nrows, &size);
+
+        d_buffer_queue.pop();
+
+        return arr;
+      }
+
+    int freq_sink_c_proc_impl::get_buff_size(){
+      if (!d_buffer_queue.size()) {
+        // printf("The buffer is empty, returning 0\n");
+        return 0;
+      }
+      return d_buffer_queue.front()[0].size();
+    }
+
+    int freq_sink_c_proc_impl::get_buff_num_items(){
+      return d_buffer_queue.size();
+    }
+
+    int freq_sink_c_proc_impl::get_buff_cols(){
+      return d_nconnections;
+    }
+
     void
     freq_sink_c_proc_impl::process_plot(float* arr, int* nrows, int* size) {
       if(d_nconnections != 0) {
         for(int n = 0; n < (*nrows - 1); n++) {
-          fft(&d_fbuf[0], &d_buffers.front()[n][0], *size);
           for(int x = 0; x < *size; x++) {
-            arr[n*(*size) + x] = d_fbuf[x];
+            arr[n*(*size) + x] = d_buffer_queue.front()[n][x];
           }
         }
       }
@@ -130,7 +170,7 @@ namespace gr {
           // Clear in case (max-min) < d_size
           memset(&temp_zero_vec[0], 0, d_size*sizeof(gr_complex));
           // Copy as much possible samples as we can
-          memcpy(&temp_zero_vec[0], &d_buffers.front()[0][min], (max-min)*sizeof(gr_complex));
+          memcpy(&temp_zero_vec[0], &d_buffer_queue.front()[0][min], (max-min)*sizeof(gr_complex));
           // Apply the window and FFT; copy data into the PDU magnitude buffer
           fft(&d_fbuf[0], &temp_zero_vec[0], d_size);
           for(int x = 0; x < d_size; x++) {
@@ -266,11 +306,17 @@ namespace gr {
     }
 
     void
+    freq_sink_c_proc_impl::_test_trigger_norm(int start, int nitems, gr_vector_const_void_star inputs)
+    {
+      d_triggered = true;
+    }
+
+    void
     freq_sink_c_proc_impl::_test_trigger_norm(int nitems, std::vector<std::vector<float> > inputs)
     {
       const float *in = &inputs[d_trigger_channel][0];
       for(int i = 0; i < nitems; i++) {
-        d_trigger_count++;
+        d_trigger_count++; // Might want to adjust how this count is handled. Currently would trigger everytime
 
         // Test if trigger has occurred based on the FFT magnitude and
         // channel number. Test if any value is > the level in dBx
@@ -281,16 +327,68 @@ namespace gr {
         }
       }
 
+
       // If using auto trigger mode, trigger periodically even
       // without a trigger event
-      if((d_trigger_mode == TRIG_MODE_AUTO) && (d_trigger_count > d_size)) {
+      if((d_trigger_mode == TRIG_MODE_AUTO) && (d_trigger_count > d_size*30)) {
         d_triggered = true;
         d_trigger_count = 0;
       }
     }
 
+    int freq_sink_c_proc_impl::work(int noutput_items,
+            gr_vector_const_void_star &input_items,
+            gr_vector_void_star &output_items) {
+      gr::thread::scoped_lock lock(d_setlock);
+
+      // Consume all possible set of data. Each with d_size
+      for(d_index = 0; d_index < noutput_items-d_size;) {
+
+        // We always neet to compute the FFT here to allow triggering
+        std::vector<std::vector<float>> data_buff(d_nconnections, std::vector<float>(d_size));
+        for(int n = 0; n < d_nconnections; n++){
+          fft(&data_buff[n][0], &((const gr_complex*)input_items[n])[d_index], d_size);
+        }
+
+        // Include auto/normal triggers
+        if(d_trigger_mode == TRIG_MODE_TAG) {
+          _test_trigger_tags(d_index, d_size);
+        }
+        // Else normal trigger
+        else if (d_trigger_mode != TRIG_MODE_FREE)
+        {
+          _test_trigger_norm(d_size, data_buff);
+        }
+
+        // The d_triggered and d_index is set.
+        // We will now check if triggered.
+        // If it is triggered then we check the trigger_index = d_index
+        // We will start looking from d_index to the end of input_items
+        // First check if d_index+d_size < noutput_items
+        if(d_triggered) {
+          if(d_buffer_queue.size() == d_queue_size) {  //Make room if buffer queue is full
+            d_buffer_queue.pop();
+            pop_other_queues();
+          }
+
+          d_buffer_queue.push(data_buff);
+          work_process_other_queues(d_index, d_size);
+          if(d_trigger_mode != TRIG_MODE_FREE)
+            d_triggered = false;
+        }
+        d_index += d_size;
+      }
+      return d_index;
+    }
+    
     void
     freq_sink_c_proc_impl::pop_other_queues() {}
+
+
+    void freq_sink_c_proc_impl::clear_queue() {
+        while(!d_buffer_queue.empty())
+          d_buffer_queue.pop();
+    }
 
     void
     freq_sink_c_proc_impl::verify_datatype_PDU(const gr_complex* in, pmt::pmt_t samples, size_t len) {

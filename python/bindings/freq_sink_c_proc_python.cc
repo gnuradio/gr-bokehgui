@@ -20,6 +20,7 @@
 #include <pybind11/complex.h>
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
+#include <pybind11/numpy.h>
 
 namespace py = pybind11;
 
@@ -48,6 +49,13 @@ void bind_freq_sink_c_proc(py::module& m)
         
 
 
+        .def("get_plot_data", [](freq_sink_c_proc &m){
+          int buff_size = m.get_buff_size();
+          return py::array_t<float>(
+            {m.get_buff_cols(), buff_size}, // shape
+            m.get_plot_data() // the data pointer
+          );
+        })
 
 
         
