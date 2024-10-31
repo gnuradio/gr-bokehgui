@@ -97,6 +97,24 @@ blocks:
     coordinate: [864, 460.0]
     rotation: 0
     state: enabled
+- name: level_fft
+  id: variable_bokehgui_slider
+  parameters:
+    comment: ''
+    end: '20'
+    label: Trigger level FFT
+    start: '-80'
+    step: '1'
+    throttle: '1'
+    type: real
+    value: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1168, 460.0]
+    rotation: 0
+    state: enabled
 - name: noise_amp
   id: variable_bokehgui_slider
   parameters:
@@ -506,8 +524,8 @@ blocks:
     style8: '"solid"'
     style9: '"solid"'
     tr_chan: '0'
-    tr_level: '0.0'
-    tr_mode: bokehgui.TRIG_MODE_FREE
+    tr_level: level_fft
+    tr_mode: bokehgui.TRIG_MODE_NORM
     tr_tag: '""'
     type: complex
     update_time: int(1000*(1/up_freq))
@@ -604,8 +622,8 @@ blocks:
     style8: '"solid"'
     style9: '"solid"'
     tr_chan: '0'
-    tr_level: '0.0'
-    tr_mode: bokehgui.TRIG_MODE_FREE
+    tr_level: level_fft
+    tr_mode: bokehgui.TRIG_MODE_NORM
     tr_tag: '""'
     type: float
     update_time: int(1000*(1/up_freq))
@@ -699,8 +717,8 @@ blocks:
     style9: ''
     tr_chan: '0'
     tr_delay: '0'
-    tr_level: '0.0'
-    tr_mode: bokehgui.TRIG_MODE_FREE
+    tr_level: level
+    tr_mode: bokehgui.TRIG_MODE_NORM
     tr_slope: bokehgui.TRIG_SLOPE_POS
     tr_tag: '""'
     type: complex
@@ -896,7 +914,7 @@ blocks:
     tr_chan: '0'
     tr_delay: delay
     tr_level: level
-    tr_mode: bokehgui.TRIG_MODE_NORM
+    tr_mode: bokehgui.TRIG_MODE_AUTO
     tr_slope: bokehgui.TRIG_SLOPE_POS
     tr_tag: '""'
     type: float
