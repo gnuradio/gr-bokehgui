@@ -110,7 +110,7 @@ namespace gr {
         uint64_t nr = nitems_read(n);
         get_tags_in_range(d_tags.back()[n], n, nr + d_index, nr + d_index + nitems);
         for(size_t t = 0; t < d_tags.back()[n].size(); t++) {
-          d_tags.back()[n][t].offset = d_tags.back()[n][t].offset - nr - d_index - 1;
+          d_tags.back()[n][t].offset = d_tags.back()[n][t].offset - nr - d_index;
         }
       }
     }
