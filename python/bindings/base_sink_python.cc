@@ -16,8 +16,8 @@
 
 namespace py = pybind11;
 
-#include <bokehgui/base_sink.h>
-#include <bokehgui/trigger_mode.h>
+#include <gnuradio/bokehgui/base_sink.h>
+#include <gnuradio/bokehgui/trigger_mode.h>
 // pydoc.h is automatically generated in the build directory
 #include <base_sink_pydoc.h>
 

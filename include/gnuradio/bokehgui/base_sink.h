@@ -23,9 +23,9 @@
 #define INCLUDED_BOKEHGUI_BASE_SINK_PROC_H
 
 #include <queue>
-#include <bokehgui/api.h>
+#include <gnuradio/bokehgui/api.h>
 #include <gnuradio/sync_block.h>
-#include <bokehgui/trigger_mode.h>
+#include <gnuradio/bokehgui/trigger_mode.h>
 #include <volk/volk.h>
 
 namespace gr {

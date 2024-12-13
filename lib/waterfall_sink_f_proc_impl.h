@@ -20,7 +20,7 @@
 #ifndef INCLUDED_BOKEHGUI_WATERFALL_SINK_F_PROC_IMPL_H
 #define INCLUDED_BOKEHGUI_WATERFALL_SINK_F_PROC_IMPL_H
 
-#include <bokehgui/waterfall_sink_f_proc.h>
+#include <gnuradio/bokehgui/waterfall_sink_f_proc.h>
 #include <gnuradio/fft/fft.h>
 
 namespace gr {

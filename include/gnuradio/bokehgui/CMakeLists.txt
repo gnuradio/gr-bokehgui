@@ -33,4 +33,5 @@ install(FILES
     freq_sink_c_proc.h
     waterfall_sink_f_proc.h
     waterfall_sink_c_proc.h
-    DESTINATION include/bokehgui)
+    # hist_sink_proc.h 
+    DESTINATION include/gnuradio/bokehgui)

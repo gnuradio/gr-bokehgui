@@ -14,7 +14,7 @@
 /* BINDTOOL_GEN_AUTOMATIC(0)                                                       */
 /* BINDTOOL_USE_PYGCCXML(0)                                                        */
 /* BINDTOOL_HEADER_FILE(freq_sink_c_proc.h)                                        */
-/* BINDTOOL_HEADER_FILE_HASH(cbc59519a8072f288996ad16bf7f8a2b)                     */
+/* BINDTOOL_HEADER_FILE_HASH(2cbb5d2c8d7188556b31253769150a6d)                     */
 /***********************************************************************************/
 
 #include <pybind11/complex.h>
@@ -24,7 +24,7 @@
 
 namespace py = pybind11;
 
-#include <bokehgui/freq_sink_c_proc.h>
+#include <gnuradio/bokehgui/freq_sink_c_proc.h>
 // pydoc.h is automatically generated in the build directory
 #include <freq_sink_c_proc_pydoc.h>
 

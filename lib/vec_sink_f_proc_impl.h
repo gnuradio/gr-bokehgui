@@ -20,7 +20,7 @@
 #ifndef INCLUDED_BOKEHGUI_VEC_SINK_F_PROC_IMPL_H
 #define INCLUDED_BOKEHGUI_VEC_SINK_F_PROC_IMPL_H
 
-#include <bokehgui/vec_sink_f_proc.h>
+#include <gnuradio/bokehgui/vec_sink_f_proc.h>
 
 namespace gr {
   namespace bokehgui {

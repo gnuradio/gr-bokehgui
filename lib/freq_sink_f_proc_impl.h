@@ -21,7 +21,7 @@
 #define INCLUDED_BOKEHGUI_FREQ_SINK_F_PROC_IMPL_H
 
 #include <gnuradio/fft/fft.h>
-#include <bokehgui/freq_sink_f_proc.h>
+#include <gnuradio/bokehgui/freq_sink_f_proc.h>
 
 namespace gr {
   namespace bokehgui {
