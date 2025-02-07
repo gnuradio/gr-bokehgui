@@ -14,7 +14,7 @@
 #include <pybind11/numpy.h>
 namespace py = pybind11;
 
-#include <bokehgui/waterfall_sink_f_proc.h>
+#include <gnuradio/bokehgui/waterfall_sink_f_proc.h>
 // pydoc.h is automatically generated in the build directory
 #include <waterfall_sink_f_proc_pydoc.h>
 

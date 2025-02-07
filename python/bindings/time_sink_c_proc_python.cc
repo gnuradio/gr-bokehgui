@@ -14,7 +14,7 @@
 /* BINDTOOL_GEN_AUTOMATIC(0)                                                       */
 /* BINDTOOL_USE_PYGCCXML(0)                                                        */
 /* BINDTOOL_HEADER_FILE(time_sink_c_proc.h)                                        */
-/* BINDTOOL_HEADER_FILE_HASH(3ee60702342a877a505b24ea096beb3b)                     */
+/* BINDTOOL_HEADER_FILE_HASH(923ce38b624c5c0137cfe7f10ae5720e)                     */
 /***********************************************************************************/
 
 #include <pybind11/complex.h>
@@ -23,7 +23,7 @@
 
 namespace py = pybind11;
 
-#include <bokehgui/time_sink_c_proc.h>
+#include <gnuradio/bokehgui/time_sink_c_proc.h>
 // pydoc.h is automatically generated in the build directory
 #include <time_sink_c_proc_pydoc.h>
 

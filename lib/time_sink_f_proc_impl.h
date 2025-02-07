@@ -22,7 +22,7 @@
 #ifndef INCLUDED_BOKEHGUI_TIME_SINK_F_PROC_IMPL_H
 #define INCLUDED_BOKEHGUI_TIME_SINK_F_PROC_IMPL_H
 
-#include <bokehgui/time_sink_f_proc.h>
+#include <gnuradio/bokehgui/time_sink_f_proc.h>
 
 namespace gr {
   namespace bokehgui {
