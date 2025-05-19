@@ -14,7 +14,7 @@
 /* BINDTOOL_GEN_AUTOMATIC(0)                                                       */
 /* BINDTOOL_USE_PYGCCXML(0)                                                        */
 /* BINDTOOL_HEADER_FILE(vec_sink_f_proc.h)                                        */
-/* BINDTOOL_HEADER_FILE_HASH(ac2443596de577249e1f80ae306aca91)                     */
+/* BINDTOOL_HEADER_FILE_HASH(b2e7946c9c6176b9a9cf846939ddb086)                     */
 /***********************************************************************************/
 
 #include <pybind11/complex.h>
@@ -23,7 +23,7 @@
 
 namespace py = pybind11;
 
-#include <bokehgui/vec_sink_f_proc.h>
+#include <gnuradio/bokehgui/vec_sink_f_proc.h>
 // pydoc.h is automatically generated in the build directory
 #include <vec_sink_f_proc_pydoc.h>
 
