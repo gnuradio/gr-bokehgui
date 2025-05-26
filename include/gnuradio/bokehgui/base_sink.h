@@ -122,6 +122,7 @@ namespace gr {
       }
 
       int get_buff_size(){
+        gr::thread::scoped_lock lock(d_setlock);
         if (!d_buffers.size()) {
           // printf("The buffer is empty, returning 0\n");
           return 0;

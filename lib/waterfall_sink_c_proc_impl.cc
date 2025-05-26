@@ -96,6 +96,7 @@ namespace gr {
     }
 
     int waterfall_sink_c_proc_impl::get_buff_size(){
+      gr::thread::scoped_lock lock(d_setlock);
       return d_buffers.front()[0].size();
     }
 

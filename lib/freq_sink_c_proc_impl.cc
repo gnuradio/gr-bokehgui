@@ -133,6 +133,7 @@ namespace gr {
       }
 
     int freq_sink_c_proc_impl::get_buff_size(){
+      gr::thread::scoped_lock lock(d_setlock);
       if (!d_buffer_queue.size()) {
         // printf("The buffer is empty, returning 0\n");
         return 0;
@@ -141,6 +142,8 @@ namespace gr {
     }
 
     int freq_sink_c_proc_impl::get_buff_num_items(){
+
+      gr::thread::scoped_lock lock(d_setlock);
       return d_buffer_queue.size();
     }
 
