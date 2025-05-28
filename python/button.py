@@ -29,7 +29,7 @@ class button():
 
     def initialize(self, widget_lst):
         # self.button = Button(label = label) # Using a simple button doesn't trigger callbacks for some reason
-        self.button = Toggle(label = self.label)
+        self.button = Button(label = self.label)
         widget_lst.append(self.button)
         if self.callback is not None:
             self.button.on_click(self.callback)

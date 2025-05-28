@@ -99,7 +99,7 @@ parameters:
 -   id: xunit
     label: X Axis Unit
     dtype: string
-    default: '""'
+    default: Hz
     hide: part
 -   id: nconnections
     label: Number of Inputs
@@ -477,12 +477,12 @@ templates:
         )
 
         self.${id}_plot.set_y_axis([${ymin}, ${ymax}])
-        % if (yunit == ''):
+        % if (yunit == "''"):
         self.${id}_plot.set_y_label(${ylabel})
         % else:
         self.${id}_plot.set_y_label(${ylabel} + '(' +${yunit}+')')
         % endif
-        % if (xunit == ''):
+        % if (xunit == "''"):
         self.${id}_plot.set_x_label(${xlabel})
         % else:
         self.${id}_plot.set_x_label(${xlabel} + '(' +${xunit}+')')

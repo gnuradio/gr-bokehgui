@@ -47,9 +47,8 @@ templates:
       self.${id}_button = bokehgui.button(self.widget_lst, ${label if label!="''" else "'{}'".format(id)} + ": ")
       def ${id}_handler(new):
         print("Handling click")
-        self.${id}_button.button.active = False
         if self.${id}_args is not None:
-          self.set_${id}(${obj}.${function_name}(${function_args}))
+          self.set_${id}(${obj}.${function_name}(*self.${id}_args))
         else:
           self.set_${id}(${obj}.${function_name}())
       self.${id}_button.add_callback(${id}_handler)
