@@ -1,6 +1,7 @@
 '[Bokeh GUI]':
 - Bokeh GUI Sinks:
   - bokehgui_frequency_sink_x
+  - bokehgui_num_sink_x
   - bokehgui_time_const_x
   - bokehgui_time_sink_x
   - bokehgui_vector_sink_x

@@ -29,7 +29,6 @@ parameters:
 -   id: yunit
     label: Y Axis Unit
     dtype: string
-    default: '""'
     hide: part
 -   id: ylog
     label: Y Axis Type
@@ -46,7 +45,6 @@ parameters:
 -   id: xunit
     label: X Axis Unit
     dtype: string
-    default: '""'
     hide: part
 -   id: xlog
     label: X Axis Type
@@ -600,12 +598,12 @@ templates:
       )
 
       self.${id}_plot.set_y_axis([${ymin}, ${ymax}])
-      % if (yunit == ""):
+      % if (yunit=="''"):
       self.${id}_plot.set_y_label(${ylabel})
       % else:
       self.${id}_plot.set_y_label(${ylabel} + '(' +${yunit}+')')
       % endif
-      % if (xunit == ""):
+      % if (xunit=="''"):
       self.${id}_plot.set_x_label(${xlabel})
       % else:
       self.${id}_plot.set_x_label(${xlabel} + '(' +${xunit}+')')

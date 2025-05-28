@@ -54,6 +54,7 @@ GR_PYTHON_INSTALL(
     waterfall_sink_f.py
     waterfall_sink_c.py
     const_sink_c.py
+    number_sink.py
     DESTINATION ${GR_PYTHON_DIR}/bokehgui
 )
 GR_PYTHON_INSTALL(
