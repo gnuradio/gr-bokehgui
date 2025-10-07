@@ -38,7 +38,7 @@ $ sudo ldconfig
 ```
 
 ## Working with the module
-The complete tutorial for the module is available [here](http://kartikpatel.in/GSoC2017/tutorial/). The tutorial covers setting up guide, using sinks and widgets in GRC and guide to the placement of the elements.
+The complete tutorial for the module is available [here](https://github.com/gnuradio/gr-bokehgui/wiki/Tutorial). The tutorial covers setting up guide, using sinks and widgets in GRC and guide to the placement of the elements.
 
 ## Quick Glance
 For the following flowgraph:
